@@ -1,0 +1,41 @@
+---
+title: "Pinecraft on Raspberry Pi"
+author: Nerd-or-Geek
+date: 2026-01-08
+description: Starter page for Pinecraft YouTube video tutorial
+format: html
+---
+
+[← Back to main page](../index.qmd)
+
+# Pinecraft on Raspberry Pi
+
+_Step-by-step installation guide for Raspberry Pi 4 and Pi Zero_
+
+::: {style="display: flex; justify-content: center; margin: 1.5rem 0;"}
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+:::
+
+## Supported Hardware
+- Raspberry Pi 4
+- Raspberry Pi Zero / Zero 2
+
+## Quick Install Instructions
+```sh
+# Update and install dependencies
+sudo apt update && sudo apt install -y python3 python3-pip git
+
+# Download and run the Pinecraft installer
+# (Replace with real instructions)
+git clone https://github.com/example/pinecraft-installer.git
+cd pinecraft-installer
+./install.sh
+```
+
+## Next Steps
+- [Troubleshooting](#) _(coming soon)_
+- [Configuration](#) _(coming soon)_
+
+---
+
+[← Back to main page](../index.qmd)
