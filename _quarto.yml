@@ -1,6 +1,6 @@
 project:
   type: website
-  site-dir: _site
+site-dir: _site
 website:
   title: "Nerd-or-Geek Portfolio"
   favicon: NOG.png
