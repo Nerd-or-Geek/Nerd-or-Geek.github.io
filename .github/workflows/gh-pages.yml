@@ -18,7 +18,7 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: 1.4.334
+          version: 1.9.16
 
       - name: Install Pandoc (for Quarto)
         uses: r-lib/actions/setup-pandoc@v2
