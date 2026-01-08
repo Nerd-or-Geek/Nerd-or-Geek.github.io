@@ -23,13 +23,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 2rem;
+  padding: 1.2rem 2rem 1.2rem 2.5rem;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
+  min-width: 0;
   z-index: 200;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-sizing: border-box;
 }
 .header-logo-title {
   display: flex;
@@ -83,10 +85,10 @@ body {
   transform: translateX(-110%);
 }
 .sidebar-toggle {
-  display: none;
+  display: block;
   position: fixed;
-  top: 90px;
-  left: 10px;
+  top: 1.3rem;
+  left: 1.1rem;
   background: var(--accent);
   color: #fff;
   border: none;
@@ -95,7 +97,11 @@ body {
   height: 40px;
   font-size: 1.5rem;
   cursor: pointer;
-  z-index: 101;
+  z-index: 201;
+  transition: background 0.18s;
+}
+.sidebar-toggle:hover {
+  background: #0056b3;
 }
 .sidebar strong {
   font-size: 1.15rem;
@@ -156,23 +162,17 @@ body {
     padding: 1.2rem 0.5rem 1.2rem 1rem;
     border-right: none;
   }
-  .sidebar-toggle {
-    display: block;
-  }
-  .hero {
+  .header {
     flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-  }
-  .hero-logo {
-    margin: 0 auto;
+    align-items: flex-start;
+    padding: 1.2rem 1rem 1.2rem 3.5rem;
   }
 }
 @media (max-width: 700px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
-    padding: 1rem 1rem;
+    padding: 1rem 1rem 1rem 3.5rem;
   }
   .header-title {
     font-size: 1.5rem;
@@ -189,6 +189,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   margin-top: 90px;
+  min-width: 0;
 }
 .hero {
   display: flex;

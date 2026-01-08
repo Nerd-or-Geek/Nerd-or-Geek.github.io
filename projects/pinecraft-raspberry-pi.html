@@ -75,7 +75,7 @@
 <body>
   <header class="header">
     <div class="header-logo-title">
-      <img src="../img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
+      <img src="../assets/img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
       <span class="header-title">Nerd-or-Geek</span>
     </div>
     <nav class="header-nav">
@@ -84,13 +84,91 @@
       <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </header>
+  <button class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+  <aside class="sidebar">
+    <div>
+      <strong>Projects</strong>
+      <ul>
+        <li><a href="pinecraft-raspberry-pi.html">Pinecraft on Raspberry Pi</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Other Work</strong>
+      <ul>
+        <li>
+          <a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
+          <ul>
+            <li><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </aside>
   <main class="main">
-    <h1>Installing Pinecraft on Raspberry Pi</h1>
     <section class="install-section">
-      <p><strong>Pinecraft</strong> is an open-source project that makes it easy to install and run Minecraft Java Edition on a Raspberry Pi. This guide follows the official <a href="https://github.com/Cat5TV/pinecraft" target="_blank" rel="noopener">Cat5TV Pinecraft project</a> and will walk you through every step of the installation process.</p>
-      <p>For more details, visit the official Pinecraft repository:<br>
-        <a href="https://github.com/Cat5TV/pinecraft" target="_blank" rel="noopener" style="font-size:1.1rem;font-weight:600;">https://github.com/Cat5TV/pinecraft</a>
-      </p>
+      <h2>Installing Raspberry Pi OS</h2>
+      <p>This section will guide you through installing Raspberry Pi OS on your device using <strong>Raspberry Pi Imager</strong>. These steps are beginner-friendly and will help you get your Raspberry Pi ready for Pinecraft.</p>
+      <h3>Compatible Devices</h3>
+      <ul>
+        <li>Raspberry Pi 5</li>
+        <li>Raspberry Pi 4</li>
+        <li>Raspberry Pi 3</li>
+        <li>Raspberry Pi Zero 2 W <span style="color:#b77;">(not fully tested)</span></li>
+      </ul>
+      <h3>Step-by-Step: Using Raspberry Pi Imager</h3>
+      <ol>
+        <li><strong>Open Raspberry Pi Imager</strong><br>
+          <span style="font-size:1rem;">If you don't have it, download and install it from <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener"><code>https://www.raspberrypi.com/software/</code></a> on your computer.</span>
+        </li>
+        <li><strong>Choose device</strong><br>
+          Click <strong>Choose Device</strong> and select the Raspberry Pi model you are using.
+        </li>
+        <li><strong>Choose operating system</strong><br>
+          Click <strong>Choose OS</strong> &rarr; Select <strong>Raspberry Pi OS (Other)</strong> &rarr; <strong>Raspberry Pi OS Lite (64-bit)</strong>.
+        </li>
+        <li><strong>Choose storage</strong><br>
+          Click <strong>Choose Storage</strong> and select the SD card or USB drive you will use in the Raspberry Pi.
+        </li>
+        <li><strong>OS customization settings</strong><br>
+          <ul>
+            <li>Set a <strong>hostname</strong> (e.g., <code>Pinecraft</code>)</li>
+            <li>Select your <strong>location</strong></li>
+            <li>Create a <strong>username</strong> and <strong>password</strong></li>
+            <li>Enter your <strong>Wi-Fi SSID</strong> and <strong>password</strong></li>
+            <li>Enable <strong>SSH</strong></li>
+            <li>Enable <strong>Raspberry Pi Connect</strong></li>
+          </ul>
+        </li>
+        <li><strong>Write the image</strong><br>
+          Click <strong>Write</strong>.<br>
+          When warned that all data will be erased, you will see:<br>
+          <span style="display:inline-block;background:#222;color:#fff;padding:0.3em 0.7em;border-radius:6px;font-size:1rem;">You are about to erase all data on this drive. This action is permanent and cannot be undone.</span><br>
+          Click <strong>I understand — erase and write</strong> and wait for the process to complete.
+        </li>
+      </ol>
+      <h3>Plug the drive into your Raspberry Pi</h3>
+      <ul>
+        <li>Make sure the Raspberry Pi is <strong>powered OFF</strong></li>
+        <li>Insert the SD card or USB drive into the Raspberry Pi</li>
+        <li>If your Raspberry Pi has blue and black USB ports, use the <strong>blue ports</strong> (they are faster)</li>
+        <li>Power the Raspberry Pi ON</li>
+      </ul>
+      <h3>Connect via Raspberry Pi Connect</h3>
+      <ol>
+        <li>Go to <a href="https://connect.raspberrypi.com" target="_blank" rel="noopener"><code>https://connect.raspberrypi.com</code></a></li>
+        <li>Refresh the page until your device appears (look for the hostname you chose)</li>
+        <li>Click <strong>Connect</strong> when it appears</li>
+      </ol>
+      <div style="background:#fff3cd;border-left:6px solid #e6b800;padding:1.2rem 1.5rem;border-radius:8px;margin:1.5rem 0 1.5rem 0;max-width:700px;">
+        <strong style="color:#b77;font-size:1.1rem;">Important Hostname Warning:</strong>
+        <ul style="margin-top:0.7rem;">
+          <li>If you reuse a hostname that already exists (for example: <code>Pinecraft-V2</code>)</li>
+          <li>You <strong>MUST</strong> delete the old device from Raspberry Pi Connect first</li>
+          <li>This includes devices that are offline or no longer in use</li>
+          <li>If you do not delete the old device, the new one may not appear</li>
+        </ul>
+      </div>
+      <p style="font-size:1.1rem;"><strong>Once you are connected via Raspberry Pi Connect, you are ready for the next steps. Further setup is covered later in this guide.</strong></p>
     </section>
     <section class="install-section">
       <h2>Installation Steps</h2>
@@ -149,6 +227,13 @@ sudo apt upgrade</code></pre>
       </ul>
     </section>
     <a class="back-link" href="../index.html">&larr; Back to Home</a>
+    <section class="install-section" style="margin-top:2.5rem;">
+      <h2>Video Guide: Installing Pinecraft</h2>
+      <div class="video-embed" style="text-align:center;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/1A4FtaiNkrg" title="YouTube video player" frameborder="0" allowfullscreen style="max-width:100%;border-radius:12px;"></iframe>
+        <p style="margin-top:1rem;"><a class="promo-btn" href="https://www.youtube.com/watch?v=1A4FtaiNkrg" target="_blank">Watch on YouTube</a></p>
+      </div>
+    </section>
   </main>
   <script src="../assets/js/main.js"></script>
 </body>
