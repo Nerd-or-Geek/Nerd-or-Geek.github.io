@@ -6,103 +6,64 @@
   <title>Installing Pinecraft on Raspberry Pi</title>
   <link rel="stylesheet" href="../assets/css/style.css">
   <style>
-    .install-section {
-      margin-bottom: 2.5rem;
-    }
+    .install-section { margin-bottom: 2.5rem; }
     .install-step {
-      margin-bottom: 2.2rem;
-      padding: 2rem 2rem 2rem 2.5rem;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      max-width: 900px;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 100%;
     }
     .install-step h3 {
       margin-top: 0;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: var(--accent);
+      margin-bottom: 1rem;
     }
     .install-step pre {
-      background: #222;
-      color: #fff;
-      font-size: 1.25rem;
-      padding: 1.1rem 1.5rem;
-      border-radius: 8px;
-      margin: 1.1rem 0 1.5rem 0;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
       overflow-x: auto;
-      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-      line-height: 1.5;
-      letter-spacing: 0.5px;
+      border: 1px solid var(--border);
     }
     .install-step ol, .install-step ul {
-      font-size: 1.1rem;
-      margin-bottom: 0.7rem;
-      padding-left: 1.2rem;
-    }
-    .install-step ul {
-      margin-left: 1.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
     }
     .notes-section {
-      background: #f6f8fa;
-      border-left: 5px solid var(--accent);
-      padding: 1.5rem 2rem;
-      border-radius: 10px;
-      max-width: 900px;
-      margin-bottom: 2.5rem;
+      background: var(--bg-light);
+      border-left: 4px solid var(--accent);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      max-width: 100%;
+      margin-bottom: 2rem;
     }
     .back-link {
       display: inline-block;
       margin: 2rem 0 0 0;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--accent);
       text-decoration: none;
       font-weight: 600;
       border: 2px solid var(--accent);
-      border-radius: 8px;
-      padding: 0.5rem 1.2rem;
-      transition: background 0.2s, color 0.2s;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      transition: background 0.3s, color 0.3s;
     }
     .back-link:hover {
       background: var(--accent);
       color: #fff;
     }
-    .install-section h2, .notes-section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #e3eaf6;
-      padding-bottom: 0.3rem;
-    }
-    .install-section h3 {
-      font-size: 1.18rem;
-      margin-bottom: 0.7rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .install-section ul, .install-section ol {
-      margin-bottom: 1.2rem;
-    }
-    .install-section li {
-      margin-bottom: 0.5rem;
-    }
-    .install-section code {
-      background: #222;
-      color: #fff;
-      border-radius: 6px;
-      padding: 0.18em 0.5em;
-      font-size: 1.02em;
-    }
-    .install-section blockquote {
-      background: #f6f8fa;
-      border-left: 4px solid var(--accent);
-      margin: 1.2rem 0;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1.08rem;
-      color: #444;
-    }
     @media (max-width: 700px) {
-      .install-step, .notes-section {
-        padding: 1rem 0.5rem 1rem 0.7rem;
+      .install-step {
+        padding: 1rem;
       }
     }
   </style>
@@ -130,7 +91,7 @@
     <div>
       <strong>Other Work</strong>
       <ul>
-        <li><img src="../assets/img/Photo-Metadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
+        <li><img src="../assets/img/photometadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
           <ul>
             <li><span class="sidebar-doc-icon">📖</span><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
           </ul>
@@ -139,9 +100,6 @@
     </div>
   </aside>
   <main class="main">
-    <div class="hero-img-container">
-      <img src="../assets/img/Pinecraft-nbg.png" alt="Pinecraft Hero" class="hero-img" />
-    </div>
     <section class="install-section">
       <h2>Installing Raspberry Pi OS</h2>
       <blockquote>
@@ -152,126 +110,90 @@
         <li>Raspberry Pi 5</li>
         <li>Raspberry Pi 4</li>
         <li>Raspberry Pi 3</li>
-        <li>Raspberry Pi Zero 2 W <span style="color:#b77;">(not fully tested)</span></li>
+        <li>Raspberry Pi Zero 2 W <span style="color:#d1a922;">(not fully tested)</span></li>
       </ul>
       <h3>Step-by-Step: Using Raspberry Pi Imager</h3>
       <ol>
-        <li><strong>Open Raspberry Pi Imager</strong><br>
-          <span>If you don't have it, download and install it from <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener"><code>https://www.raspberrypi.com/software/</code></a> on your computer.</span>
-        </li>
-        <li><strong>Choose device</strong><br>
-          Click <strong>Choose Device</strong> and select the Raspberry Pi model you are using.
-        </li>
-        <li><strong>Choose operating system</strong><br>
-          Click <strong>Choose OS</strong> &rarr; Select <strong>Raspberry Pi OS (Other)</strong> &rarr; <strong>Raspberry Pi OS Lite (64-bit)</strong>.
-        </li>
-        <li><strong>Choose storage</strong><br>
-          Click <strong>Choose Storage</strong> and select the SD card or USB drive you will use in the Raspberry Pi.
-        </li>
-        <li><strong>OS customization settings</strong>
-          <ul>
-            <li>Set a <strong>hostname</strong> (e.g., <code>Pinecraft</code>)</li>
-            <li>Select your <strong>location</strong></li>
-            <li>Create a <strong>username</strong> and <strong>password</strong></li>
-            <li>Enter your <strong>Wi-Fi SSID</strong> and <strong>password</strong></li>
-            <li>Enable <strong>SSH</strong></li>
-            <li>Enable <strong>Raspberry Pi Connect</strong></li>
-          </ul>
-        </li>
-        <li><strong>Write the image</strong><br>
-          Click <strong>Write</strong>.<br>
-          <blockquote>
-            <strong>Warning:</strong> You are about to erase all data on this drive. This action is permanent and cannot be undone.
-          </blockquote>
-          Click <strong>I understand — erase and write</strong> and wait for the process to complete.
-        </li>
+        <li><strong>Open Raspberry Pi Imager</strong><br><span>Download from <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener"><code>https://www.raspberrypi.com/software/</code></a> on your computer.</span></li>
+        <li><strong>Choose device</strong><br>Select your Raspberry Pi model.</li>
+        <li><strong>Choose operating system</strong><br><strong>Raspberry Pi OS (Other)</strong> &rarr; <strong>Raspberry Pi OS Lite (64-bit)</strong></li>
+        <li><strong>Choose storage</strong><br>Select your SD card or USB drive.</li>
+        <li><strong>OS customization settings</strong><ul><li>Set hostname, location, username, password</li><li>Enter Wi-Fi SSID and password</li><li>Enable SSH and Raspberry Pi Connect</li></ul></li>
+        <li><strong>Write the image</strong><br><blockquote><strong>Warning:</strong> All data will be erased. This action is permanent and cannot be undone.</blockquote>Click <strong>I understand — erase and write</strong></li>
       </ol>
       <h3>Plug the drive into your Raspberry Pi</h3>
       <ul>
         <li>Make sure the Raspberry Pi is <strong>powered OFF</strong></li>
-        <li>Insert the SD card or USB drive into the Raspberry Pi</li>
-        <li>If your Raspberry Pi has blue and black USB ports, use the <strong>blue ports</strong> (they are faster)</li>
+        <li>Insert the SD card or USB drive</li>
+        <li>Use blue USB ports for faster speeds</li>
         <li>Power the Raspberry Pi ON</li>
       </ul>
       <h3>Connect via Raspberry Pi Connect</h3>
       <ol>
         <li>Go to <a href="https://connect.raspberrypi.com" target="_blank" rel="noopener"><code>https://connect.raspberrypi.com</code></a></li>
-        <li>Refresh the page until your device appears (look for the hostname you chose)</li>
-        <li>Click <strong>Connect</strong> when it appears</li>
+        <li>Refresh until your device appears</li>
+        <li>Click <strong>Connect</strong></li>
       </ol>
-      <blockquote style="background:#fff3cd;border-left:6px solid #e6b800;">
-        <strong>Important Hostname Warning:</strong>
+      <blockquote style="border-left-color:#d1a922;">
+        <strong>⚠️ Important Hostname Warning:</strong>
         <ul>
-          <li>If you reuse a hostname that already exists (for example: <code>Pinecraft-V2</code>)</li>
-          <li>You <strong>MUST</strong> delete the old device from Raspberry Pi Connect first</li>
-          <li>This includes devices that are offline or no longer in use</li>
-          <li>If you do not delete the old device, the new one may not appear</li>
+          <li>If you reuse a hostname that already exists, delete the old device first</li>
+          <li>This includes offline or unused devices</li>
+          <li>If not deleted, the new device may not appear</li>
         </ul>
       </blockquote>
-      <p><strong>Once you are connected via Raspberry Pi Connect, you are ready for the next steps. Further setup is covered later in this guide.</strong></p>
+      <p><strong>Once connected via Raspberry Pi Connect, you're ready for the next steps.</strong></p>
     </section>
     <section class="install-section">
       <h2>Installation Steps</h2>
       <div class="install-step">
-        <h3>Step 1: Open Raspberry Pi configuration</h3>
+        <h3>Step 1: Raspberry Pi Configuration</h3>
         <pre><code>sudo raspi-config</code></pre>
-        <ul>
-          <li>Go to <strong>Advanced Options</strong></li>
-          <li>Select <strong>Expand Filesystem</strong></li>
-          <li>When prompted to reboot, select <strong>No</strong></li>
-          <li>Exit raspi-config</li>
-        </ul>
+        <ul><li>Go to <strong>Advanced Options</strong></li><li>Select <strong>Expand Filesystem</strong></li><li>Select <strong>No</strong> when prompted to reboot</li></ul>
       </div>
       <div class="install-step">
-        <h3>Step 2: Update the system</h3>
+        <h3>Step 2: Update the System</h3>
         <pre><code>sudo apt update
 sudo apt upgrade</code></pre>
-        <p>This ensures your Raspberry Pi has the latest software and security updates.</p>
+        <p>Ensures your Raspberry Pi has the latest software and security updates.</p>
       </div>
       <div class="install-step">
         <h3>Step 3: Install Git</h3>
         <pre><code>sudo apt install git</code></pre>
-        <p>Git is required to download the Pinecraft installer from GitHub.</p>
+        <p>Required to download the Pinecraft installer from GitHub.</p>
       </div>
       <div class="install-step">
-        <h3>Step 4: Reboot the Raspberry Pi</h3>
+        <h3>Step 4: Reboot</h3>
         <pre><code>sudo reboot</code></pre>
-        <p>This will apply any changes and prepare your system for installation.</p>
       </div>
       <div class="install-step">
-        <h3>Step 5: Clone the Pinecraft repository</h3>
+        <h3>Step 5: Clone Pinecraft Repository</h3>
         <pre><code>git clone https://github.com/Cat5TV/pinecraft.git</code></pre>
-        <p>This command downloads the official Pinecraft installer to your Raspberry Pi.</p>
       </div>
       <div class="install-step">
-        <h3>Step 6: Enter the Pinecraft directory</h3>
+        <h3>Step 6: Enter Pinecraft Directory</h3>
         <pre><code>cd pinecraft</code></pre>
-        <p>This changes your working directory to the Pinecraft installer folder.</p>
       </div>
       <div class="install-step">
-        <h3>Step 7: Run the Pinecraft installer</h3>
+        <h3>Step 7: Run Installer</h3>
         <pre><code>sudo ./install</code></pre>
-        <ul>
-          <li>Click <strong>OK</strong> through the installer dialogs</li>
-          <li>Select any options you prefer</li>
-          <li>The default options are acceptable for most users</li>
-        </ul>
+        <ul><li>Click through installer dialogs</li><li>Accept default options</li></ul>
       </div>
     </section>
     <section class="notes-section">
       <h2>Notes</h2>
       <ul>
-        <li>These steps are enough to get Pinecraft installed on your Raspberry Pi.</li>
-        <li>Configuration and usage will be covered later in this guide or video.</li>
-        <li>You can change installation options after setup if needed.</li>
+        <li>These steps are sufficient to install Pinecraft on your Raspberry Pi.</li>
+        <li>Configuration and usage are covered later in this guide and video.</li>
+        <li>You can change options after setup if needed.</li>
       </ul>
     </section>
     <a class="back-link" href="../index.html">&larr; Back to Home</a>
-    <section class="install-section" style="margin-top:2.5rem;">
-      <h2>Video Guide: Installing Pinecraft</h2>
-      <div class="video-embed" style="text-align:center;">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/1A4FtaiNkrg" title="YouTube video player" frameborder="0" allowfullscreen style="max-width:100%;border-radius:12px;"></iframe>
-        <p style="margin-top:1rem;"><a class="promo-btn" href="https://www.youtube.com/watch?v=1A4FtaiNkrg" target="_blank">Watch on YouTube</a></p>
+    <section class="install-section" style="margin-top:3rem;">
+      <h2>Video Guide</h2>
+      <div style="text-align:center;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/1A4FtaiNkrg" title="YouTube video player" frameborder="0" allowfullscreen style="max-width:100%;border-radius:10px;"></iframe>
+        <p style="margin-top:1.5rem;"><a class="promo-btn" href="https://www.youtube.com/watch?v=1A4FtaiNkrg" target="_blank">Watch on YouTube</a></p>
       </div>
     </section>
   </main>
