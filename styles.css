@@ -1,15 +1,21 @@
 body {
-  background: linear-gradient(135deg, #f6f8fa 0%, #e9ecf3 100%);
+  background: linear-gradient(120deg, #e0e7ff 0%, #f6f8fa 100%);
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
   color: #222;
   margin: 0;
+  min-height: 100vh;
+  backdrop-filter: blur(0.5px);
 }
 .header-logo {
-  height: 40px;
+  height: 44px;
   margin-right: 0.7rem;
   vertical-align: middle;
   display: inline-block;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.07));
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.10));
+  transition: transform 0.2s;
+}
+.header-logo:hover {
+  transform: scale(1.07) rotate(-2deg);
 }
 .header-left {
   display: flex;
@@ -47,14 +53,20 @@ body {
   background: linear-gradient(90deg, #2188ff 60%, #0366d6 100%);
 }
 .custom-header header {
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 0.7rem 1.5rem 0.7rem 1.5rem;
-  border-radius: 0 0 12px 12px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 4px 24px rgba(3,102,214,0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 1rem 2.2rem 1rem 2.2rem;
+  border-radius: 0 0 18px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.2rem;
+  backdrop-filter: blur(6px);
+  animation: fadeInDown 0.7s cubic-bezier(.4,0,.2,1);
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: none; }
 }
 .custom-footer footer {
   background: #24292f;
@@ -77,12 +89,18 @@ body {
   color: #ffb300;
 }
 .main-content-card {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 24px rgba(3,102,214,0.07), 0 1.5px 6px rgba(0,0,0,0.04);
-  padding: 2.2rem 2rem 2rem 2rem;
-  margin: 2rem auto 2rem auto;
-  max-width: 820px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(3,102,214,0.13), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 2.5rem 2.2rem 2.2rem 2.2rem;
+  margin: 2.5rem auto 2.5rem auto;
+  max-width: 860px;
+  transition: box-shadow 0.2s;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1);
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
 }
 a, a:visited {
   color: #0366d6;
@@ -104,18 +122,19 @@ a:hover {
   align-items: center;
   gap: 0.7rem;
   text-decoration: none;
-  background: #ff0000;
+  background: linear-gradient(90deg, #ff5858 0%, #ff0000 100%);
   color: #fff;
-  padding: 0.8rem 1.5rem;
-  border-radius: 10px;
+  padding: 0.95rem 1.7rem;
+  border-radius: 12px;
   font-weight: bold;
-  font-size: 1.18rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-  transition: background 0.2s, box-shadow 0.2s;
+  font-size: 1.22rem;
+  box-shadow: 0 4px 16px rgba(255,0,0,0.13);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
 }
 .youtube-promo a:hover {
-  background: #d90000;
-  box-shadow: 0 4px 16px rgba(255,0,0,0.10);
+  background: linear-gradient(90deg, #ff0000 0%, #ff5858 100%);
+  box-shadow: 0 8px 32px rgba(255,0,0,0.18);
+  transform: translateY(-2px) scale(1.03);
 }
 .youtube-promo img {
   height: 36px;
@@ -124,11 +143,28 @@ a:hover {
   padding: 2px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
+/* Sidebar and mobile improvements */
+.sidebar, .side-panel {
+  background: rgba(255,255,255,0.92) !important;
+  box-shadow: 0 4px 24px rgba(3,102,214,0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+  border-radius: 0 18px 18px 0;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  backdrop-filter: blur(6px);
+}
 @media (max-width: 600px) {
   .search-bar {
     width: 100px;
   }
   .main-content-card {
     padding: 1.1rem 0.5rem 1.1rem 0.5rem;
+  }
+  .custom-header header {
+    padding: 0.7rem 0.5rem 0.7rem 0.5rem;
+  }
+  .sidebar, .side-panel {
+    border-radius: 0 0 18px 18px;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
   }
 }

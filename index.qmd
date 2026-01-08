@@ -42,14 +42,7 @@ Welcome to the documentation hub for Nerd-or-Geek YouTube projects. Explore guid
 
 ## Projects
 
-- [Pinecraft on Raspberry Pi](pinecraft-raspberry-pi.qmd)
-- [Project Two](project2.qmd)
-- [Project Three](project3.qmd)
-
-## Other Projects
-
-- [Other Project 1](other1.qmd)
-- [Other Project 2](other2.qmd)
+- [Pinecraft on Raspberry Pi](pinecraft-raspberry-pi/pinecraft-raspberry-pi.qmd)
 :::
 
 ::::: custom-footer

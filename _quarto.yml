@@ -11,19 +11,7 @@ website:
       - text: Projects
         menu:
           - text: Pinecraft on Raspberry Pi
-            file: pinecraft-raspberry-pi.qmd
-          - text: Project Two
-            file: project2.qmd
-          - text: Project Three
-            file: project3.qmd
-      - text: Other Projects
-        menu:
-          - text: Other Project 1
-            file: other1.qmd
-          - text: Other Project 2
-            file: other2.qmd
-          - text: Photo Metadata App by Gledhill
-            url: https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html
+            file: pinecraft-raspberry-pi/pinecraft-raspberry-pi.qmd
     right:
       - icon: github
         href: https://github.com/Nerd-or-Geek
@@ -33,15 +21,7 @@ website:
     contents:
       - section: Projects
         contents:
-          - pinecraft-raspberry-pi.qmd
-          - project2.qmd
-          - project3.qmd
-      - section: Other Projects
-        contents:
-          - other1.qmd
-          - other2.qmd
-          - text: Photo Metadata App by Gledhill
-            url: https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html
+          - pinecraft-raspberry-pi/pinecraft-raspberry-pi.qmd
   page-footer:
     left: |
       &copy; 2026 [Nerd-or-Geek](https://github.com/Nerd-or-Geek) &mdash; [Repository](https://github.com/Nerd-or-Geek/Nerd-or-Geek.github.io)
