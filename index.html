@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Nerd-or-Geek Documentation Hub</title>
+  <link rel="icon" type="image/png" href="NOG.png">
   <style>
     :root {
       --primary: #24292f;
@@ -37,11 +38,20 @@
       align-items: center;
       gap: 1rem;
     }
+    .header-logo {
+      height: 36px;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+      display: block;
+    }
     .header-left a {
       color: #fff;
       text-decoration: none;
       font-weight: bold;
       font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .search-bar {
       background: #fff;
@@ -172,7 +182,10 @@
 <body>
   <header>
     <div class="header-left">
-      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener">Nerd-or-Geek</a>
+      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener">
+        <img src="NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
+        Nerd-or-Geek
+      </a>
       <input class="search-bar" type="text" id="search" placeholder="Search projects..." aria-label="Search projects">
     </div>
     <button class="side-btn" id="openPanel" aria-label="Open menu">&#9776;</button>
