@@ -64,6 +64,12 @@ a {
     }
 }
 
+// Make images responsive by default
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 button {
     border: none;
     background: none;
@@ -138,7 +144,7 @@ button {
 }
 
 .logo-img {
-    height: 50px;
+    height: 2.25rem; // ~36px to ensure logo fits header
     width: auto;
     object-fit: contain;
     background-color: transparent;
@@ -165,7 +171,8 @@ button {
     border-radius: 0.5rem;
     overflow: hidden;
     flex: 1;
-    max-width: 300px;
+    max-width: clamp(16rem, 40vw, 22.5rem);
+    position: relative;
 
     @media (max-width: $breakpoint-md) {
         max-width: none;
@@ -192,16 +199,56 @@ button {
 }
 
 .search-button {
-    padding:text-light;
-    color: $secondary-color;
+    padding: 0.5rem 0.75rem;
+    color: $text-light;
     font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.08);
 
     &:hover {
         color: $primary-color;
+        background-color: rgba(255, 255, 255, 0.15);
     }
 
     &:active {
         color: $primary-dark;
+    }
+}
+
+// Search results dropdown
+.search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: white;
+    color: $secondary-color;
+    border-radius: 0.5rem;
+    box-shadow: $shadow-lg;
+    overflow: hidden;
+    z-index: 120;
+}
+
+.search-empty {
+    padding: 0.75rem 1rem;
+    color: #64748b;
+}
+
+.search-result-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $border-light;
+    cursor: pointer;
+
+    .title {
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    .desc {
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    &:hover {
+        background-color: #f8fafc;
     }
 }
 
@@ -212,15 +259,14 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-siztext-light;
+    font-size: 1.25rem;
     padding: 0.5rem;
     border-radius: 0.5rem;
     transition: all 0.3s ease;
 
     &:hover {
         color: $primary-color;
-        background-color: rgba(255, 255, 255, 0.1)
-        background-color: #f1f5f9;
+        background-color: rgba(255, 255, 255, 0.1);
         transform: scale(1.1);
     }
 }
@@ -250,9 +296,9 @@ button {
 }
 
 .youtube-link-header {
-    font-size: 1.5rem;
-    width: 38px;
-    height: 38px;
+    font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+    width: clamp(2rem, 4vw, 2.375rem);
+    height: clamp(2rem, 4vw, 2.375rem);
     padding: 0;
 }
 
@@ -595,7 +641,7 @@ button {
     }
 
     .app-logo {
-        width: 80px;
+        width: clamp(4rem, 10vw, 5rem);
         height: auto;
         object-fit: contain;
         border-radius: 0.5rem;
@@ -621,7 +667,7 @@ button {
     }
 
     .app-icon {
-        font-size: 3rem;
+        font-size: clamp(2rem, 6vw, 3rem);
         color: $primary-color;
         margin-bottom: 1rem;
     }
@@ -690,7 +736,7 @@ button {
 
 .project-placeholder {
     width: 100%;
-    height: 180px;
+    min-height: clamp(10rem, 25vw, 11.25rem);
     background: linear-gradient(135deg, #e0f2fe, #0ea5e9);
     display: flex;
     align-items: center;
@@ -702,7 +748,8 @@ button {
 
 .project-image-container {
     width: 100%;
-    height: 180px;
+    aspect-ratio: 16/9;
+    height: auto;
     background: linear-gradient(135deg, #e0f2fe, #0ea5e9);
     display: flex;
     align-items: center;
