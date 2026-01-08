@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinecraft | Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo-link" aria-label="Home">
+                <div class="logo-section">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <div class="header-actions">
+                <a href="https://www.youtube.com/@Nerd-or-Geek" class="youtube-link youtube-link-header" target="_blank" rel="noopener noreferrer" aria-label="YouTube Channel">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://github.com/Nerd-or-Geek" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="content-section">
+            <h1>Pinecraft</h1>
+            <p class="section-description">Install and run a Minecraft server on Raspberry Pi.</p>
+
+            <div class="project-detail">
+                <div class="project-image-container">
+                    <img src="../assets/img/projects/pinecraft.png" alt="Pinecraft logo" class="project-image">
+                </div>
+
+                <div class="project-info">
+                    <h2>Overview</h2>
+                    <p>
+                        Pinecraft is a Raspberry Pi-hosted Minecraft server setup. Below is a simple,
+                        reliable installation guide suitable for Raspberry Pi 4 (4GB+ recommended) running Raspberry Pi OS 64-bit.
+                    </p>
+
+                    <h3>Prerequisites</h3>
+                    <ul>
+                        <li>Raspberry Pi 4 (4GB or 8GB RAM recommended)</li>
+                        <li>Raspberry Pi OS (64-bit), updated</li>
+                        <li>Stable power and Ethernet (preferred)</li>
+                        <li>Port forwarding set up on your router for TCP 25565 if hosting publicly</li>
+                    </ul>
+
+                    <h3>Install Steps</h3>
+                    <ol>
+                        <li>
+                            Update system packages:
+                            <pre><code>sudo apt update
+sudo apt full-upgrade -y
+sudo reboot</code></pre>
+                        </li>
+                        <li>
+                            Install Java (OpenJDK 17 recommended for modern Minecraft servers):
+                            <pre><code>sudo apt install -y openjdk-17-jre-headless</code></pre>
+                        </li>
+                        <li>
+                            Create a dedicated user and folders:
+                            <pre><code>sudo adduser --system --home /opt/pinecraft --group minecraft
+sudo mkdir -p /opt/pinecraft
+sudo chown -R minecraft:minecraft /opt/pinecraft</code></pre>
+                        </li>
+                        <li>
+                            Download a server jar (e.g., PaperMC) to /opt/pinecraft and accept the EULA:
+                            <pre><code>sudo -u minecraft bash -c '
+cd /opt/pinecraft
+# Replace <PAPER_JAR_URL> with the specific download URL for PaperMC
+wget -O server.jar <PAPER_JAR_URL>
+java -Xms1G -Xmx2G -jar server.jar --nogui || true
+sed -i "s/eula=false/eula=true/" eula.txt
+' </code></pre>
+                            Tip: Choose memory values (-Xms/-Xmx) appropriate for your Pi's RAM.
+                        </li>
+                        <li>
+                            Create a systemd service so the server runs on boot:
+                            <pre><code>sudo tee /etc/systemd/system/pinecraft.service > /dev/null <<'SERVICE'
+[Unit]
+Description=Pinecraft Minecraft Server
+After=network.target
+
+[Service]
+Type=simple
+User=minecraft
+Group=minecraft
+WorkingDirectory=/opt/pinecraft
+ExecStart=/usr/bin/java -Xms1G -Xmx2G -jar /opt/pinecraft/server.jar --nogui
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+sudo systemctl daemon-reload
+sudo systemctl enable pinecraft
+sudo systemctl start pinecraft
+sudo systemctl status pinecraft --no-pager</code></pre>
+                        </li>
+                        <li>
+                            Open port 25565 on your router if hosting publicly and test connecting from a PC (Direct Connect to the Pi's IP).
+                        </li>
+                    </ol>
+
+                    <h3>Maintenance</h3>
+                    <ul>
+                        <li>Stop server: <code>sudo systemctl stop pinecraft</code></li>
+                        <li>Update server jar: replace <code>server.jar</code>, then restart</li>
+                        <li>Backups: regularly archive <code>/opt/pinecraft</code></li>
+                    </ul>
+
+                    <div class="project-actions">
+                        <a href="../index.html#featured-projects" class="cta-button">Back to Featured Projects</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../dist/main.js"></script>
+</body>
+</html>
