@@ -12,9 +12,7 @@
 <!-- Header -->
 <header class="header">
   <a href="/" class="header-logo" title="Home">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" style="height: 36px; width: auto;">
-      <text x="10" y="28" font-size="24" font-weight="bold" fill="#1f6feb" font-family="monospace">Nerd or Geek</text>
-    </svg>
+    <img src="assets/img/NOG-LOGO-LONG.png" alt="Nerd or Geek">
   </a>
   
   <div class="header-search">
@@ -22,9 +20,8 @@
   </div>
   
   <nav class="header-nav">
+    <a href="/">Home</a>
     <a href="#projects">Projects</a>
-    <a href="#resources">Resources</a>
-    <a href="#about">About</a>
   </nav>
   
   <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">☰</button>
@@ -36,8 +33,7 @@
     <strong>Documentation</strong>
     <ul>
       <li>🏠 <a href="/">Home</a></li>
-      <li>📚 <a href="#projects">Projects</a></li>
-      <li>🔧 <a href="#resources">Resources</a></li>
+      <li>📚 <a href="/#projects">Projects</a></li>
     </ul>
   </nav>
   
@@ -45,17 +41,6 @@
     <strong>Projects</strong>
     <ul>
       <li>🎮 <a href="projects/pinecraft-raspberry-pi.html">Pinecraft RPi Guide</a></li>
-      <li>🛠️ <a href="#">Tool Library</a></li>
-      <li>📖 <a href="#">Blog</a></li>
-    </ul>
-  </nav>
-  
-  <nav>
-    <strong>Community</strong>
-    <ul>
-      <li><a href="https://github.com" target="_blank">GitHub</a></li>
-      <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
-      <li><a href="https://discord.com" target="_blank">Discord</a></li>
     </ul>
   </nav>
 </aside>
@@ -65,18 +50,12 @@
   
   <!-- Hero Section -->
   <section class="hero">
-    <svg class="hero-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <rect width="100" height="100" fill="#1f6feb" rx="12"/>
-      <circle cx="30" cy="30" r="12" fill="#e6edf3"/>
-      <circle cx="70" cy="30" r="12" fill="#e6edf3"/>
-      <path d="M 30 60 Q 50 75 70 60" stroke="#e6edf3" stroke-width="4" fill="none" stroke-linecap="round"/>
-    </svg>
+    <img class="hero-logo" src="assets/img/NOG.png" alt="Nerd or Geek Logo">
     
     <div class="hero-content">
-      <h1>Welcome to Nerd or Geek</h1>
+      <h1>Nerd or Geek?</h1>
       <p class="hero-desc">
-        Your go-to hub for technology projects, tutorials, and development resources. 
-        Explore guides on Raspberry Pi, coding techniques, and more.
+        Your tech hub for projects, tutorials, and development resources.
       </p>
       <a href="#projects" class="promo-btn">Explore Projects</a>
     </div>
@@ -84,107 +63,19 @@
 
   <!-- Featured Projects -->
   <section id="projects">
-    <h2>Featured Projects</h2>
+    <h2>Projects</h2>
     <div class="card-list">
       
       <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">🎮</text>
-        </svg>
+        <img class="card-img" src="assets/img/Pinecraft-nbg.png" alt="Pinecraft">
         <h3 class="card-title">Pinecraft on Raspberry Pi</h3>
         <p class="card-desc">
-          Complete installation and setup guide for running Minecraft on Raspberry Pi. 
-          Learn configuration, optimization, and troubleshooting.
+          Complete installation and setup guide for running Minecraft on Raspberry Pi.
         </p>
         <a href="projects/pinecraft-raspberry-pi.html" class="card-link">View Guide →</a>
       </div>
 
-      <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">🛠️</text>
-        </svg>
-        <h3 class="card-title">Development Tools</h3>
-        <p class="card-desc">
-          Collection of utilities and tools for modern development. 
-          Scripts, libraries, and resources to boost your productivity.
-        </p>
-        <a href="#" class="card-link">Coming Soon</a>
-      </div>
-
-      <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">📚</text>
-        </svg>
-        <h3 class="card-title">Learning Resources</h3>
-        <p class="card-desc">
-          Curated tutorials and educational content on programming, 
-          systems design, and technology best practices.
-        </p>
-        <a href="#" class="card-link">Explore</a>
-      </div>
-
     </div>
-  </section>
-
-  <!-- Resources Section -->
-  <section id="resources">
-    <h2>Resources & References</h2>
-    <div class="card-list">
-      
-      <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">📖</text>
-        </svg>
-        <h3 class="card-title">Documentation</h3>
-        <p class="card-desc">
-          Comprehensive documentation covering setup, configuration, 
-          and advanced topics for all projects.
-        </p>
-      </div>
-
-      <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">💡</text>
-        </svg>
-        <h3 class="card-title">Tips & Tricks</h3>
-        <p class="card-desc">
-          Practical advice and best practices to optimize your workflow 
-          and solve common development challenges.
-        </p>
-      </div>
-
-      <div class="card">
-        <svg class="card-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" fill="#1f6feb" rx="8"/>
-          <text x="32" y="40" font-size="28" font-weight="bold" fill="#e6edf3" text-anchor="middle">🔗</text>
-        </svg>
-        <h3 class="card-title">Links & Tools</h3>
-        <p class="card-desc">
-          Curated list of external resources, tools, and community links 
-          for continuous learning and development.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- About Section -->
-  <section id="about">
-    <h2>About This Site</h2>
-    <p>
-      Nerd or Geek is a personal tech hub dedicated to sharing knowledge about software development, 
-      hardware projects, and technology exploration. Whether you're looking for detailed tutorials, 
-      troubleshooting guides, or community resources, you'll find comprehensive content here.
-    </p>
-    <p>
-      This site is built with clean, modern design principles prioritizing clarity and usability. 
-      All content is free and open to the community.
-    </p>
   </section>
 
 </main>

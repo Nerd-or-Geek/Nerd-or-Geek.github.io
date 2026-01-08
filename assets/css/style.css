@@ -81,12 +81,13 @@ a:hover {
 }
 
 .header-logo {
-  height: 36px;
+  height: 40px;
   width: auto;
   display: block;
   margin-right: auto;
   max-width: 200px;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .header-search {
@@ -372,8 +373,8 @@ p {
 }
 
 .hero-logo {
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
   object-fit: contain;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
