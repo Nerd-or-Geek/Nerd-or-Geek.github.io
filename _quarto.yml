@@ -1,6 +1,5 @@
 project:
   type: website
-  output-dir: docs
 site:
   title: "Nerd-or-Geek Documentation Hub"
 website:
