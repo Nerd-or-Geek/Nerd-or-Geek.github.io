@@ -8,31 +8,30 @@
 </head>
 <body>
   <header class="header">
-    <div class="header-logo-title">
-      <img src="assets/img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
-      <span class="header-title"></span>
-    </div>
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+    <img src="assets/img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
+    <form class="header-search" action="#" method="get" autocomplete="off">
+      <input type="search" name="q" placeholder="Search..." aria-label="Search" />
+    </form>
     <nav class="header-nav">
-      <a href="index.html">Home</a>
-      <a href="#projects">Projects</a>
-      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener">GitHub</a>
+      <a href="index.html" title="Home"><span class="sidebar-doc-icon">🏠</span>Home</a>
+      <a href="#projects" title="Projects"><img src="assets/img/pinecraft-nbg.png" class="sidebar-icon" alt="Pinecraft Icon"/>Projects</a>
+      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener" title="GitHub"><img src="assets/img/github-mark-white.svg" class="sidebar-icon" alt="GitHub"/></a>
     </nav>
   </header>
-  <button class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
   <aside class="sidebar">
     <div>
       <strong>Projects</strong>
       <ul>
-        <li><a href="projects/pinecraft-raspberry-pi.html">Pinecraft on Raspberry Pi</a></li>
+        <li><img src="assets/img/pinecraft-nbg.png" class="sidebar-icon" alt="Pinecraft Icon"/><a href="projects/pinecraft-raspberry-pi.html">Pinecraft on Raspberry Pi</a></li>
       </ul>
     </div>
     <div>
       <strong>Other Work</strong>
       <ul>
-        <li>
-          <a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
+        <li><img src="assets/img/photometadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
           <ul>
-            <li><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
+            <li><span class="sidebar-doc-icon">📖</span><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
           </ul>
         </li>
       </ul>
@@ -51,7 +50,7 @@
       <h2>Featured Projects</h2>
       <div class="card-list">
         <div class="card">
-          <img src="assets/img/Pinecraft-nbg.png" alt="Pinecraft Project" class="card-img"/>
+          <img src="assets/img/pinecraft-nbg.png" alt="Pinecraft Project" class="card-img"/>
           <div class="card-title">Pinecraft on Raspberry Pi</div>
           <div class="card-desc">Step-by-step guide for running Minecraft Java Edition on Raspberry Pi. Includes hardware support, installation, and troubleshooting.</div>
           <a class="card-link" href="projects/pinecraft-raspberry-pi.html">View Project</a>
@@ -62,7 +61,7 @@
       <h2>Other Work</h2>
       <div class="card-list">
         <div class="card">
-          <img src="https://raw.githubusercontent.com/michael6gledhill/Photo_Metadata_App_By_Gledhill/main/docs/assets/photo_metadata_logo.png" alt="Photo Metadata App Icon" class="card-img"/>
+          <img src="assets/img/photometadata.png" alt="Photo Metadata App Icon" class="card-img"/>
           <div class="card-title">Photo Metadata App</div>
           <div class="card-desc">A cross-platform app for viewing and editing photo metadata. <br><em>(Not a Nerd-or-Geek project, just other work I've done.)</em></div>
           <a class="card-link" href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">GitHub Repo</a>

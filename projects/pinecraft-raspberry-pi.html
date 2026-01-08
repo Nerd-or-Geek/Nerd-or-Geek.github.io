@@ -74,31 +74,30 @@
 </head>
 <body>
   <header class="header">
-    <div class="header-logo-title">
-      <img src="../assets/img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
-      <span class="header-title">Nerd-or-Geek</span>
-    </div>
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+    <img src="../assets/img/NOG-LOGO-LONG.png" alt="Nerd-or-Geek Logo" class="header-logo"/>
+    <form class="header-search" action="#" method="get" autocomplete="off">
+      <input type="search" name="q" placeholder="Search..." aria-label="Search" />
+    </form>
     <nav class="header-nav">
-      <a href="../index.html">Home</a>
-      <a href="../index.html#projects">Projects</a>
-      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener">GitHub</a>
+      <a href="../index.html" title="Home"><span class="sidebar-doc-icon">🏠</span>Home</a>
+      <a href="../index.html#projects" title="Projects"><img src="../assets/img/pinecraft-nbg.png" class="sidebar-icon" alt="Pinecraft Icon"/>Projects</a>
+      <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener" title="GitHub"><img src="../assets/img/github-mark-white.svg" class="sidebar-icon" alt="GitHub"/></a>
     </nav>
   </header>
-  <button class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
   <aside class="sidebar">
     <div>
       <strong>Projects</strong>
       <ul>
-        <li><a href="pinecraft-raspberry-pi.html">Pinecraft on Raspberry Pi</a></li>
+        <li><img src="../assets/img/pinecraft-nbg.png" class="sidebar-icon" alt="Pinecraft Icon"/><a href="pinecraft-raspberry-pi.html">Pinecraft on Raspberry Pi</a></li>
       </ul>
     </div>
     <div>
       <strong>Other Work</strong>
       <ul>
-        <li>
-          <a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
+        <li><img src="../assets/img/photometadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
           <ul>
-            <li><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
+            <li><span class="sidebar-doc-icon">📖</span><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
           </ul>
         </li>
       </ul>
