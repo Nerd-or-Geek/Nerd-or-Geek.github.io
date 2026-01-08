@@ -37,6 +37,7 @@
     .install-step ol, .install-step ul {
       font-size: 1.1rem;
       margin-bottom: 0.7rem;
+      padding-left: 1.2rem;
     }
     .install-step ul {
       margin-left: 1.5rem;
@@ -64,6 +65,40 @@
     .back-link:hover {
       background: var(--accent);
       color: #fff;
+    }
+    .install-section h2, .notes-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e3eaf6;
+      padding-bottom: 0.3rem;
+    }
+    .install-section h3 {
+      font-size: 1.18rem;
+      margin-bottom: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .install-section ul, .install-section ol {
+      margin-bottom: 1.2rem;
+    }
+    .install-section li {
+      margin-bottom: 0.5rem;
+    }
+    .install-section code {
+      background: #222;
+      color: #fff;
+      border-radius: 6px;
+      padding: 0.18em 0.5em;
+      font-size: 1.02em;
+    }
+    .install-section blockquote {
+      background: #f6f8fa;
+      border-left: 4px solid var(--accent);
+      margin: 1.2rem 0;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1.08rem;
+      color: #444;
     }
     @media (max-width: 700px) {
       .install-step, .notes-section {
@@ -95,7 +130,7 @@
     <div>
       <strong>Other Work</strong>
       <ul>
-        <li><img src="../assets/img/Photo-Metadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
+        <li><img src="../assets/img/photometadata.png" class="sidebar-icon" alt="Photo Metadata Icon"/><a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" target="_blank" rel="noopener">Photo Metadata App</a>
           <ul>
             <li><span class="sidebar-doc-icon">📖</span><a href="https://michael6gledhill.github.io/Photo_Metadata_App_By_Gledhill/docs/index.html" target="_blank" rel="noopener">Documentation</a></li>
           </ul>
@@ -106,7 +141,9 @@
   <main class="main">
     <section class="install-section">
       <h2>Installing Raspberry Pi OS</h2>
-      <p>This section will guide you through installing Raspberry Pi OS on your device using <strong>Raspberry Pi Imager</strong>. These steps are beginner-friendly and will help you get your Raspberry Pi ready for Pinecraft.</p>
+      <blockquote>
+        <strong>Beginner-friendly:</strong> This section guides you through installing Raspberry Pi OS using <strong>Raspberry Pi Imager</strong>.
+      </blockquote>
       <h3>Compatible Devices</h3>
       <ul>
         <li>Raspberry Pi 5</li>
@@ -117,7 +154,7 @@
       <h3>Step-by-Step: Using Raspberry Pi Imager</h3>
       <ol>
         <li><strong>Open Raspberry Pi Imager</strong><br>
-          <span style="font-size:1rem;">If you don't have it, download and install it from <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener"><code>https://www.raspberrypi.com/software/</code></a> on your computer.</span>
+          <span>If you don't have it, download and install it from <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener"><code>https://www.raspberrypi.com/software/</code></a> on your computer.</span>
         </li>
         <li><strong>Choose device</strong><br>
           Click <strong>Choose Device</strong> and select the Raspberry Pi model you are using.
@@ -128,7 +165,7 @@
         <li><strong>Choose storage</strong><br>
           Click <strong>Choose Storage</strong> and select the SD card or USB drive you will use in the Raspberry Pi.
         </li>
-        <li><strong>OS customization settings</strong><br>
+        <li><strong>OS customization settings</strong>
           <ul>
             <li>Set a <strong>hostname</strong> (e.g., <code>Pinecraft</code>)</li>
             <li>Select your <strong>location</strong></li>
@@ -140,8 +177,9 @@
         </li>
         <li><strong>Write the image</strong><br>
           Click <strong>Write</strong>.<br>
-          When warned that all data will be erased, you will see:<br>
-          <span style="display:inline-block;background:#222;color:#fff;padding:0.3em 0.7em;border-radius:6px;font-size:1rem;">You are about to erase all data on this drive. This action is permanent and cannot be undone.</span><br>
+          <blockquote>
+            <strong>Warning:</strong> You are about to erase all data on this drive. This action is permanent and cannot be undone.
+          </blockquote>
           Click <strong>I understand — erase and write</strong> and wait for the process to complete.
         </li>
       </ol>
@@ -158,16 +196,16 @@
         <li>Refresh the page until your device appears (look for the hostname you chose)</li>
         <li>Click <strong>Connect</strong> when it appears</li>
       </ol>
-      <div style="background:#fff3cd;border-left:6px solid #e6b800;padding:1.2rem 1.5rem;border-radius:8px;margin:1.5rem 0 1.5rem 0;max-width:700px;">
-        <strong style="color:#b77;font-size:1.1rem;">Important Hostname Warning:</strong>
-        <ul style="margin-top:0.7rem;">
+      <blockquote style="background:#fff3cd;border-left:6px solid #e6b800;">
+        <strong>Important Hostname Warning:</strong>
+        <ul>
           <li>If you reuse a hostname that already exists (for example: <code>Pinecraft-V2</code>)</li>
           <li>You <strong>MUST</strong> delete the old device from Raspberry Pi Connect first</li>
           <li>This includes devices that are offline or no longer in use</li>
           <li>If you do not delete the old device, the new one may not appear</li>
         </ul>
-      </div>
-      <p style="font-size:1.1rem;"><strong>Once you are connected via Raspberry Pi Connect, you are ready for the next steps. Further setup is covered later in this guide.</strong></p>
+      </blockquote>
+      <p><strong>Once you are connected via Raspberry Pi Connect, you are ready for the next steps. Further setup is covered later in this guide.</strong></p>
     </section>
     <section class="install-section">
       <h2>Installation Steps</h2>
