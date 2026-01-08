@@ -1,0 +1,7 @@
+# Minimal Jekyll config for GitHub Pages
+
+# Use the default GitHub Pages theme
+remote_theme: pages-themes/primer@v0.6.0
+
+# Ensure relative links work
+baseurl: ""
