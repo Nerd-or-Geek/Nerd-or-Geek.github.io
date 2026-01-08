@@ -1,9 +1,8 @@
----
+
 title: "Pinecraft on Raspberry Pi"
 author: Nerd-or-Geek
 date: 2026-01-08
 description: Starter page for Pinecraft YouTube video tutorial
-format: html
 
 [← Back to main page](../index.qmd)
 
