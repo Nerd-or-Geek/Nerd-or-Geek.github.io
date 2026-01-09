@@ -727,6 +727,9 @@ button {
     overflow: hidden;
     box-shadow: $shadow;
     transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         transform: translateY(-5px);
@@ -779,6 +782,12 @@ button {
     padding: 0 1rem 1rem 1rem;
     color: #64748b;
     font-size: 0.9rem;
+    flex-grow: 1;
+}
+
+.project-card .cta-button {
+    align-self: center;
+    margin: 0 1rem 1rem 1rem;
 }
 
 // ============================================

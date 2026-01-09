@@ -644,6 +644,9 @@ button {
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 .project-card:hover {
   transform: translateY(-5px);
@@ -695,6 +698,12 @@ button {
   padding: 0 1rem 1rem 1rem;
   color: #64748b;
   font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.project-card .cta-button {
+  align-self: center;
+  margin: 0 1rem 1rem 1rem;
 }
 
 .page-header {
