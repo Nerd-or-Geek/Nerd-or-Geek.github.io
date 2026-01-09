@@ -97,14 +97,15 @@
                 </div>
                 <ul class="docs-toc">
                     <li><a href="#overview" class="docs-link">Overview</a></li>
+                    <li><a href="#estimated-time" class="docs-link">Estimated Time</a></li>
                     <li><a href="#prerequisites" class="docs-link">Prerequisites</a></li>
-                    <li><a href="#install" class="docs-link">Installation</a></li>
-                    <li><a href="#install-step-1" class="docs-sublink">1. Update Packages</a></li>
-                    <li><a href="#install-step-2" class="docs-sublink">2. Install Java</a></li>
-                    <li><a href="#install-step-3" class="docs-sublink">3. Create User & Folders</a></li>
-                    <li><a href="#install-step-4" class="docs-sublink">4. Download Server</a></li>
-                    <li><a href="#install-step-5" class="docs-sublink">5. Setup Systemd Service</a></li>
-                    <li><a href="#install-step-6" class="docs-sublink">6. Open Port</a></li>
+                    <li><a href="#install" class="docs-link">Installation Guide</a></li>
+                    <li><a href="#install-step-1" class="docs-sublink">4.1 Flash Raspberry Pi OS</a></li>
+                    <li><a href="#install-step-2" class="docs-sublink">4.2 First Boot Configuration</a></li>
+                    <li><a href="#install-step-3" class="docs-sublink">4.3 System Preparation</a></li>
+                    <li><a href="#install-step-4" class="docs-sublink">4.4 Install Pinecraft</a></li>
+                    <li><a href="#install-step-5" class="docs-sublink">4.5 Verify Server Status</a></li>
+                    <li><a href="#testing" class="docs-link">Testing & Connection</a></li>
                     <li><a href="#maintenance" class="docs-link">Maintenance</a></li>
                     <li><a href="#troubleshooting" class="docs-link">Troubleshooting</a></li>
                 </ul>
@@ -144,13 +145,17 @@
                 <section id="overview" class="docs-section">
                     <h2 class="docs-heading">Overview</h2>
                     <p>
-                        Pinecraft is a Raspberry Pi-hosted Minecraft server setup guide. This documentation provides a simple,
-                        reliable installation process suitable for Raspberry Pi 4 (4GB+ recommended) running Raspberry Pi OS 64-bit.
+                        Pinecraft is a Raspberry Pi–hosted Minecraft server setup guide. This documentation provides a simple, reliable, and technically accurate installation process for setting up a Java Edition Minecraft server on Raspberry Pi 4 hardware, running Raspberry Pi OS Lite (64-bit). This guide is beginner-friendly while maintaining precision for those with technical experience.
                     </p>
+                </section>
+
+                <!-- Estimated Time -->
+                <section id="estimated-time" class="docs-section">
+                    <h2 class="docs-heading">Estimated Time</h2>
                     <div class="docs-callout docs-callout-info">
-                        <i class="fas fa-info-circle"></i>
+                        <i class="fas fa-clock"></i>
                         <div>
-                            <strong>Estimated Time:</strong> 30-45 minutes including downloads
+                            <strong>30–45 minutes</strong> (including downloads, OS flashing, and initial configuration)
                         </div>
                     </div>
                 </section>
@@ -158,27 +163,52 @@
                 <!-- Prerequisites -->
                 <section id="prerequisites" class="docs-section">
                     <h2 class="docs-heading">Prerequisites</h2>
-                    <p>Before you begin, ensure you have the following:</p>
+                    <p>Before you begin, ensure you have all the following requirements. This guide is designed specifically for Raspberry Pi 4 and does NOT support other models.</p>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Hardware Requirements</h3>
                     <div class="docs-checklist">
                         <div class="checklist-item">
                             <input type="checkbox" disabled>
-                            <span>Raspberry Pi 4 (4GB or 8GB RAM recommended)</span>
+                            <span><strong>Raspberry Pi 4 ONLY</strong> (Minimum 4GB RAM; 8GB recommended for optimal performance)</span>
                         </div>
                         <div class="checklist-item">
                             <input type="checkbox" disabled>
-                            <span>Raspberry Pi OS (64-bit), updated to latest version</span>
+                            <span><strong>Does NOT work on:</strong> Raspberry Pi Zero W or Raspberry Pi Zero 2 W</span>
                         </div>
                         <div class="checklist-item">
                             <input type="checkbox" disabled>
-                            <span>Stable power supply and cooling (heatsink recommended)</span>
+                            <span>Stable 5V 3A power supply (official Raspberry Pi adapter recommended)</span>
                         </div>
                         <div class="checklist-item">
                             <input type="checkbox" disabled>
-                            <span>Ethernet connection (preferred over WiFi)</span>
+                            <span>Active cooling: heatsink or fan (thermal throttling will impact server performance)</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Network & Storage</h3>
+                    <div class="docs-checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Ethernet connection strongly preferred over WiFi (more stable, lower latency)</span>
                         </div>
                         <div class="checklist-item">
                             <input type="checkbox" disabled>
-                            <span>Router access for port forwarding (if hosting publicly)</span>
+                            <span>MicroSD card (32GB or larger) flashed with Raspberry Pi OS Lite (64-bit)</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>External storage (optional, but recommended for large worlds)</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Router access for port forwarding (25565 TCP; required for remote access)</span>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Hardware Compatibility:</strong> This guide uses the official <a href="https://github.com/cat5TV/pinecraft" target="_blank">cat5TV/pinecraft</a> GitHub repository as the source of truth. Unsupported hardware (Pi Zero, Pi 3, or older models) will NOT work reliably.
                         </div>
                     </div>
                 </section>
@@ -186,203 +216,366 @@
                 <!-- Installation Guide -->
                 <section id="install" class="docs-section">
                     <h2 class="docs-heading">Installation Guide</h2>
-                    <p>Follow these steps in order to set up your Pinecraft server.</p>
+                    <p>Follow these steps in order. Complete each section before proceeding to the next.</p>
 
-                    <!-- Step 1 -->
+                    <!-- Step 1: Flash OS -->
                     <div id="install-step-1" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">1</span> Update System Packages</h3>
-                        <p>First, update all system packages to their latest versions:</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                            </div>
-                            <pre><code class="language-bash">sudo apt update
-sudo apt full-upgrade -y
-sudo reboot</code></pre>
-                        </div>
-                        <div class="docs-note">
-                            <strong>Note:</strong> The system will reboot after the upgrade. This is normal and expected.
-                        </div>
-                    </div>
+                        <h3 class="docs-step-title"><span class="step-number">4.1</span> Flash Raspberry Pi OS</h3>
+                        <p>Start by downloading and using the official Raspberry Pi Imager to write the OS to your MicroSD card.</p>
+                        
+                        <p><strong>1. Download Raspberry Pi Imager</strong></p>
+                        <p>Visit <a href="https://www.raspberrypi.com/software/" target="_blank">https://www.raspberrypi.com/software/</a> and download the Imager for your computer (Windows, macOS, or Linux).</p>
 
-                    <!-- Step 2 -->
-                    <div id="install-step-2" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">2</span> Install Java Runtime</h3>
-                        <p>Minecraft servers require Java. Install OpenJDK 17 (recommended for modern servers):</p>
+                        <p><strong>2. Run the Imager and select your device</strong></p>
                         <div class="docs-code-block">
                             <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                                <span>Steps</span>
                             </div>
-                            <pre><code class="language-bash">sudo apt install -y openjdk-17-jre-headless</code></pre>
+                            <pre><code class="language-text">1. Click "Choose Device"
+2. Select "Raspberry Pi 4"</code></pre>
                         </div>
-                        <p>Verify installation:</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                            </div>
-                            <pre><code class="language-bash">java -version</code></pre>
-                        </div>
-                    </div>
 
-                    <!-- Step 3 -->
-                    <div id="install-step-3" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">3</span> Create Dedicated User & Folders</h3>
-                        <p>Create a dedicated system user and directories for the server:</p>
+                        <p><strong>3. Choose the operating system</strong></p>
                         <div class="docs-code-block">
                             <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                                <span>Steps</span>
                             </div>
-                            <pre><code class="language-bash">sudo adduser --system --home /opt/pinecraft --group minecraft
-sudo mkdir -p /opt/pinecraft
-sudo chown -R minecraft:minecraft /opt/pinecraft</code></pre>
+                            <pre><code class="language-text">1. Click "Choose OS"
+2. Navigate to "Raspberry Pi OS (Other)"
+3. Select "Raspberry Pi OS Lite (64-bit)"</code></pre>
                         </div>
-                        <div class="docs-callout docs-callout-success">
-                            <i class="fas fa-check-circle"></i>
+
+                        <p><strong>4. Select your storage device</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>Steps</span>
+                            </div>
+                            <pre><code class="language-text">1. Click "Choose Storage"
+2. Select your MicroSD card (check capacity to confirm)</code></pre>
+                        </div>
+
+                        <p><strong>5. Configure advanced settings (IMPORTANT)</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>Steps</span>
+                            </div>
+                            <pre><code class="language-text">1. Click the gear icon (Advanced Options)
+2. Configure the following:
+   - Hostname: (name your Pi, e.g., "pinecraft")
+   - Time zone: (your location)
+   - Username: pi
+   - Password: (create a secure password)
+   - Configure WiFi: (optional; recommended to use Ethernet)
+   - Enable SSH: YES (required for remote access)
+   - Raspberry Pi Connect: Enable (optional)</code></pre>
+                        </div>
+
+                        <div class="docs-callout docs-callout-info">
+                            <i class="fas fa-info-circle"></i>
                             <div>
-                                Running the server as a dedicated user improves security and isolation.
+                                <strong>About Raspberry Pi Connect:</strong> This service allows remote access to your Pi via the official app. It is optional but convenient for monitoring and managing your server remotely.
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Step 4 -->
-                    <div id="install-step-4" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">4</span> Download & Configure Server</h3>
-                        <p>Download a server jar (this example uses PaperMC, a high-performance Minecraft server):</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                            </div>
-                            <pre><code class="language-bash">sudo -u minecraft bash -c '
-cd /opt/pinecraft
-# Visit https://papermc.io/downloads to get the latest build
-# Replace <PAPER_JAR_URL> with the actual download URL
-wget -O server.jar <PAPER_JAR_URL>
-java -Xms1G -Xmx2G -jar server.jar nogui
-'</code></pre>
-                        </div>
-                        <p>Accept the EULA:</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                            </div>
-                            <pre><code class="language-bash">sudo sed -i "s/eula=false/eula=true/" /opt/pinecraft/eula.txt</code></pre>
-                        </div>
+                        <p><strong>6. Write the OS to the card (WARNING: DATA LOSS)</strong></p>
                         <div class="docs-callout docs-callout-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Memory Configuration:</strong> Adjust <code>-Xms</code> and <code>-Xmx</code> based on your Pi's RAM:
-                                <ul>
-                                    <li>4GB Pi: <code>-Xms512M -Xmx1536M</code></li>
-                                    <li>8GB Pi: <code>-Xms1G -Xmx3G</code></li>
-                                </ul>
+                                <strong>⚠️ All data on the selected drive will be erased.</strong> The Imager will display a confirmation dialog stating: "All existing data on [device name] will be erased. Are you sure you want to continue?" Double-check that you have selected the correct MicroSD card.
+                            </div>
+                        </div>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>Steps</span>
+                            </div>
+                            <pre><code class="language-text">1. Click "Next"
+2. Review the configuration
+3. Click "I understand" (acknowledging data will be erased)
+4. Click "Erase and Write"
+5. Wait for completion (this may take 5-10 minutes)</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: First Boot -->
+                    <div id="install-step-2" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">4.2</span> First Boot Configuration</h3>
+                        <p>Once the OS is written, insert the MicroSD card into your Raspberry Pi and power it on.</p>
+
+                        <p><strong>1. Boot the Pi and log in</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash"># Log in with the username and password you created in the Imager</code></pre>
+                        </div>
+
+                        <p><strong>2. Run the configuration tool</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo raspi-config</code></pre>
+                        </div>
+
+                        <p><strong>3. Expand the filesystem</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>Steps</span>
+                            </div>
+                            <pre><code class="language-text">1. Navigate to "Advanced Options"
+2. Select "Expand Filesystem"
+3. Click "OK"
+4. Select "Finish"
+5. DO NOT reboot yet</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: System Preparation -->
+                    <div id="install-step-3" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">4.3</span> System Preparation</h3>
+                        <p>Update and prepare the system with required packages.</p>
+
+                        <p><strong>1. Update the package manager</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo apt update</code></pre>
+                        </div>
+
+                        <p><strong>2. Upgrade all packages</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo apt upgrade</code></pre>
+                        </div>
+
+                        <p><strong>3. Install Git</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo apt install git</code></pre>
+                        </div>
+
+                        <p><strong>4. Reboot the system</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo reboot</code></pre>
+                        </div>
+
+                        <div class="docs-callout docs-callout-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                The Pi will restart. Wait approximately 1–2 minutes for it to come back online before proceeding.
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 5 -->
+                    <!-- Step 4: Install Pinecraft -->
+                    <div id="install-step-4" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">4.4</span> Install Pinecraft</h3>
+                        <p>After the reboot, clone the official Pinecraft repository and run the installer.</p>
+
+                        <p><strong>1. Clone the Pinecraft repository</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">git clone https://github.com/cat5TV/pinecraft.git
+cd pinecraft</code></pre>
+                        </div>
+
+                        <p><strong>2. Run the Pinecraft installer</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo ./install</code></pre>
+                        </div>
+
+                        <p><strong>3. Walk through the installer dialogs</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>Steps</span>
+                            </div>
+                            <pre><code class="language-text">1. Click "OK" through initial dialogs
+2. Confirm default install path (/opt/pinecraft)
+3. Select server type (e.g., Paper, Spigot, or Vanilla)
+4. Choose game mode: Survival, Creative, or Hardcore
+5. Enter world seed (optional; leave blank for random)
+6. Accept RAM overclock warning if prompted
+7. Wait for installation to complete</code></pre>
+                        </div>
+
+                        <div class="docs-callout docs-callout-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                The installer will automatically set up the systemd service and configure the server. Installation typically takes 3–5 minutes.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Verify Status -->
                     <div id="install-step-5" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">5</span> Create Systemd Service</h3>
-                        <p>Create a systemd service to run the server on boot:</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                            </div>
-                            <pre><code class="language-bash">sudo tee /etc/systemd/system/pinecraft.service > /dev/null <<'SERVICE'
-[Unit]
-Description=Pinecraft Minecraft Server
-After=network.target
+                        <h3 class="docs-step-title"><span class="step-number">4.5</span> Verify Server Status</h3>
+                        <p>After installation completes, verify that the server is running correctly.</p>
 
-[Service]
-Type=simple
-User=minecraft
-Group=minecraft
-WorkingDirectory=/opt/pinecraft
-ExecStart=/usr/bin/java -Xms1G -Xmx2G -jar /opt/pinecraft/server.jar nogui
-Restart=on-failure
-RestartSec=10
+                        <p><strong>1. Check the service status</strong></p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">/etc/init.d/pinecraft status</code></pre>
+                        </div>
 
-[Install]
-WantedBy=multi-user.target
-SERVICE</code></pre>
-                        </div>
-                        <p>Enable and start the service:</p>
+                        <p><strong>2. Interpret the results</strong></p>
+                        <ul>
+                            <li><strong>Running:</strong> The server is active and ready for connections. Proceed to Testing & Connection below.</li>
+                            <li><strong>Not running:</strong> Reboot the Pi and check the status again.</li>
+                        </ul>
+
+                        <p><strong>3. Check logs if needed</strong></p>
                         <div class="docs-code-block">
                             <div class="code-header">
                                 <span>bash</span>
                                 <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
                             </div>
-                            <pre><code class="language-bash">sudo systemctl daemon-reload
-sudo systemctl enable pinecraft
-sudo systemctl start pinecraft</code></pre>
+                            <pre><code class="language-bash">tail -f /var/log/pinecraft.log</code></pre>
                         </div>
-                        <p>Check server status:</p>
-                        <div class="docs-code-block">
-                            <div class="code-header">
-                                <span>bash</span>
-                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+
+                        <div class="docs-callout docs-callout-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                Press <code>Ctrl+C</code> to exit the log view. The initial server startup may take 1–2 minutes as it generates the world.
                             </div>
-                            <pre><code class="language-bash">sudo systemctl status pinecraft</code></pre>
                         </div>
                     </div>
+                </section>
 
-                    <!-- Step 6 -->
-                    <div id="install-step-6" class="docs-step">
-                        <h3 class="docs-step-title"><span class="step-number">6</span> Open Port & Test Connection</h3>
-                        <p>To access your server remotely, configure port forwarding on your router:</p>
-                        <ol>
-                            <li>Log into your router's admin panel</li>
-                            <li>Find Port Forwarding settings</li>
-                            <li>Forward <strong>TCP port 25565</strong> to your Pi's local IP address</li>
-                            <li>Note your external IP (use <code>curl ifconfig.me</code> on the Pi)</li>
-                        </ol>
-                        <p>Connect from Minecraft Java Edition:</p>
-                        <ol>
-                            <li>Launch Minecraft</li>
-                            <li>Go to <strong>Multiplayer → Direct Connect</strong></li>
-                            <li>Enter your Pi's IP (local: <code>192.168.x.x</code> or external IP)</li>
-                            <li>Click <strong>Join Server</strong></li>
-                        </ol>
+                <!-- Testing & Connection -->
+                <section id="testing" class="docs-section">
+                    <h2 class="docs-heading">Testing & Connection</h2>
+                    <p>Once the server is running, you can connect from Minecraft Java Edition.</p>
+
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Local Connection (Same Network)</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span>Steps</span>
+                        </div>
+                        <pre><code class="language-text">1. Get your Pi's local IP:
+   hostname -I
+
+2. In Minecraft Java Edition:
+   Multiplayer → Direct Connect
+   
+3. Enter the IP address shown above (e.g., 192.168.1.100)
+
+4. Click "Join Server"</code></pre>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Remote Connection (External Network)</h3>
+                    <p>To allow players outside your network to join, configure port forwarding on your router:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span>Steps</span>
+                        </div>
+                        <pre><code class="language-text">1. Log into your router's admin panel
+
+2. Find "Port Forwarding" settings
+
+3. Create a new rule:
+   - Protocol: TCP
+   - External Port: 25565
+   - Internal IP: [Your Pi's local IP]
+   - Internal Port: 25565
+
+4. Get your external IP:
+   curl ifconfig.me
+
+5. Share this IP with players (e.g., 203.0.113.45)
+
+6. Players connect via Direct Connect using your external IP</code></pre>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Port Forwarding Security:</strong> Exposing your Pi to the internet carries security risks. Use firewalls, keep software updated, and consider using Minecraft authentication.
+                        </div>
                     </div>
                 </section>
 
                 <!-- Maintenance -->
                 <section id="maintenance" class="docs-section">
-                    <h2 class="docs-heading">Maintenance & Management</h2>
+                    <h2 class="docs-heading">Maintenance</h2>
+                    <p>Manage your Pinecraft server using the following commands.</p>
+
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Server Control</h3>
                     <div class="docs-grid-2">
                         <div class="docs-card">
-                            <h3><i class="fas fa-pause"></i> Stop Server</h3>
-                            <p>Safely stop the server:</p>
+                            <h3><i class="fas fa-play"></i> Start Server</h3>
+                            <p>Start the Pinecraft service:</p>
                             <div class="docs-code-inline">
-                                <code>sudo systemctl stop pinecraft</code>
+                                <code>/etc/init.d/pinecraft start</code>
                             </div>
                         </div>
                         <div class="docs-card">
-                            <h3><i class="fas fa-play"></i> Start Server</h3>
-                            <p>Start the server:</p>
+                            <h3><i class="fas fa-pause"></i> Stop Server</h3>
+                            <p>Safely stop the service:</p>
                             <div class="docs-code-inline">
-                                <code>sudo systemctl start pinecraft</code>
+                                <code>/etc/init.d/pinecraft stop</code>
                             </div>
                         </div>
                         <div class="docs-card">
                             <h3><i class="fas fa-sync"></i> Restart Server</h3>
                             <p>Restart the service:</p>
                             <div class="docs-code-inline">
-                                <code>sudo systemctl restart pinecraft</code>
+                                <code>/etc/init.d/pinecraft restart</code>
                             </div>
                         </div>
                         <div class="docs-card">
-                            <h3><i class="fas fa-archive"></i> Backup Server</h3>
-                            <p>Backup your world and configs:</p>
+                            <h3><i class="fas fa-info-circle"></i> Check Status</h3>
+                            <p>View current status:</p>
                             <div class="docs-code-inline">
-                                <code>sudo tar -czf backup.tar.gz /opt/pinecraft/</code>
+                                <code>/etc/init.d/pinecraft status</code>
                             </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.1rem;">Backup & Recovery</h3>
+                    <p><strong>Create a backup of your world and server configuration:</strong></p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                        <pre><code class="language-bash"># Stop the server first
+/etc/init.d/pinecraft stop
+
+# Create a timestamped backup
+sudo tar -czf pinecraft-backup-$(date +%Y%m%d-%H%M%S).tar.gz /opt/pinecraft/
+
+# Restart the server
+/etc/init.d/pinecraft start</code></pre>
+                    </div>
+
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            Always stop the server before backing up to avoid data corruption. Backups are stored in your current directory by default.
                         </div>
                     </div>
                 </section>
@@ -390,29 +583,116 @@ sudo systemctl start pinecraft</code></pre>
                 <!-- Troubleshooting -->
                 <section id="troubleshooting" class="docs-section">
                     <h2 class="docs-heading">Troubleshooting</h2>
+                    <p>Refer to this section if you encounter issues running your Pinecraft server.</p>
+
                     <div class="docs-faq">
                         <div class="faq-item">
-                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Server won't start</h3>
-                            <p>Check the logs:</p>
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Service is not running</h3>
+                            <p><strong>Check the service status:</strong></p>
                             <div class="docs-code-inline">
-                                <code>sudo journalctl -u pinecraft -n 50</code>
+                                <code>/etc/init.d/pinecraft status</code>
                             </div>
-                            <p>Common issues: insufficient memory, Java not installed, or EULA not accepted.</p>
+                            <p><strong>Review logs for errors:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>tail -50 /var/log/pinecraft.log</code>
+                            </div>
+                            <p><strong>Common causes:</strong></p>
+                            <ul>
+                                <li>Insufficient RAM (4GB minimum, 8GB recommended)</li>
+                                <li>Java not installed or incorrect version</li>
+                                <li>EULA not accepted</li>
+                                <li>File permissions issue on /opt/pinecraft</li>
+                            </ul>
+                            <p><strong>Solution:</strong> Reboot the Pi and verify all prerequisites are met. If errors persist, check logs and address the specific error message.</p>
                         </div>
+
                         <div class="faq-item">
-                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Can't connect from outside network</h3>
-                            <p>Verify port forwarding is configured correctly. Test with:</p>
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Cannot connect locally (same network)</h3>
+                            <p><strong>Verify the server is running:</strong></p>
                             <div class="docs-code-inline">
-                                <code>curl ifconfig.me:25565 -v</code>
+                                <code>/etc/init.d/pinecraft status</code>
                             </div>
+                            <p><strong>Get your Pi's local IP:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>hostname -I</code>
+                            </div>
+                            <p><strong>Test connectivity from another device:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>ping [Pi-IP-Address]</code>
+                            </div>
+                            <p><strong>Verify port 25565 is listening:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>sudo netstat -tlnp | grep 25565</code>
+                            </div>
+                            <p><strong>Common causes:</strong></p>
+                            <ul>
+                                <li>Server process crashed or never started</li>
+                                <li>Firewall blocking port 25565</li>
+                                <li>Incorrect IP address entered in Minecraft client</li>
+                            </ul>
                         </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Cannot connect remotely (external network)</h3>
+                            <p><strong>Verify port forwarding is configured:</strong></p>
+                            <ul>
+                                <li>Log into your router</li>
+                                <li>Confirm port 25565 TCP is forwarded to your Pi's local IP</li>
+                                <li>Check that your external IP is correct</li>
+                            </ul>
+                            <p><strong>Test port accessibility:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>curl ifconfig.me:25565 -v 2>&1 | head -20</code>
+                            </div>
+                            <p><strong>Common causes:</strong></p>
+                            <ul>
+                                <li>Port forwarding misconfigured in router settings</li>
+                                <li>ISP blocking port 25565 (contact ISP for clarification)</li>
+                                <li>Firewall on Pi or router blocking connections</li>
+                                <li>External IP changed (ISPs often rotate IPs; use dynamic DNS if needed)</li>
+                            </ul>
+                        </div>
+
                         <div class="faq-item">
                             <h3 class="faq-question"><i class="fas fa-question-circle"></i> Server is slow or lagging</h3>
-                            <p>Check system resources:</p>
+                            <p><strong>Check system resource usage:</strong></p>
                             <div class="docs-code-inline">
                                 <code>top</code>
                             </div>
-                            <p>Reduce player count or lower world render distance in server.properties.</p>
+                            <p>(Press <code>q</code> to exit.)</p>
+                            <p><strong>Common causes and solutions:</strong></p>
+                            <ul>
+                                <li><strong>High CPU/memory usage:</strong> Reduce player count or world size</li>
+                                <li><strong>Thermal throttling:</strong> Ensure adequate cooling (heatsink + fan)</li>
+                                <li><strong>Network saturation:</strong> Use Ethernet instead of WiFi</li>
+                                <li><strong>Disk I/O bottleneck:</strong> Consider external SSD for world storage</li>
+                            </ul>
+                            <p><strong>Performance tuning:</strong></p>
+                            <ul>
+                                <li>Lower server.properties settings: view-distance, simulation-distance</li>
+                                <li>Disable unnecessary plugins or mods</li>
+                                <li>Monitor RAM allocation in /etc/init.d/pinecraft</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Server crashes unexpectedly</h3>
+                            <p><strong>Check for out-of-memory errors:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>dmesg | tail -20</code>
+                            </div>
+                            <p><strong>Review server logs:</strong></p>
+                            <div class="docs-code-inline">
+                                <code>tail -100 /var/log/pinecraft.log</code>
+                            </div>
+                            <p><strong>Common causes:</strong></p>
+                            <ul>
+                                <li>Insufficient RAM allocated (increase -Xmx value)</li>
+                                <li>Java heap space exceeded</li>
+                                <li>Plugin or mod incompatibility</li>
+                                <li>Corrupted world data</li>
+                            </ul>
+                            <p><strong>Solution:</strong> Review the specific error in logs. If memory-related, restart with higher -Xmx allocation. If world corruption, restore from backup.</p>
                         </div>
                     </div>
                 </section>
