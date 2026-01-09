@@ -296,18 +296,27 @@ button {
 }
 
 .youtube-link-header {
-    font-size: clamp(1.25rem, 3.5vw, 1.5rem);
-    width: auto;
-    height: auto;
-    padding: 0.5rem 1rem;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    height: auto;
+    min-height: 2.375rem;
+    white-space: nowrap;
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
 
     span {
         font-size: 0.95rem;
         font-weight: 600;
         white-space: nowrap;
+        display: inline;
     }
 
     @media (max-width: 768px) {
@@ -803,10 +812,15 @@ button {
     flex-grow: 1;
 }
 
+.project-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .project-card .cta-button {
-    display: block;
-    width: fit-content;
-    margin: 0 auto 1rem auto;
+    display: inline-flex;
+    margin-bottom: 1rem;
 }
 
 // ============================================
