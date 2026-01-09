@@ -272,6 +272,40 @@ button {
 }
 
 // ============================================
+// Header Navigation Styles
+// ============================================
+.header-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.header-nav-link {
+    color: $text-light;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+        color: $primary-color;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+        color: $primary-color;
+        border-bottom: 2px solid $primary-color;
+        padding-bottom: calc(0.5rem - 2px);
+    }
+
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+// ============================================
 // YouTube Link Styles
 // ============================================
 .youtube-link {
@@ -883,11 +917,14 @@ button {
 }
 
 .project-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: $primary-color;
     text-decoration: none;
     font-weight: 600;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     padding: 0.5rem 1rem;
     border: 2px solid $primary-color;
     border-radius: 0.5rem;

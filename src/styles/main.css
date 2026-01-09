@@ -233,6 +233,37 @@ button {
   transform: scale(1.1);
 }
 
+.header-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header-nav-link {
+  color: #f1f5f9;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+.header-nav-link:hover {
+  color: #0ea5e9;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.header-nav-link.active {
+  color: #0ea5e9;
+  border-bottom: 2px solid #0ea5e9;
+  padding-bottom: calc(0.5rem - 2px);
+}
+
+@media (max-width: 768px) {
+  .header-nav {
+    display: none;
+  }
+}
+
 .youtube-link {
   display: flex;
   align-items: center;
@@ -799,11 +830,14 @@ button {
 }
 
 .project-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #0ea5e9;
   text-decoration: none;
   font-weight: 600;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   border: 2px solid #0ea5e9;
   border-radius: 0.5rem;
