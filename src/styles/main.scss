@@ -859,7 +859,11 @@ button {
     h2 {
         font-size: 1.75rem;
         margin-bottom: 2rem;
-        color: $secondary-color;
+        color: $text-light;
+        background: rgba(15, 39, 68, 0.5);
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        border-left: 4px solid $primary-color;
     }
 }
 
