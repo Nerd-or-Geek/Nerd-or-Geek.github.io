@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinecraft | Nerd or Geek?</title>
+    <title>Pinecraft Documentation | Nerd or Geek?</title>
     <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico">
     <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/docs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
     <header class="header">
@@ -27,63 +30,213 @@
         </div>
     </header>
 
-    <main class="main-content">
-        <section class="content-section">
-            <h1>Pinecraft</h1>
-            <p class="section-description">Install and run a Minecraft server on Raspberry Pi.</p>
-
-            <div class="project-detail">
-                <div class="project-image-container">
-                    <img src="../assets/img/projects/pinecraft.png" alt="Pinecraft logo" class="project-image">
+    <div class="docs-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar">
+            <nav class="docs-nav">
+                <div class="docs-nav-header">
+                    <h3>Pinecraft Docs</h3>
                 </div>
+                <ul class="docs-toc">
+                    <li><a href="#overview" class="docs-link">Overview</a></li>
+                    <li><a href="#prerequisites" class="docs-link">Prerequisites</a></li>
+                    <li><a href="#install" class="docs-link">Installation</a></li>
+                    <li><a href="#install-step-1" class="docs-sublink">1. Update Packages</a></li>
+                    <li><a href="#install-step-2" class="docs-sublink">2. Install Java</a></li>
+                    <li><a href="#install-step-3" class="docs-sublink">3. Create User & Folders</a></li>
+                    <li><a href="#install-step-4" class="docs-sublink">4. Download Server</a></li>
+                    <li><a href="#install-step-5" class="docs-sublink">5. Setup Systemd Service</a></li>
+                    <li><a href="#install-step-6" class="docs-sublink">6. Open Port</a></li>
+                    <li><a href="#maintenance" class="docs-link">Maintenance</a></li>
+                    <li><a href="#troubleshooting" class="docs-link">Troubleshooting</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-                <div class="project-info">
-                    <h2>Overview</h2>
+        <!-- Main Documentation Content -->
+        <main class="docs-main">
+            <!-- Breadcrumb -->
+            <div class="docs-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../projects.html">Projects</a>
+                <span class="separator">/</span>
+                <span class="current">Pinecraft Docs</span>
+            </div>
+
+            <!-- Hero Section -->
+            <section class="docs-hero">
+                <div class="docs-hero-content">
+                    <h1 class="docs-title">Pinecraft</h1>
+                    <p class="docs-subtitle">A comprehensive guide to installing and running a Minecraft server on Raspberry Pi</p>
+                    <div class="docs-meta">
+                        <span class="docs-badge">Tutorial</span>
+                        <span class="docs-badge">Raspberry Pi</span>
+                        <span class="docs-badge">Minecraft</span>
+                    </div>
+                </div>
+                <div class="docs-hero-image">
+                    <img src="../assets/img/projects/pinecraft.png" alt="Pinecraft logo">
+                </div>
+            </section>
+
+            <!-- Content Sections -->
+            <article class="docs-content">
+                <!-- Overview -->
+                <section id="overview" class="docs-section">
+                    <h2 class="docs-heading">Overview</h2>
                     <p>
-                        Pinecraft is a Raspberry Pi-hosted Minecraft server setup. Below is a simple,
-                        reliable installation guide suitable for Raspberry Pi 4 (4GB+ recommended) running Raspberry Pi OS 64-bit.
+                        Pinecraft is a Raspberry Pi-hosted Minecraft server setup guide. This documentation provides a simple,
+                        reliable installation process suitable for Raspberry Pi 4 (4GB+ recommended) running Raspberry Pi OS 64-bit.
                     </p>
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Estimated Time:</strong> 30-45 minutes including downloads
+                        </div>
+                    </div>
+                </section>
 
-                    <h3>Prerequisites</h3>
-                    <ul>
-                        <li>Raspberry Pi 4 (4GB or 8GB RAM recommended)</li>
-                        <li>Raspberry Pi OS (64-bit), updated</li>
-                        <li>Stable power and Ethernet (preferred)</li>
-                        <li>Port forwarding set up on your router for TCP 25565 if hosting publicly</li>
-                    </ul>
+                <!-- Prerequisites -->
+                <section id="prerequisites" class="docs-section">
+                    <h2 class="docs-heading">Prerequisites</h2>
+                    <p>Before you begin, ensure you have the following:</p>
+                    <div class="docs-checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Raspberry Pi 4 (4GB or 8GB RAM recommended)</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Raspberry Pi OS (64-bit), updated to latest version</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Stable power supply and cooling (heatsink recommended)</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Ethernet connection (preferred over WiFi)</span>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" disabled>
+                            <span>Router access for port forwarding (if hosting publicly)</span>
+                        </div>
+                    </div>
+                </section>
 
-                    <h3>Install Steps</h3>
-                    <ol>
-                        <li>
-                            Update system packages:
-                            <pre><code>sudo apt update
+                <!-- Installation Guide -->
+                <section id="install" class="docs-section">
+                    <h2 class="docs-heading">Installation Guide</h2>
+                    <p>Follow these steps in order to set up your Pinecraft server.</p>
+
+                    <!-- Step 1 -->
+                    <div id="install-step-1" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">1</span> Update System Packages</h3>
+                        <p>First, update all system packages to their latest versions:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo apt update
 sudo apt full-upgrade -y
 sudo reboot</code></pre>
-                        </li>
-                        <li>
-                            Install Java (OpenJDK 17 recommended for modern Minecraft servers):
-                            <pre><code>sudo apt install -y openjdk-17-jre-headless</code></pre>
-                        </li>
-                        <li>
-                            Create a dedicated user and folders:
-                            <pre><code>sudo adduser --system --home /opt/pinecraft --group minecraft
+                        </div>
+                        <div class="docs-note">
+                            <strong>Note:</strong> The system will reboot after the upgrade. This is normal and expected.
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div id="install-step-2" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">2</span> Install Java Runtime</h3>
+                        <p>Minecraft servers require Java. Install OpenJDK 17 (recommended for modern servers):</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo apt install -y openjdk-17-jre-headless</code></pre>
+                        </div>
+                        <p>Verify installation:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">java -version</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div id="install-step-3" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">3</span> Create Dedicated User & Folders</h3>
+                        <p>Create a dedicated system user and directories for the server:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo adduser --system --home /opt/pinecraft --group minecraft
 sudo mkdir -p /opt/pinecraft
 sudo chown -R minecraft:minecraft /opt/pinecraft</code></pre>
-                        </li>
-                        <li>
-                            Download a server jar (e.g., PaperMC) to /opt/pinecraft and accept the EULA:
-                            <pre><code>sudo -u minecraft bash -c '
+                        </div>
+                        <div class="docs-callout docs-callout-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                Running the server as a dedicated user improves security and isolation.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div id="install-step-4" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">4</span> Download & Configure Server</h3>
+                        <p>Download a server jar (this example uses PaperMC, a high-performance Minecraft server):</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo -u minecraft bash -c '
 cd /opt/pinecraft
-# Replace <PAPER_JAR_URL> with the specific download URL for PaperMC
+# Visit https://papermc.io/downloads to get the latest build
+# Replace <PAPER_JAR_URL> with the actual download URL
 wget -O server.jar <PAPER_JAR_URL>
-java -Xms1G -Xmx2G -jar server.jar --nogui || true
-sed -i "s/eula=false/eula=true/" eula.txt
-' </code></pre>
-                            Tip: Choose memory values (-Xms/-Xmx) appropriate for your Pi's RAM.
-                        </li>
-                        <li>
-                            Create a systemd service so the server runs on boot:
-                            <pre><code>sudo tee /etc/systemd/system/pinecraft.service > /dev/null <<'SERVICE'
+java -Xms1G -Xmx2G -jar server.jar nogui
+'</code></pre>
+                        </div>
+                        <p>Accept the EULA:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo sed -i "s/eula=false/eula=true/" /opt/pinecraft/eula.txt</code></pre>
+                        </div>
+                        <div class="docs-callout docs-callout-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Memory Configuration:</strong> Adjust <code>-Xms</code> and <code>-Xmx</code> based on your Pi's RAM:
+                                <ul>
+                                    <li>4GB Pi: <code>-Xms512M -Xmx1536M</code></li>
+                                    <li>8GB Pi: <code>-Xms1G -Xmx3G</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div id="install-step-5" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">5</span> Create Systemd Service</h3>
+                        <p>Create a systemd service to run the server on boot:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo tee /etc/systemd/system/pinecraft.service > /dev/null <<'SERVICE'
 [Unit]
 Description=Pinecraft Minecraft Server
 After=network.target
@@ -93,38 +246,175 @@ Type=simple
 User=minecraft
 Group=minecraft
 WorkingDirectory=/opt/pinecraft
-ExecStart=/usr/bin/java -Xms1G -Xmx2G -jar /opt/pinecraft/server.jar --nogui
+ExecStart=/usr/bin/java -Xms1G -Xmx2G -jar /opt/pinecraft/server.jar nogui
 Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
-SERVICE
-
-sudo systemctl daemon-reload
+SERVICE</code></pre>
+                        </div>
+                        <p>Enable and start the service:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo systemctl daemon-reload
 sudo systemctl enable pinecraft
-sudo systemctl start pinecraft
-sudo systemctl status pinecraft --no-pager</code></pre>
-                        </li>
-                        <li>
-                            Open port 25565 on your router if hosting publicly and test connecting from a PC (Direct Connect to the Pi's IP).
-                        </li>
-                    </ol>
-
-                    <h3>Maintenance</h3>
-                    <ul>
-                        <li>Stop server: <code>sudo systemctl stop pinecraft</code></li>
-                        <li>Update server jar: replace <code>server.jar</code>, then restart</li>
-                        <li>Backups: regularly archive <code>/opt/pinecraft</code></li>
-                    </ul>
-
-                    <div class="project-actions">
-                        <a href="../index.html#featured-projects" class="cta-button">Back to Featured Projects</a>
+sudo systemctl start pinecraft</code></pre>
+                        </div>
+                        <p>Check server status:</p>
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>bash</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">sudo systemctl status pinecraft</code></pre>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Step 6 -->
+                    <div id="install-step-6" class="docs-step">
+                        <h3 class="docs-step-title"><span class="step-number">6</span> Open Port & Test Connection</h3>
+                        <p>To access your server remotely, configure port forwarding on your router:</p>
+                        <ol>
+                            <li>Log into your router's admin panel</li>
+                            <li>Find Port Forwarding settings</li>
+                            <li>Forward <strong>TCP port 25565</strong> to your Pi's local IP address</li>
+                            <li>Note your external IP (use <code>curl ifconfig.me</code> on the Pi)</li>
+                        </ol>
+                        <p>Connect from Minecraft Java Edition:</p>
+                        <ol>
+                            <li>Launch Minecraft</li>
+                            <li>Go to <strong>Multiplayer → Direct Connect</strong></li>
+                            <li>Enter your Pi's IP (local: <code>192.168.x.x</code> or external IP)</li>
+                            <li>Click <strong>Join Server</strong></li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- Maintenance -->
+                <section id="maintenance" class="docs-section">
+                    <h2 class="docs-heading">Maintenance & Management</h2>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h3><i class="fas fa-pause"></i> Stop Server</h3>
+                            <p>Safely stop the server:</p>
+                            <div class="docs-code-inline">
+                                <code>sudo systemctl stop pinecraft</code>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-play"></i> Start Server</h3>
+                            <p>Start the server:</p>
+                            <div class="docs-code-inline">
+                                <code>sudo systemctl start pinecraft</code>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-sync"></i> Restart Server</h3>
+                            <p>Restart the service:</p>
+                            <div class="docs-code-inline">
+                                <code>sudo systemctl restart pinecraft</code>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-archive"></i> Backup Server</h3>
+                            <p>Backup your world and configs:</p>
+                            <div class="docs-code-inline">
+                                <code>sudo tar -czf backup.tar.gz /opt/pinecraft/</code>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting -->
+                <section id="troubleshooting" class="docs-section">
+                    <h2 class="docs-heading">Troubleshooting</h2>
+                    <div class="docs-faq">
+                        <div class="faq-item">
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Server won't start</h3>
+                            <p>Check the logs:</p>
+                            <div class="docs-code-inline">
+                                <code>sudo journalctl -u pinecraft -n 50</code>
+                            </div>
+                            <p>Common issues: insufficient memory, Java not installed, or EULA not accepted.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Can't connect from outside network</h3>
+                            <p>Verify port forwarding is configured correctly. Test with:</p>
+                            <div class="docs-code-inline">
+                                <code>curl ifconfig.me:25565 -v</code>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question"><i class="fas fa-question-circle"></i> Server is slow or lagging</h3>
+                            <p>Check system resources:</p>
+                            <div class="docs-code-inline">
+                                <code>top</code>
+                            </div>
+                            <p>Reduce player count or lower world render distance in server.properties.</p>
+                        </div>
+                    </div>
+                </section>
+            </article>
+
+            <!-- Footer Navigation -->
+            <div class="docs-footer">
+                <a href="../index.html#featured-projects" class="cta-button">
+                    <i class="fas fa-arrow-left"></i> Back to Projects
+                </a>
             </div>
-        </section>
-    </main>
+        </main>
+    </div>
 
     <script src="../dist/main.js"></script>
+    <script>
+        // Syntax highlighting
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+
+        // Copy to clipboard functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-header').nextElementSibling;
+            const code = codeBlock.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.docs-link, .docs-sublink').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    window.history.pushState(null, null, this.getAttribute('href'));
+                }
+            });
+        });
+
+        // Highlight active section in sidebar
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.docs-section');
+            const links = document.querySelectorAll('.docs-link, .docs-sublink');
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 200) {
+                    links.forEach(link => link.classList.remove('active'));
+                    const activeLink = document.querySelector(`a[href="#${section.id}"]`);
+                    if (activeLink) activeLink.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
