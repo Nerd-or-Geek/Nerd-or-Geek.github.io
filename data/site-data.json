@@ -219,6 +219,27 @@
         }
       ],
       "createdAt": 1768499201280
+    },
+    {
+      "id": "mkfsipvjspzga0ka8z",
+      "name": "lol",
+      "description": "test",
+      "badge": "Beginner",
+      "tags": [
+        "eeeee",
+        "eewfew"
+      ],
+      "icon": "fa-robot",
+      "sections": [],
+      "theme": {
+        "preset": "custom",
+        "primaryColor": "#c61fd8",
+        "accentColor": "#8035fb",
+        "textColor": "#f8fafc",
+        "cardBgColor": "#490653",
+        "heroBgColor": "#403a81"
+      },
+      "createdAt": 1768502152063
     }
   ],
   "software": [
@@ -254,5 +275,5 @@
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768501538391
+  "lastUpdated": 1768502161237
 }
