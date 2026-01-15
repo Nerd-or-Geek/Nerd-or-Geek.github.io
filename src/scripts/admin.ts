@@ -4,6 +4,112 @@
  */
 
 // ============================================
+// Security Configuration
+// ============================================
+// Hash of the admin password (SHA-256)
+// To generate a new hash: create a simple script that runs crypto.subtle.digest('SHA-256', new TextEncoder().encode('your-password'))
+// Or use an online SHA-256 generator. Current password hash is for demonstration.
+const ADMIN_PASSWORD_HASH = 'adf3862f5831cccd16da7b4b9a5ac73365270622e97e30782bf24db0161e7f68';
+const AUTH_KEY = 'nerdOrGeekAdminAuth';
+const AUTH_EXPIRY_HOURS = 24;
+
+// ============================================
+// Authentication Functions
+// ============================================
+async function hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function isAuthenticated(): boolean {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (!auth) return false;
+    
+    try {
+        const authData = JSON.parse(auth);
+        const now = Date.now();
+        // Check if auth is still valid (not expired)
+        if (authData.expiry && authData.expiry > now) {
+            return true;
+        }
+        // Expired - clear it
+        localStorage.removeItem(AUTH_KEY);
+        return false;
+    } catch {
+        return false;
+    }
+}
+
+function setAuthenticated(): void {
+    const expiry = Date.now() + (AUTH_EXPIRY_HOURS * 60 * 60 * 1000);
+    localStorage.setItem(AUTH_KEY, JSON.stringify({ authenticated: true, expiry }));
+}
+
+function logout(): void {
+    localStorage.removeItem(AUTH_KEY);
+    showLoginOverlay();
+}
+
+async function attemptLogin(password: string): Promise<boolean> {
+    const hash = await hashPassword(password);
+    if (hash === ADMIN_PASSWORD_HASH) {
+        setAuthenticated();
+        return true;
+    }
+    return false;
+}
+
+function showLoginOverlay(): void {
+    const overlay = document.getElementById('loginOverlay');
+    const adminMain = document.querySelector('.admin-main');
+    if (overlay) overlay.style.display = 'flex';
+    if (adminMain) (adminMain as HTMLElement).style.display = 'none';
+}
+
+function hideLoginOverlay(): void {
+    const overlay = document.getElementById('loginOverlay');
+    const adminMain = document.querySelector('.admin-main');
+    if (overlay) overlay.style.display = 'none';
+    if (adminMain) (adminMain as HTMLElement).style.display = 'block';
+}
+
+function setupLoginHandler(): void {
+    const loginForm = document.getElementById('adminLoginForm');
+    const passwordInput = document.getElementById('adminPassword') as HTMLInputElement;
+    const loginError = document.getElementById('loginError');
+    
+    if (loginForm && passwordInput) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = passwordInput.value;
+            
+            if (await attemptLogin(password)) {
+                hideLoginOverlay();
+                initializeAdminPortal(); // Initialize the admin portal after successful login
+                passwordInput.value = '';
+                if (loginError) loginError.style.display = 'none';
+            } else {
+                if (loginError) {
+                    loginError.textContent = 'Incorrect password. Please try again.';
+                    loginError.style.display = 'block';
+                }
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+    }
+    
+    // Logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
+}
+
+// ============================================
 // Types
 // ============================================
 interface Affiliate {
@@ -1048,6 +1154,34 @@ function escapeHtml(text: string): string {
 // Initialization
 // ============================================
 function init(): void {
+    // Setup login handler first
+    setupLoginHandler();
+    
+    // Check authentication
+    if (!isAuthenticated()) {
+        showLoginOverlay();
+        return;
+    }
+    
+    // User is authenticated - initialize admin portal
+    hideLoginOverlay();
+    initializeAdminPortal();
+}
+
+// Track initialization state to prevent duplicate event listeners
+let adminPortalInitialized = false;
+
+function initializeAdminPortal(): void {
+    // Prevent double initialization
+    if (adminPortalInitialized) {
+        // Just re-render data if already initialized
+        renderAffiliates();
+        renderProjects();
+        renderSoftware();
+        return;
+    }
+    adminPortalInitialized = true;
+    
     setupNavigation();
     setupModalCloseHandlers();
     setupIconSelectors();

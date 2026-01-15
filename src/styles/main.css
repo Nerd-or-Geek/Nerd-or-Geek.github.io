@@ -881,6 +881,7 @@ button {
 }
 
 .project-image-container {
+  position: relative;
   width: 100%;
   aspect-ratio: 16/9;
   height: auto;

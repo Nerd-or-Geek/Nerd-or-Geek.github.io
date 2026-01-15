@@ -1,3 +1,14 @@
+declare const ADMIN_PASSWORD_HASH = "adf3862f5831cccd16da7b4b9a5ac73365270622e97e30782bf24db0161e7f68";
+declare const AUTH_KEY = "nerdOrGeekAdminAuth";
+declare const AUTH_EXPIRY_HOURS = 24;
+declare function hashPassword(password: string): Promise<string>;
+declare function isAuthenticated(): boolean;
+declare function setAuthenticated(): void;
+declare function logout(): void;
+declare function attemptLogin(password: string): Promise<boolean>;
+declare function showLoginOverlay(): void;
+declare function hideLoginOverlay(): void;
+declare function setupLoginHandler(): void;
 interface Affiliate {
     id: string;
     name: string;
@@ -78,4 +89,6 @@ declare function importData(file: File): void;
 declare function clearAllData(): void;
 declare function escapeHtml(text: string): string;
 declare function init(): void;
+declare let adminPortalInitialized: boolean;
+declare function initializeAdminPortal(): void;
 //# sourceMappingURL=admin.d.ts.map

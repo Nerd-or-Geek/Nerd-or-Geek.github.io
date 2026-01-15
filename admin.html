@@ -55,6 +55,9 @@
                         <i class="fas fa-upload"></i> Import Data
                     </button>
                     <input type="file" id="importFile" accept=".json" style="display: none;">
+                    <button class="admin-logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </div>
             </aside>
 
@@ -368,6 +371,33 @@
                     <button type="submit" class="btn-primary">Save Section</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay" style="display: flex;">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-shield-halved"></i>
+                <h2>Admin Portal</h2>
+                <p>Enter your password to access the admin portal</p>
+            </div>
+            <form id="adminLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="adminPassword" required placeholder="Enter admin password" autocomplete="current-password">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+                <div class="login-error" id="loginError" style="display: none;"></div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="login-footer">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
         </div>
     </div>
 

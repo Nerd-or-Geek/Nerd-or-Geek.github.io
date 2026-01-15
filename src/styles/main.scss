@@ -989,6 +989,7 @@ button {
 }
 
 .project-image-container {
+    position: relative;  // Required for absolutely positioned badge
     width: 100%;
     aspect-ratio: 16/9;
     height: auto;

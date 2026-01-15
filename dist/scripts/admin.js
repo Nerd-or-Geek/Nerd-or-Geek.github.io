@@ -1,4 +1,93 @@
 "use strict";
+const ADMIN_PASSWORD_HASH = 'adf3862f5831cccd16da7b4b9a5ac73365270622e97e30782bf24db0161e7f68';
+const AUTH_KEY = 'nerdOrGeekAdminAuth';
+const AUTH_EXPIRY_HOURS = 24;
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function isAuthenticated() {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (!auth)
+        return false;
+    try {
+        const authData = JSON.parse(auth);
+        const now = Date.now();
+        if (authData.expiry && authData.expiry > now) {
+            return true;
+        }
+        localStorage.removeItem(AUTH_KEY);
+        return false;
+    }
+    catch {
+        return false;
+    }
+}
+function setAuthenticated() {
+    const expiry = Date.now() + (AUTH_EXPIRY_HOURS * 60 * 60 * 1000);
+    localStorage.setItem(AUTH_KEY, JSON.stringify({ authenticated: true, expiry }));
+}
+function logout() {
+    localStorage.removeItem(AUTH_KEY);
+    showLoginOverlay();
+}
+async function attemptLogin(password) {
+    const hash = await hashPassword(password);
+    if (hash === ADMIN_PASSWORD_HASH) {
+        setAuthenticated();
+        return true;
+    }
+    return false;
+}
+function showLoginOverlay() {
+    const overlay = document.getElementById('loginOverlay');
+    const adminMain = document.querySelector('.admin-main');
+    if (overlay)
+        overlay.style.display = 'flex';
+    if (adminMain)
+        adminMain.style.display = 'none';
+}
+function hideLoginOverlay() {
+    const overlay = document.getElementById('loginOverlay');
+    const adminMain = document.querySelector('.admin-main');
+    if (overlay)
+        overlay.style.display = 'none';
+    if (adminMain)
+        adminMain.style.display = 'block';
+}
+function setupLoginHandler() {
+    const loginForm = document.getElementById('adminLoginForm');
+    const passwordInput = document.getElementById('adminPassword');
+    const loginError = document.getElementById('loginError');
+    if (loginForm && passwordInput) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = passwordInput.value;
+            if (await attemptLogin(password)) {
+                hideLoginOverlay();
+                initializeAdminPortal();
+                passwordInput.value = '';
+                if (loginError)
+                    loginError.style.display = 'none';
+            }
+            else {
+                if (loginError) {
+                    loginError.textContent = 'Incorrect password. Please try again.';
+                    loginError.style.display = 'block';
+                }
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+    }
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
+}
 const STORAGE_KEY = 'nerdOrGeekAdminData';
 const DEFAULT_AFFILIATES = [
     {
@@ -821,6 +910,23 @@ window.openSectionModalById = (sectionId, projectId) => {
     }
 };
 function init() {
+    setupLoginHandler();
+    if (!isAuthenticated()) {
+        showLoginOverlay();
+        return;
+    }
+    hideLoginOverlay();
+    initializeAdminPortal();
+}
+let adminPortalInitialized = false;
+function initializeAdminPortal() {
+    if (adminPortalInitialized) {
+        renderAffiliates();
+        renderProjects();
+        renderSoftware();
+        return;
+    }
+    adminPortalInitialized = true;
     setupNavigation();
     setupModalCloseHandlers();
     setupIconSelectors();
