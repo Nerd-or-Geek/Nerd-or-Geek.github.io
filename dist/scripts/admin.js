@@ -136,7 +136,112 @@ const DEFAULT_PROJECTS = [
         tags: ['Raspberry Pi', 'Minecraft'],
         icon: 'fa-cube',
         customImage: 'assets/img/projects/Pinecraft.png',
-        sections: [],
+        sections: [
+            {
+                id: 'sec-1',
+                title: 'Overview',
+                type: 'text',
+                content: 'Pinecraft is a lightweight Minecraft Java server distribution for Raspberry Pi 4, featuring the Paper server implementation optimized for resource-constrained environments.',
+                codeLanguage: '',
+                order: 0
+            },
+            {
+                id: 'sec-2',
+                title: 'Requirements',
+                type: 'cards-2',
+                content: `Required Hardware|**Raspberry Pi 4** (4GB or 8GB RAM), MicroSD card (32GB+ Class 10/UHS-1), Official Raspberry Pi power supply (3A USB-C), Ethernet cable or reliable WiFi, Computer for setup (Windows, macOS, Linux)
+---
+Optional Hardware|Heatsink and fan for cooling, External SSD for improved performance, Case with ventilation`,
+                codeLanguage: '',
+                order: 1
+            },
+            {
+                id: 'sec-3',
+                title: 'Installation',
+                type: 'steps',
+                content: `**Download Raspberry Pi Imager** - Get the official Raspberry Pi Imager from [raspberrypi.com/software](https://www.raspberrypi.com/software/)
+---
+**Flash OS** - Use the Imager to flash Raspberry Pi OS Lite (64-bit) to your MicroSD card. In settings, enable SSH, set hostname, username/password, and WiFi if needed.
+---
+**Expand Filesystem** - Run \`sudo raspi-config\` and select: Advanced Options → Expand Filesystem
+---
+**Update System** - Run \`sudo apt update && sudo apt upgrade -y\`
+---
+**Install Git** - Run \`sudo apt install git -y\`
+---
+**Clone Repository** - Run \`git clone https://github.com/cat5TV/pinecraft.git\`
+---
+**Run Installer** - Run \`cd pinecraft && sudo ./install.sh\`
+---
+**Verify Status** - Run \`/etc/init.d/pinecraft status\` to confirm the server is running`,
+                codeLanguage: '',
+                order: 2
+            },
+            {
+                id: 'sec-4',
+                title: 'Server Management',
+                type: 'cards-3',
+                content: `Start Server|Launch the Minecraft server process|~/minecraft/server
+---
+Stop Server|Gracefully shut down the server|/etc/init.d/pinecraft stop
+---
+Restart Server|Stop and restart the server process|~/minecraft/restart
+---
+Check Status|Verify if the server is currently running|/etc/init.d/pinecraft status
+---
+View Logs|Monitor server output in real-time|tail -f /var/log/pinecraft.log`,
+                codeLanguage: '',
+                order: 3
+            },
+            {
+                id: 'sec-5',
+                title: 'Customization',
+                type: 'cards-3',
+                content: `Update Paper|Download the latest Paper build from [PaperMC](https://papermc.io/downloads) for performance and security updates. Replace \`Minecraft.jar\` in the server directory and restart.
+---
+Install Plugins|Add Paper-compatible plugins to extend server functionality. Place JAR files in the \`plugins/\` directory. Restart the server to apply. [Browse PaperMC Plugins](https://papermc.io/)
+---
+Add Custom World|Import pre-built or existing Minecraft worlds into your server. Copy world folder to server directory. Edit \`server.properties\` and set \`level-name\` to match.`,
+                codeLanguage: '',
+                order: 4
+            },
+            {
+                id: 'sec-6',
+                title: 'Networking',
+                type: 'cards-3',
+                content: `Get Local IP|Find your Pi's local IP address for LAN connections|hostname -I
+---
+Local Connection|Connect from the same network using your Pi's local IP. In Minecraft Java Edition: Multiplayer → Direct Connect → Enter local IP.
+---
+Get External IP|Find your public IP for remote player connections|curl ifconfig.me
+---
+Port Forwarding|Enable remote access by forwarding TCP port \`25565\` to your Pi's local IP address in your router admin panel.
+---
+Remote Connection|Players outside your network connect using your external IP. Share your external IP and players enter it in Direct Connect.
+---
+Security Tip|Protect your server from unauthorized access. Enable whitelist in \`server.properties\`: set \`white-list=true\` and add trusted players.`,
+                codeLanguage: '',
+                order: 5
+            },
+            {
+                id: 'sec-7',
+                title: 'Troubleshooting',
+                type: 'cards-3',
+                content: `Server Won't Start|Check logs for startup errors and diagnostics|tail -f /var/log/pinecraft.log
+---
+Connection Issues|Verify server is running and network is properly configured. LAN: Confirm same network. Remote: Check port 25565 is forwarded to Pi's local IP.
+---
+Check Disk Space|Low storage can cause crashes and world corruption|df -h
+---
+Performance Issues|Reduce server load for smoother gameplay. Lower \`view-distance\` in \`server.properties\`. Limit max players. Use Paper for optimizations.
+---
+Java Errors|Ensure correct Java version is installed|java -version
+---
+Get Help|Community support for advanced issues. Visit [Pinecraft GitHub Issues](https://github.com/cat5TV/pinecraft/issues)`,
+                codeLanguage: '',
+                order: 6
+            }
+        ],
         createdAt: Date.now()
     },
     {
@@ -147,7 +252,62 @@ const DEFAULT_PROJECTS = [
         tags: ['Pi Zero', 'Security'],
         icon: 'fa-usb',
         customImage: 'assets/img/projects/p4wnp1.png',
-        sections: [],
+        sections: [
+            {
+                id: 'p4-sec-1',
+                title: 'Overview',
+                type: 'text',
+                content: 'P4wnP1 is an open-source, highly customizable USB attack platform for the Raspberry Pi Zero and Zero W. It enables HID attacks, network attacks, and more, all from a tiny, affordable device.\n\n[View the official GitHub repository](https://github.com/RoganDawes/P4wnP1)',
+                codeLanguage: '',
+                order: 0
+            },
+            {
+                id: 'p4-sec-2',
+                title: 'Estimated Time',
+                type: 'callout-info',
+                content: '**15–30 minutes** (including downloads and flashing)',
+                codeLanguage: '',
+                order: 1
+            },
+            {
+                id: 'p4-sec-3',
+                title: 'Prerequisites',
+                type: 'cards-2',
+                content: `Required Hardware|Raspberry Pi Zero or Zero W, MicroSD card (8GB+ recommended), Micro USB cable (data & power capable), Computer (Windows, macOS, or Linux)
+---
+Optional Hardware|USB OTG adapter for additional devices, Compact case for portability`,
+                codeLanguage: '',
+                order: 2
+            },
+            {
+                id: 'p4-sec-4',
+                title: 'Installation Guide',
+                type: 'steps',
+                content: `**Download Image** - Get the latest P4wnP1 A.L.O.A. image from [GitHub Releases](https://github.com/RoganDawes/P4wnP1/releases)
+---
+**Flash to SD Card** - Use balenaEtcher to write the image to your microSD card. [Get balenaEtcher](https://www.balena.io/etcher/)
+---
+**Insert & Connect** - Insert the SD card into Pi Zero. Connect via USB data port (not power-only).
+---
+**Wait for Boot** - The Pi will boot and appear as a network/HID device on your computer.
+---
+**Login** - Default credentials: Username: \`pi\`, Password: \`raspberry\`
+---
+**Access Web UI** - Open browser and navigate to the P4wnP1 web interface for configuration.`,
+                codeLanguage: '',
+                order: 3
+            },
+            {
+                id: 'p4-sec-5',
+                title: 'Resources',
+                type: 'links',
+                content: `GitHub Repo|https://github.com/RoganDawes/P4wnP1|Source code, issues, and releases
+Wiki & Docs|https://github.com/RoganDawes/P4wnP1/wiki|Payloads, customizations, and advanced features
+balenaEtcher|https://www.balena.io/etcher/|Cross-platform SD card flasher tool`,
+                codeLanguage: '',
+                order: 4
+            }
+        ],
         createdAt: Date.now()
     }
 ];
@@ -909,6 +1069,16 @@ function clearAllData() {
     renderSoftware();
     showToast('All data cleared!');
 }
+function resetToDefaults() {
+    if (!confirm('Reset all data to defaults? This will replace current data with the default content including comprehensive Pinecraft and P4wnP1 documentation.'))
+        return;
+    localStorage.removeItem(STORAGE_KEY);
+    initializeDefaultData();
+    renderAffiliates();
+    renderProjects();
+    renderSoftware();
+    showToast('Data reset to defaults!');
+}
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -1114,6 +1284,7 @@ function initializeAdminPortal() {
             importData(file);
     });
     document.getElementById('clearAllData')?.addEventListener('click', clearAllData);
+    document.getElementById('resetToDefaults')?.addEventListener('click', resetToDefaults);
     console.log('Admin Portal initialized');
 }
 if (document.readyState === 'loading') {

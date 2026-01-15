@@ -574,10 +574,12 @@ button {
 .hero {
   text-align: center;
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  background: linear-gradient(135deg, #0f2744 0%, #1e3a5f 50%, #0f2744 100%);
   color: white;
   border-radius: 1rem;
   margin-bottom: 3rem;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .hero h1 {
   font-size: 2.5rem;

@@ -88,6 +88,7 @@ declare function setupItemActions(): void;
 declare function exportData(): void;
 declare function importData(file: File): void;
 declare function clearAllData(): void;
+declare function resetToDefaults(): void;
 declare function escapeHtml(text: string): string;
 declare function insertFormat(formatType: string): void;
 declare function updateSectionHelp(): void;
