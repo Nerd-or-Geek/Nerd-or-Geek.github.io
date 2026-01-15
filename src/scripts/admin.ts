@@ -13,6 +13,17 @@ const ADMIN_PASSWORD_HASH = 'adf3862f5831cccd16da7b4b9a5ac73365270622e97e30782bf
 const AUTH_KEY = 'nerdOrGeekAdminAuth';
 const AUTH_EXPIRY_HOURS = 24;
 
+// GitHub Settings Key
+const GITHUB_SETTINGS_KEY = 'nerdOrGeekGithubSettings';
+const PREVIEW_MODE_KEY = 'nerdOrGeekPreviewMode';
+const LAST_PUBLISHED_HASH_KEY = 'nerdOrGeekLastPublishedHash';
+
+interface GitHubSettings {
+    token: string;
+    owner: string;
+    repo: string;
+}
+
 // ============================================
 // Authentication Functions
 // ============================================
@@ -637,10 +648,324 @@ function initializeDefaultData(): AdminData {
 
 function saveAdminData(data: AdminData): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Update sync status whenever data changes
+    updateSyncStatus();
 }
 
 function generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// ============================================
+// GitHub Integration
+// ============================================
+function getGithubSettings(): GitHubSettings | null {
+    const settings = localStorage.getItem(GITHUB_SETTINGS_KEY);
+    if (settings) {
+        return JSON.parse(settings);
+    }
+    return null;
+}
+
+function saveGithubSettings(settings: GitHubSettings): void {
+    localStorage.setItem(GITHUB_SETTINGS_KEY, JSON.stringify(settings));
+    updateGithubUI();
+}
+
+function updateGithubUI(): void {
+    const settings = getGithubSettings();
+    const statusElement = document.getElementById('githubConnectionStatus');
+    const pushBtn = document.getElementById('pushToGithub') as HTMLButtonElement;
+    
+    if (settings && settings.token && settings.owner && settings.repo) {
+        if (statusElement) {
+            statusElement.className = 'status-indicator status-connected';
+            statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+        }
+        if (pushBtn) pushBtn.disabled = false;
+    } else {
+        if (statusElement) {
+            statusElement.className = 'status-indicator status-not-connected';
+            statusElement.innerHTML = '<i class="fas fa-times-circle"></i> Not configured';
+        }
+        if (pushBtn) pushBtn.disabled = true;
+    }
+}
+
+async function testGithubConnection(): Promise<boolean> {
+    const settings = getGithubSettings();
+    if (!settings) {
+        showToast('Please configure GitHub settings first', true);
+        return false;
+    }
+
+    try {
+        const response = await fetch(`https://api.github.com/repos/${settings.owner}/${settings.repo}`, {
+            headers: {
+                'Authorization': `token ${settings.token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (response.ok) {
+            showToast('GitHub connection successful!');
+            updateGithubUI();
+            return true;
+        } else if (response.status === 401) {
+            showToast('Invalid GitHub token', true);
+            return false;
+        } else if (response.status === 404) {
+            showToast('Repository not found. Check owner/repo name.', true);
+            return false;
+        } else {
+            showToast('GitHub connection failed', true);
+            return false;
+        }
+    } catch (error) {
+        showToast('Network error connecting to GitHub', true);
+        return false;
+    }
+}
+
+async function pushToGithub(): Promise<boolean> {
+    const settings = getGithubSettings();
+    if (!settings) {
+        showToast('Please configure GitHub settings first', true);
+        return false;
+    }
+
+    const pushBtn = document.getElementById('pushToGithub') as HTMLButtonElement;
+    const publishStatus = document.getElementById('publishStatus');
+    
+    if (pushBtn) {
+        pushBtn.disabled = true;
+        pushBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pushing...';
+    }
+    if (publishStatus) {
+        publishStatus.textContent = 'Publishing changes...';
+        publishStatus.className = 'publish-status publishing';
+    }
+
+    try {
+        // Get current file SHA (needed for update)
+        const fileResponse = await fetch(
+            `https://api.github.com/repos/${settings.owner}/${settings.repo}/contents/data/site-data.json`,
+            {
+                headers: {
+                    'Authorization': `token ${settings.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            }
+        );
+
+        let sha = '';
+        if (fileResponse.ok) {
+            const fileData = await fileResponse.json();
+            sha = fileData.sha;
+        }
+
+        // Prepare the data
+        const data = getAdminData();
+        const exportData = {
+            ...data,
+            lastUpdated: Date.now()
+        };
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(exportData, null, 2))));
+
+        // Push to GitHub
+        const updateResponse = await fetch(
+            `https://api.github.com/repos/${settings.owner}/${settings.repo}/contents/data/site-data.json`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${settings.token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Update site data - ${new Date().toLocaleString()}`,
+                    content: content,
+                    sha: sha || undefined
+                })
+            }
+        );
+
+        if (updateResponse.ok) {
+            // Save hash of current data as "last published"
+            localStorage.setItem(LAST_PUBLISHED_HASH_KEY, calculateDataHash());
+            updateSyncStatus();
+            
+            if (publishStatus) {
+                publishStatus.textContent = 'Published successfully!';
+                publishStatus.className = 'publish-status success';
+            }
+            showToast('Changes published to GitHub!');
+            return true;
+        } else {
+            const errorData = await updateResponse.json();
+            console.error('GitHub push failed:', errorData);
+            if (publishStatus) {
+                publishStatus.textContent = 'Publish failed';
+                publishStatus.className = 'publish-status error';
+            }
+            showToast('Failed to publish changes', true);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error pushing to GitHub:', error);
+        if (publishStatus) {
+            publishStatus.textContent = 'Network error';
+            publishStatus.className = 'publish-status error';
+        }
+        showToast('Network error while publishing', true);
+        return false;
+    } finally {
+        if (pushBtn) {
+            pushBtn.disabled = false;
+            pushBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Publish to GitHub';
+        }
+    }
+}
+
+// ============================================
+// Sync Status & Preview Mode
+// ============================================
+function calculateDataHash(): string {
+    const data = getAdminData();
+    // Simple hash based on stringified data
+    const str = JSON.stringify(data);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString(16);
+}
+
+function updateSyncStatus(): void {
+    const currentHash = calculateDataHash();
+    const lastPublishedHash = localStorage.getItem(LAST_PUBLISHED_HASH_KEY);
+    const hasUnpublishedChanges = lastPublishedHash !== null && currentHash !== lastPublishedHash;
+    
+    // Update sidebar badge
+    const settingsBadge = document.getElementById('settingsBadge');
+    if (settingsBadge) {
+        settingsBadge.style.display = hasUnpublishedChanges ? 'flex' : 'none';
+    }
+    
+    // Update sidebar sync status
+    const sidebarSyncStatus = document.getElementById('sidebarSyncStatus');
+    if (sidebarSyncStatus) {
+        if (hasUnpublishedChanges) {
+            sidebarSyncStatus.innerHTML = '<span class="sync-dot unsynced"></span> Unpublished changes';
+            sidebarSyncStatus.className = 'sync-status unsynced';
+        } else if (lastPublishedHash) {
+            sidebarSyncStatus.innerHTML = '<span class="sync-dot synced"></span> All changes published';
+            sidebarSyncStatus.className = 'sync-status synced';
+        } else {
+            sidebarSyncStatus.innerHTML = '<span class="sync-dot"></span> Setup GitHub to sync';
+            sidebarSyncStatus.className = 'sync-status';
+        }
+    }
+    
+    // Update publish section status
+    const publishStatus = document.getElementById('publishStatus');
+    if (publishStatus) {
+        if (hasUnpublishedChanges) {
+            publishStatus.textContent = 'You have unpublished changes';
+            publishStatus.className = 'publish-status warning';
+        } else if (lastPublishedHash) {
+            publishStatus.textContent = 'All changes are published';
+            publishStatus.className = 'publish-status success';
+        } else {
+            publishStatus.textContent = 'Configure GitHub to publish';
+            publishStatus.className = 'publish-status';
+        }
+    }
+}
+
+function isPreviewMode(): boolean {
+    return localStorage.getItem(PREVIEW_MODE_KEY) === 'true';
+}
+
+function setPreviewMode(enabled: boolean): void {
+    localStorage.setItem(PREVIEW_MODE_KEY, enabled.toString());
+    updatePreviewModeUI();
+}
+
+function updatePreviewModeUI(): void {
+    const toggle = document.getElementById('previewModeToggle') as HTMLInputElement;
+    const previewStatus = document.getElementById('previewModeStatus');
+    const enabled = isPreviewMode();
+    
+    if (toggle) toggle.checked = enabled;
+    if (previewStatus) {
+        if (enabled) {
+            previewStatus.textContent = 'Preview mode is ON - main site shows your local changes';
+            previewStatus.className = 'settings-note active';
+        } else {
+            previewStatus.textContent = 'Preview mode is OFF - main site shows published data';
+            previewStatus.className = 'settings-note';
+        }
+    }
+}
+
+function setupGithubHandlers(): void {
+    // Save GitHub settings
+    const saveBtn = document.getElementById('saveGithubSettings');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            const token = (document.getElementById('githubToken') as HTMLInputElement)?.value;
+            const owner = (document.getElementById('githubOwner') as HTMLInputElement)?.value;
+            const repo = (document.getElementById('githubRepo') as HTMLInputElement)?.value;
+            
+            if (!token || !owner || !repo) {
+                showToast('Please fill in all GitHub fields', true);
+                return;
+            }
+            
+            saveGithubSettings({ token, owner, repo });
+            showToast('GitHub settings saved!');
+        });
+    }
+    
+    // Test connection
+    const testBtn = document.getElementById('testGithubConnection');
+    if (testBtn) {
+        testBtn.addEventListener('click', testGithubConnection);
+    }
+    
+    // Push to GitHub
+    const pushBtn = document.getElementById('pushToGithub');
+    if (pushBtn) {
+        pushBtn.addEventListener('click', pushToGithub);
+    }
+    
+    // Preview mode toggle
+    const previewToggle = document.getElementById('previewModeToggle');
+    if (previewToggle) {
+        previewToggle.addEventListener('change', (e) => {
+            setPreviewMode((e.target as HTMLInputElement).checked);
+        });
+    }
+    
+    // Load existing settings
+    const settings = getGithubSettings();
+    if (settings) {
+        const tokenInput = document.getElementById('githubToken') as HTMLInputElement;
+        const ownerInput = document.getElementById('githubOwner') as HTMLInputElement;
+        const repoInput = document.getElementById('githubRepo') as HTMLInputElement;
+        
+        if (tokenInput) tokenInput.value = settings.token;
+        if (ownerInput) ownerInput.value = settings.owner;
+        if (repoInput) repoInput.value = settings.repo;
+    }
+    
+    // Initialize UI states
+    updateGithubUI();
+    updatePreviewModeUI();
+    updateSyncStatus();
 }
 
 // ============================================
@@ -1796,6 +2121,7 @@ function initializeAdminPortal(): void {
     setupModalCloseHandlers();
     setupIconSelectors();
     setupThemeSelectors();
+    setupGithubHandlers();
     
     // Render initial data
     renderAffiliates();

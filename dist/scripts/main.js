@@ -306,10 +306,27 @@ logoLink?.addEventListener('click', (_event) => {
     window.location.href = 'index.html';
 });
 const ADMIN_STORAGE_KEY = 'nerdOrGeekAdminData';
+const PREVIEW_MODE_KEY = 'nerdOrGeekPreviewMode';
 let cachedSiteData = null;
+function isPreviewMode() {
+    return localStorage.getItem(PREVIEW_MODE_KEY) === 'true';
+}
 async function fetchSiteData() {
-    if (cachedSiteData) {
+    if (cachedSiteData && !isPreviewMode()) {
         return cachedSiteData;
+    }
+    if (isPreviewMode()) {
+        const data = localStorage.getItem(ADMIN_STORAGE_KEY);
+        if (data) {
+            try {
+                cachedSiteData = JSON.parse(data);
+                console.log('Preview Mode: Using local data');
+                return cachedSiteData;
+            }
+            catch {
+                return null;
+            }
+        }
     }
     try {
         const basePath = getBasePath();
@@ -454,8 +471,47 @@ function showDynamicProjectDocs(projectId) {
     window.location.href = `${basePath}projects/docs.html?id=${encodeURIComponent(projectId)}`;
 }
 window.showDynamicProjectDocs = showDynamicProjectDocs;
+function showPreviewModeBanner() {
+    if (!isPreviewMode())
+        return;
+    if (window.location.pathname.includes('admin'))
+        return;
+    const banner = document.createElement('div');
+    banner.id = 'previewModeBanner';
+    banner.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        color: #000;
+        text-align: center;
+        padding: 8px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    `;
+    banner.innerHTML = `
+        <span><i class="fas fa-eye"></i> Preview Mode - Showing Local Changes</span>
+        <button id="disablePreviewMode" style="background:#000;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;">
+            Disable
+        </button>
+    `;
+    document.body.prepend(banner);
+    document.body.style.paddingTop = '40px';
+    document.getElementById('disablePreviewMode')?.addEventListener('click', () => {
+        localStorage.removeItem(PREVIEW_MODE_KEY);
+        window.location.reload();
+    });
+}
 async function init() {
     console.log('Nerd or Geek? Website Initialized');
+    showPreviewModeBanner();
     await Promise.all([
         renderDynamicAffiliates(),
         renderDynamicProjects(),

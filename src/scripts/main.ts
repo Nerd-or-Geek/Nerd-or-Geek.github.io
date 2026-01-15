@@ -508,17 +508,40 @@ interface AdminData {
 }
 
 const ADMIN_STORAGE_KEY = 'nerdOrGeekAdminData';
+const PREVIEW_MODE_KEY = 'nerdOrGeekPreviewMode';
 
 // Cache for site data to avoid multiple fetches
 let cachedSiteData: AdminData | null = null;
 
 /**
+ * Check if preview mode is enabled (set in admin portal)
+ */
+function isPreviewMode(): boolean {
+    return localStorage.getItem(PREVIEW_MODE_KEY) === 'true';
+}
+
+/**
  * Get admin data - first tries to fetch from static JSON, falls back to localStorage
+ * If preview mode is ON, uses localStorage directly to show local changes
  */
 async function fetchSiteData(): Promise<AdminData | null> {
-    // Return cached data if available
-    if (cachedSiteData) {
+    // Return cached data if available (and not in preview mode)
+    if (cachedSiteData && !isPreviewMode()) {
         return cachedSiteData;
+    }
+    
+    // If preview mode is enabled, use localStorage directly
+    if (isPreviewMode()) {
+        const data = localStorage.getItem(ADMIN_STORAGE_KEY);
+        if (data) {
+            try {
+                cachedSiteData = JSON.parse(data);
+                console.log('Preview Mode: Using local data');
+                return cachedSiteData;
+            } catch {
+                return null;
+            }
+        }
     }
     
     // Try to fetch from static JSON file (works on GitHub Pages)
@@ -709,6 +732,53 @@ function showDynamicProjectDocs(projectId: string): void {
 // Make showDynamicProjectDocs available globally
 (window as any).showDynamicProjectDocs = showDynamicProjectDocs;
 
+/**
+ * Show preview mode banner if enabled
+ */
+function showPreviewModeBanner(): void {
+    if (!isPreviewMode()) return;
+    
+    // Don't show on admin page
+    if (window.location.pathname.includes('admin')) return;
+    
+    const banner = document.createElement('div');
+    banner.id = 'previewModeBanner';
+    banner.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        color: #000;
+        text-align: center;
+        padding: 8px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    `;
+    banner.innerHTML = `
+        <span><i class="fas fa-eye"></i> Preview Mode - Showing Local Changes</span>
+        <button id="disablePreviewMode" style="background:#000;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;">
+            Disable
+        </button>
+    `;
+    document.body.prepend(banner);
+    
+    // Add padding to body to account for banner
+    document.body.style.paddingTop = '40px';
+    
+    // Handle disable button
+    document.getElementById('disablePreviewMode')?.addEventListener('click', () => {
+        localStorage.removeItem(PREVIEW_MODE_KEY);
+        window.location.reload();
+    });
+}
+
 // ============================================
 // Initialization
 // ============================================
@@ -718,6 +788,9 @@ function showDynamicProjectDocs(projectId: string): void {
  */
 async function init(): Promise<void> {
     console.log('Nerd or Geek? Website Initialized');
+    
+    // Show preview mode banner if enabled
+    showPreviewModeBanner();
 
     // Load dynamic content from site data (fetches from JSON file)
     await Promise.all([

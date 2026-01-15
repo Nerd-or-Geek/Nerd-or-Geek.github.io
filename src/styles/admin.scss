@@ -1302,3 +1302,222 @@ form {
         }
     }
 }
+
+// ============================================
+// GitHub Integration & Sync Status
+// ============================================
+
+.unpublished-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: $warning-color;
+    color: #0f172a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.admin-status {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+}
+
+.sync-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    
+    &.synced {
+        background: $success-color;
+    }
+    
+    &.pending {
+        background: $warning-color;
+        animation: pulse 2s infinite;
+    }
+}
+
+.github-setup {
+    margin-top: 1rem;
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+.token-input-group {
+    display: flex;
+    gap: 0.5rem;
+    
+    input {
+        flex: 1;
+    }
+}
+
+.btn-icon {
+    width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    color: $text-light;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+
+.github-status {
+    margin-top: 1rem;
+}
+
+.status-connected {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba($success-color, 0.15);
+    border: 1px solid rgba($success-color, 0.3);
+    border-radius: 0.5rem;
+    color: $success-color;
+    
+    i {
+        font-size: 1.25rem;
+    }
+    
+    span {
+        flex: 1;
+    }
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: $primary-color;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.publish-status {
+    margin-bottom: 1rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    
+    i {
+        font-size: 1.25rem;
+    }
+    
+    &.status-synced {
+        background: rgba($success-color, 0.1);
+        border: 1px solid rgba($success-color, 0.2);
+        color: $success-color;
+    }
+    
+    &.status-pending {
+        background: rgba($warning-color, 0.1);
+        border: 1px solid rgba($warning-color, 0.3);
+        color: $warning-color;
+    }
+}
+
+.settings-note {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1rem;
+    
+    i {
+        margin-right: 0.5rem;
+    }
+}
+
+.preview-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        
+        &:checked + .toggle-slider {
+            background: $primary-color;
+            
+            &::before {
+                transform: translateX(24px);
+            }
+        }
+    }
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 26px;
+    transition: 0.3s;
+    
+    &::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+}
+
+.toggle-label {
+    color: $text-light;
+    font-weight: 500;
+}

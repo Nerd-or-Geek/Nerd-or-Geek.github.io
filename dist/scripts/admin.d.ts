@@ -1,6 +1,14 @@
 declare const ADMIN_PASSWORD_HASH = "adf3862f5831cccd16da7b4b9a5ac73365270622e97e30782bf24db0161e7f68";
 declare const AUTH_KEY = "nerdOrGeekAdminAuth";
 declare const AUTH_EXPIRY_HOURS = 24;
+declare const GITHUB_SETTINGS_KEY = "nerdOrGeekGithubSettings";
+declare const PREVIEW_MODE_KEY = "nerdOrGeekPreviewMode";
+declare const LAST_PUBLISHED_HASH_KEY = "nerdOrGeekLastPublishedHash";
+interface GitHubSettings {
+    token: string;
+    owner: string;
+    repo: string;
+}
 declare function hashPassword(password: string): Promise<string>;
 declare function isAuthenticated(): boolean;
 declare function setAuthenticated(): void;
@@ -71,6 +79,17 @@ declare function getAdminData(): AdminData;
 declare function initializeDefaultData(): AdminData;
 declare function saveAdminData(data: AdminData): void;
 declare function generateId(): string;
+declare function getGithubSettings(): GitHubSettings | null;
+declare function saveGithubSettings(settings: GitHubSettings): void;
+declare function updateGithubUI(): void;
+declare function testGithubConnection(): Promise<boolean>;
+declare function pushToGithub(): Promise<boolean>;
+declare function calculateDataHash(): string;
+declare function updateSyncStatus(): void;
+declare function isPreviewMode(): boolean;
+declare function setPreviewMode(enabled: boolean): void;
+declare function updatePreviewModeUI(): void;
+declare function setupGithubHandlers(): void;
 declare function showToast(message: string, isError?: boolean): void;
 declare function openModal(modalId: string): void;
 declare function closeModal(modalId: string): void;
