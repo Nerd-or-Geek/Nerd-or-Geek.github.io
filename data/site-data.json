@@ -219,42 +219,6 @@
         }
       ],
       "createdAt": 1768499201280
-    },
-    {
-      "id": "mkfsipvjspzga0ka8z",
-      "name": "lol",
-      "description": "test",
-      "badge": "Beginner",
-      "tags": [
-        "eeeee",
-        "eewfew"
-      ],
-      "icon": "fa-robot",
-      "sections": [
-        {
-          "id": "mkfsk0sugb4lbadqgg",
-          "title": "1",
-          "type": "text",
-          "content": "fefasfsdfsdfdfsdafdsaf\nsfeaew\nfreaf\nef\nasfdsfasdf\newf\nsd\naf\n\nsfaefrewfef\nsdaf\nasdfsdf sd\naf\ndfsadf\newf\ne3fef\newg\nergasdfasdfasd f\nsdf\nasd\nf\ne4\nfergherfsdfsd\naf\nd\nfe\nfaef wfafsdf a\n",
-          "order": 0
-        },
-        {
-          "id": "mkfsklmraz4yoz6102v",
-          "title": "2",
-          "type": "video",
-          "content": "https://youtube.com/watch?v=VIDEO_ID",
-          "order": 1
-        }
-      ],
-      "theme": {
-        "preset": "custom",
-        "primaryColor": "#c61fd8",
-        "accentColor": "#8035fb",
-        "textColor": "#f8fafc",
-        "cardBgColor": "#490653",
-        "heroBgColor": "#403a81"
-      },
-      "createdAt": 1768502152063
     }
   ],
   "software": [
@@ -290,5 +254,5 @@
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768502248121
+  "lastUpdated": 1768503253932
 }
