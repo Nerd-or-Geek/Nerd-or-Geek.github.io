@@ -213,7 +213,7 @@ const DEFAULT_PROJECTS: Project[] = [
     {
         id: 'static-project-1',
         name: 'Pinecraft',
-        description: 'Step-by-step guide to install and run a Minecraft Java server on Raspberry Pi 4.',
+        description: 'An automated Minecraft Java server installer for Raspberry Pi, maintained at the cat5tv/Pinecraft GitHub repository.',
         badge: 'Popular',
         tags: ['Raspberry Pi', 'Minecraft'],
         icon: 'fa-cube',
@@ -223,7 +223,7 @@ const DEFAULT_PROJECTS: Project[] = [
                 id: 'sec-1',
                 title: 'Overview',
                 type: 'text',
-                content: 'Pinecraft is a lightweight Minecraft Java server distribution for Raspberry Pi 4, featuring the Paper server implementation optimized for resource-constrained environments.',
+                content: '**Pinecraft** is an automated Minecraft Java server installer for Raspberry Pi, maintained at the [cat5tv/Pinecraft GitHub repository](https://github.com/cat5tv/Pinecraft).\n\nThis guide is designed for beginner to intermediate Raspberry Pi users. No prior Pi experience is assumed, but commands are shown exactly as they should be entered.\n\nFollow each step in order. Do not skip steps or use alternative methods.',
                 codeLanguage: '',
                 order: 0
             },
@@ -231,7 +231,7 @@ const DEFAULT_PROJECTS: Project[] = [
                 id: 'sec-2',
                 title: 'Requirements',
                 type: 'cards-2',
-                content: `Required Hardware|**Raspberry Pi 4** (4GB or 8GB RAM), MicroSD card (32GB+ Class 10/UHS-1), Official Raspberry Pi power supply (3A USB-C), Ethernet cable or reliable WiFi, Computer for setup (Windows, macOS, Linux)
+                content: `Required Hardware|**Raspberry Pi 4** (4GB or 8GB RAM recommended), MicroSD card (32GB+ Class 10/UHS-1) or USB drive, Official Raspberry Pi power supply (3A USB-C), Computer for setup (Windows, macOS, or Linux)
 ---
 Optional Hardware|Heatsink and fan for cooling, External SSD for improved performance, Case with ventilation`,
                 codeLanguage: '',
@@ -239,56 +239,120 @@ Optional Hardware|Heatsink and fan for cooling, External SSD for improved perfor
             },
             {
                 id: 'sec-3',
-                title: 'Installation',
-                type: 'steps',
-                content: `**Download Raspberry Pi Imager** - Get the official Raspberry Pi Imager from [raspberrypi.com/software](https://www.raspberrypi.com/software/)
----
-**Flash OS** - Use the Imager to flash Raspberry Pi OS Lite (64-bit) to your MicroSD card. In settings, enable SSH, set hostname, username/password, and WiFi if needed.
----
-**Expand Filesystem** - Run \`sudo raspi-config\` and select: Advanced Options → Expand Filesystem
----
-**Update System** - Run \`sudo apt update && sudo apt upgrade -y\`
----
-**Install Git** - Run \`sudo apt install git -y\`
----
-**Clone Repository** - Run \`git clone https://github.com/cat5TV/pinecraft.git\`
----
-**Run Installer** - Run \`cd pinecraft && sudo ./install.sh\`
----
-**Verify Status** - Run \`/etc/init.d/pinecraft status\` to confirm the server is running`,
+                title: 'Step 1: Install Raspberry Pi Imager',
+                type: 'text',
+                content: '**Raspberry Pi Imager** is the official tool for flashing operating system images to SD cards and USB drives. It is required to install Raspberry Pi OS on your storage device.\n\nDownload Raspberry Pi Imager from the official website:\n\n[https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)\n\nRaspberry Pi Imager is available for **Windows**, **macOS**, and **Linux**. Download and install the version for your operating system.',
                 codeLanguage: '',
                 order: 2
             },
             {
                 id: 'sec-4',
-                title: 'Server Management',
-                type: 'cards-3',
-                content: `Start Server|Launch the Minecraft server process|~/minecraft/server
+                title: 'Step 2: Flash Raspberry Pi OS',
+                type: 'steps',
+                content: `**Open Raspberry Pi Imager** - Launch the application you installed in the previous step.
 ---
-Stop Server|Gracefully shut down the server|/etc/init.d/pinecraft stop
+**Click Choose Device** - Select your Raspberry Pi model from the list.
 ---
-Restart Server|Stop and restart the server process|~/minecraft/restart
+**Click Choose OS** - Navigate to **Other** and select **Raspberry Pi OS Lite (64-bit)**.
 ---
-Check Status|Verify if the server is currently running|/etc/init.d/pinecraft status
+**Click Choose Storage** - Select your target SD card or USB drive.
 ---
-View Logs|Monitor server output in real-time|tail -f /var/log/pinecraft.log`,
+**Click Next** - You will be prompted to configure settings.
+---
+**Open Advanced Settings** - Configure the following: **Wi-Fi** (enter your SSID and password), **Username and password** (create your login credentials), **Enable Raspberry Pi Connect** (for remote access).
+---
+**Apply Settings** - Confirm and begin flashing the image to your storage device.
+---
+**Safely Eject** - When flashing is complete, safely eject the drive from your computer.`,
                 codeLanguage: '',
                 order: 3
             },
             {
                 id: 'sec-5',
-                title: 'Customization',
-                type: 'cards-3',
-                content: `Update Paper|Download the latest Paper build from [PaperMC](https://papermc.io/downloads) for performance and security updates. Replace \`Minecraft.jar\` in the server directory and restart.
+                title: 'Step 3: First Boot & Remote Access',
+                type: 'steps',
+                content: `**Insert the flashed drive** - Insert the SD card or USB drive into your Raspberry Pi.
 ---
-Install Plugins|Add Paper-compatible plugins to extend server functionality. Place JAR files in the \`plugins/\` directory. Restart the server to apply. [Browse PaperMC Plugins](https://papermc.io/)
+**Power on the Raspberry Pi** - Connect the power supply. The Pi will boot automatically.
 ---
-Add Custom World|Import pre-built or existing Minecraft worlds into your server. Copy world folder to server directory. Edit \`server.properties\` and set \`level-name\` to match.`,
+**Open Raspberry Pi Connect** - From another computer, open your web browser and go to: [https://connect.raspberrypi.com](https://connect.raspberrypi.com)
+---
+**Sign in and connect** - Sign in with your Raspberry Pi account and connect to your Pi remotely.`,
                 codeLanguage: '',
                 order: 4
             },
             {
                 id: 'sec-6',
+                title: 'Step 4: Initial Raspberry Pi Configuration',
+                type: 'text',
+                content: 'Run the following commands in order to configure your Raspberry Pi.\n\n### Open Raspberry Pi Configuration\n\n```bash\nsudo raspi-config\n```\n\nNavigate to:\n- **Advanced Options**\n- **Expand Filesystem**\n- Exit raspi-config\n\n### Update the System\n\n```bash\nsudo apt update\nsudo apt upgrade -y\n```\n\n### Install Git\n\n```bash\nsudo apt install git -y\n```\n\n### Reboot\n\n```bash\nsudo reboot\n```\n\nAfter the reboot, reconnect via Raspberry Pi Connect.',
+                codeLanguage: '',
+                order: 5
+            },
+            {
+                id: 'sec-7',
+                title: 'Step 5: Download Pinecraft',
+                type: 'text',
+                content: 'Pinecraft is installed by cloning the official GitHub repository.\n\n**Repository:** [https://github.com/cat5tv/Pinecraft](https://github.com/cat5tv/Pinecraft)\n\nRun the following commands:\n\n```bash\ngit clone https://github.com/cat5tv/Pinecraft.git\ncd Pinecraft\n```',
+                codeLanguage: '',
+                order: 6
+            },
+            {
+                id: 'sec-8',
+                title: 'Step 6: Run the Pinecraft Installer',
+                type: 'text',
+                content: 'The Pinecraft installer is interactive and automated. It will guide you through the configuration process.\n\nRun the installer:\n\n```bash\nsudo ./install\n```\n\n### Installation Flow\n\n1. Click **OK** when prompted\n2. Click **OK** again\n3. Select **Main / Home directory** for the installation location\n4. Choose your preferred **Minecraft server version**\n5. Enter a **world seed** (or leave blank for random)\n6. Select your preferred **game mode**\n7. Confirm when prompted about **RAM overclocking**\n\nThe installer handles all dependencies automatically. Wait for the installation to complete.',
+                codeLanguage: '',
+                order: 7
+            },
+            {
+                id: 'sec-9',
+                title: 'Step 7: Checking Server Status',
+                type: 'callout-warning',
+                content: '**Important:** Only these two commands are valid with the init.d script:\n\n`/etc/init.d/pinecraft status` - Check if the server is running\n\n`/etc/init.d/pinecraft stop` - Stop the server\n\n**There is no start or restart command in init.d.** Server control is handled differently (see next section).',
+                codeLanguage: '',
+                order: 8
+            },
+            {
+                id: 'sec-10',
+                title: 'Step 8: Starting, Stopping, and Restarting',
+                type: 'text',
+                content: 'Server control commands must be run from inside the Minecraft directory created by Pinecraft.\n\n### Start the Server\n\n```bash\n./server\n```\n\n### Restart the Server\n\n```bash\n./restart\n```\n\n### Stop the Server\n\n```bash\n/etc/init.d/pinecraft stop\n```\n\n**Note:** The `./server` and `./restart` commands must be executed from within your Minecraft folder.',
+                codeLanguage: '',
+                order: 9
+            },
+            {
+                id: 'sec-11',
+                title: 'Step 9: Updating PaperMC',
+                type: 'steps',
+                content: `**Download the latest Paper JAR** - Go to [https://papermc.io/downloads](https://papermc.io/downloads) and download the latest Paper JAR file.
+---
+**Navigate to the Minecraft directory** - Open the Minecraft folder created by Pinecraft.
+---
+**Delete the existing JAR** - Delete the file named \`Minecraft.jar\`.
+---
+**Rename the downloaded file** - Rename the new Paper JAR file you downloaded to \`Minecraft.jar\`.
+---
+**Restart the server** - Run \`./restart\` to start the server with the updated Paper version.`,
+                codeLanguage: '',
+                order: 10
+            },
+            {
+                id: 'sec-12',
+                title: 'Step 10: Installing Plugins',
+                type: 'steps',
+                content: `**Stop the server** - Run \`/etc/init.d/pinecraft stop\` to shut down the server.
+---
+**Copy plugin files** - Copy the plugin \`.jar\` files from your computer.
+---
+**Paste into plugins folder** - Paste the files into the \`plugins\` folder inside the Minecraft directory.
+---
+**Restart the server** - Run \`./restart\` to start the server with the new plugins loaded.`,
+                codeLanguage: '',
+                order: 11
+            },
+            {
+                id: 'sec-13',
                 title: 'Networking',
                 type: 'cards-3',
                 content: `Get Local IP|Find your Pi's local IP address for LAN connections|hostname -I
@@ -303,10 +367,10 @@ Remote Connection|Players outside your network connect using your external IP. S
 ---
 Security Tip|Protect your server from unauthorized access. Enable whitelist in \`server.properties\`: set \`white-list=true\` and add trusted players.`,
                 codeLanguage: '',
-                order: 5
+                order: 12
             },
             {
-                id: 'sec-7',
+                id: 'sec-14',
                 title: 'Troubleshooting',
                 type: 'cards-3',
                 content: `Server Won't Start|Check logs for startup errors and diagnostics|tail -f /var/log/pinecraft.log
@@ -321,7 +385,7 @@ Java Errors|Ensure correct Java version is installed|java -version
 ---
 Get Help|Community support for advanced issues. Visit [Pinecraft GitHub Issues](https://github.com/cat5TV/pinecraft/issues)`,
                 codeLanguage: '',
-                order: 6
+                order: 13
             }
         ],
         createdAt: Date.now()
