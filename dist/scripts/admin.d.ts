@@ -22,9 +22,10 @@ interface Affiliate {
 interface ProjectSection {
     id: string;
     title: string;
-    type: 'text' | 'cards-2' | 'cards-3' | 'code' | 'callout';
+    type: 'text' | 'cards-2' | 'cards-3' | 'code' | 'callout-info' | 'callout-warning' | 'callout-danger' | 'callout-success' | 'steps' | 'list' | 'video' | 'image' | 'links';
     content: string;
     order: number;
+    codeLanguage?: string;
 }
 interface Project {
     id: string;
@@ -88,6 +89,8 @@ declare function exportData(): void;
 declare function importData(file: File): void;
 declare function clearAllData(): void;
 declare function escapeHtml(text: string): string;
+declare function insertFormat(formatType: string): void;
+declare function updateSectionHelp(): void;
 declare function init(): void;
 declare let adminPortalInitialized: boolean;
 declare function initializeAdminPortal(): void;

@@ -730,47 +730,120 @@ function showDynamicProjectDocs(projectId: string): void {
 }
 
 /**
+ * Parse markdown-like syntax to HTML
+ */
+function parseMarkdown(text: string): string {
+    let html = escapeHtmlForRender(text);
+    
+    // Code blocks first (```language ... ```)
+    html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) => {
+        const language = lang || 'text';
+        return `<div class="docs-code-block"><div class="code-header"><span>${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-${language}">${code.trim()}</code></pre></div>`;
+    });
+    
+    // Inline code (`code`)
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Bold (**text**)
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Italic (*text*)
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    
+    // Links [text](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    
+    // Sub-headings (### Heading)
+    html = html.replace(/^### (.+)$/gm, '<h3 class="docs-subheading">$1</h3>');
+    
+    // Paragraphs (double newlines)
+    html = html.split(/\n\n+/).map(para => {
+        // Don't wrap if it's already a block element
+        if (para.startsWith('<div') || para.startsWith('<h3') || para.startsWith('<pre')) {
+            return para;
+        }
+        return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+    
+    return html;
+}
+
+/**
  * Format section content based on type
  */
 function formatSectionContent(section: any): string {
+    const content = section.content || '';
+    
     switch (section.type) {
         case 'text':
-            return `<p>${escapeHtmlForRender(section.content).replace(/\n/g, '</p><p>')}</p>`;
+            return parseMarkdown(content);
         
         case 'code':
+            const lang = section.codeLanguage || 'bash';
             return `
                 <div class="docs-code-block">
                     <div class="code-header">
-                        <span>Code</span>
+                        <span>${lang}</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>${escapeHtmlForRender(section.content)}</code></pre>
+                    <pre><code class="language-${lang}">${escapeHtmlForRender(content)}</code></pre>
                 </div>
             `;
         
-        case 'callout':
+        case 'callout-info':
             return `
                 <div class="docs-callout docs-callout-info">
                     <i class="fas fa-info-circle"></i>
-                    <div>${escapeHtmlForRender(section.content)}</div>
+                    <div>${parseMarkdown(content)}</div>
+                </div>
+            `;
+        
+        case 'callout-warning':
+            return `
+                <div class="docs-callout docs-callout-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>${parseMarkdown(content)}</div>
+                </div>
+            `;
+        
+        case 'callout-danger':
+            return `
+                <div class="docs-callout docs-callout-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>${parseMarkdown(content)}</div>
+                </div>
+            `;
+        
+        case 'callout-success':
+            return `
+                <div class="docs-callout docs-callout-success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>${parseMarkdown(content)}</div>
                 </div>
             `;
         
         case 'cards-2':
         case 'cards-3':
-            const cards = section.content.split('---').map((card: string) => card.trim()).filter((c: string) => c);
+            const cards = content.split('---').map((card: string) => card.trim()).filter((c: string) => c);
             const gridClass = section.type === 'cards-2' ? 'docs-grid-2' : 'docs-grid-3';
             return `
                 <div class="${gridClass}">
                     ${cards.map((card: string) => {
                         const parts = card.split('|').map((p: string) => p.trim());
+                        const title = parts[0] || '';
+                        const desc = parts[1] || '';
+                        const code = parts[2] || '';
                         return `
                             <div class="docs-card">
-                                <h4>${escapeHtmlForRender(parts[0] || '')}</h4>
-                                <p>${escapeHtmlForRender(parts[1] || '')}</p>
-                                ${parts[2] ? `
+                                <h4>${escapeHtmlForRender(title)}</h4>
+                                <p>${parseMarkdown(desc)}</p>
+                                ${code ? `
                                     <div class="docs-code-block">
-                                        <pre><code>${escapeHtmlForRender(parts[2])}</code></pre>
+                                        <div class="code-header">
+                                            <span>bash</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                        </div>
+                                        <pre><code>${escapeHtmlForRender(code)}</code></pre>
                                     </div>
                                 ` : ''}
                             </div>
@@ -779,8 +852,87 @@ function formatSectionContent(section: any): string {
                 </div>
             `;
         
+        case 'steps':
+            const steps = content.split('---').map((s: string) => s.trim()).filter((s: string) => s);
+            return `
+                <div class="docs-steps">
+                    ${steps.map((step: string, i: number) => `
+                        <div class="docs-step">
+                            <div class="step-number">${i + 1}</div>
+                            <div class="step-content">${parseMarkdown(step)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        
+        case 'list':
+            const items = content.split('\n').filter((item: string) => item.trim());
+            return `
+                <ul class="docs-list">
+                    ${items.map((item: string) => `<li>${parseMarkdown(item.trim())}</li>`).join('')}
+                </ul>
+            `;
+        
+        case 'video':
+            // Support YouTube and Vimeo
+            let videoHtml = '';
+            const youtubeMatch = content.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+            const vimeoMatch = content.match(/vimeo\.com\/(\d+)/);
+            
+            if (youtubeMatch) {
+                videoHtml = `<iframe src="https://www.youtube.com/embed/${youtubeMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            } else if (vimeoMatch) {
+                videoHtml = `<iframe src="https://player.vimeo.com/video/${vimeoMatch[1]}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+            } else {
+                videoHtml = `<p>Invalid video URL</p>`;
+            }
+            return `<div class="docs-video">${videoHtml}</div>`;
+        
+        case 'image':
+            const imgParts = content.split('|').map((p: string) => p.trim());
+            const imgSrc = imgParts[0] || '';
+            const caption = imgParts[1] || '';
+            const alt = imgParts[2] || caption;
+            return `
+                <figure class="docs-figure">
+                    <img src="${escapeHtmlForRender(imgSrc)}" alt="${escapeHtmlForRender(alt)}" class="docs-image">
+                    ${caption ? `<figcaption>${escapeHtmlForRender(caption)}</figcaption>` : ''}
+                </figure>
+            `;
+        
+        case 'links':
+            const links = content.split('\n').filter((l: string) => l.trim());
+            return `
+                <div class="docs-links">
+                    ${links.map((link: string) => {
+                        const linkParts = link.split('|').map((p: string) => p.trim());
+                        const text = linkParts[0] || '';
+                        const url = linkParts[1] || '#';
+                        const desc = linkParts[2] || '';
+                        return `
+                            <a href="${escapeHtmlForRender(url)}" target="_blank" rel="noopener" class="docs-link-card">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>${escapeHtmlForRender(text)}</strong>
+                                    ${desc ? `<span>${escapeHtmlForRender(desc)}</span>` : ''}
+                                </div>
+                            </a>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        
+        // Legacy support for old 'callout' type
+        case 'callout':
+            return `
+                <div class="docs-callout docs-callout-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>${parseMarkdown(content)}</div>
+                </div>
+            `;
+        
         default:
-            return `<p>${escapeHtmlForRender(section.content)}</p>`;
+            return parseMarkdown(content);
     }
 }
 

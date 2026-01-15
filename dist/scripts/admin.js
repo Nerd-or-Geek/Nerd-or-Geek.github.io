@@ -614,6 +614,7 @@ function selectSection(section, projectId) {
 function openSectionModal(section, projectId) {
     const form = document.getElementById('sectionForm');
     const title = document.getElementById('sectionModalTitle');
+    const codeOptions = document.getElementById('codeOptions');
     if (!form || !title)
         return;
     form.reset();
@@ -624,12 +625,22 @@ function openSectionModal(section, projectId) {
         document.getElementById('sectionTitle').value = section.title;
         document.getElementById('sectionType').value = section.type;
         document.getElementById('sectionContent').value = section.content;
+        if (section.codeLanguage) {
+            document.getElementById('codeLanguage').value = section.codeLanguage;
+        }
+        if (codeOptions) {
+            codeOptions.style.display = section.type === 'code' ? 'block' : 'none';
+        }
+        updateSectionHelp();
     }
     else {
         title.textContent = 'Add Section';
         document.getElementById('sectionId').value = '';
         document.getElementById('sectionProjectId').value =
             document.getElementById('docsProjectId')?.value || '';
+        if (codeOptions) {
+            codeOptions.style.display = 'none';
+        }
     }
     openModal('sectionModal');
 }
@@ -640,6 +651,7 @@ function saveSection(e) {
     const title = document.getElementById('sectionTitle').value.trim();
     const type = document.getElementById('sectionType').value;
     const content = document.getElementById('sectionContent').value;
+    const codeLanguage = document.getElementById('codeLanguage')?.value || 'bash';
     const data = getAdminData();
     const projectIndex = data.projects.findIndex(p => p.id === projectId);
     if (projectIndex === -1) {
@@ -654,7 +666,8 @@ function saveSection(e) {
         content,
         order: id
             ? (project.sections.find(s => s.id === id)?.order || project.sections.length)
-            : project.sections.length
+            : project.sections.length,
+        codeLanguage: type === 'code' ? codeLanguage : undefined
     };
     if (id) {
         const sectionIndex = project.sections.findIndex(s => s.id === id);
@@ -901,6 +914,155 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+function insertFormat(formatType) {
+    const textarea = document.getElementById('sectionContent');
+    if (!textarea)
+        return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    let insertion = '';
+    let cursorOffset = 0;
+    switch (formatType) {
+        case 'link':
+            if (selectedText) {
+                insertion = `[${selectedText}](url)`;
+                cursorOffset = insertion.length - 1;
+            }
+            else {
+                insertion = '[link text](url)';
+                cursorOffset = 1;
+            }
+            break;
+        case 'bold':
+            insertion = selectedText ? `**${selectedText}**` : '**bold text**';
+            cursorOffset = selectedText ? insertion.length : 2;
+            break;
+        case 'italic':
+            insertion = selectedText ? `*${selectedText}*` : '*italic text*';
+            cursorOffset = selectedText ? insertion.length : 1;
+            break;
+        case 'code':
+            insertion = selectedText ? `\`${selectedText}\`` : '`code`';
+            cursorOffset = selectedText ? insertion.length : 1;
+            break;
+        case 'codeblock':
+            insertion = selectedText
+                ? `\`\`\`bash\n${selectedText}\n\`\`\``
+                : '```bash\nyour code here\n```';
+            cursorOffset = selectedText ? insertion.length : 8;
+            break;
+        case 'heading':
+            insertion = selectedText ? `\n### ${selectedText}\n` : '\n### Subheading\n';
+            cursorOffset = insertion.length;
+            break;
+        case 'newline':
+            insertion = '\n\n';
+            cursorOffset = 2;
+            break;
+    }
+    textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
+    textarea.focus();
+    textarea.selectionStart = textarea.selectionEnd = start + cursorOffset;
+}
+function updateSectionHelp() {
+    const sectionType = document.getElementById('sectionType')?.value;
+    const helpText = document.getElementById('sectionHelpText');
+    const codeOptions = document.getElementById('codeOptions');
+    if (!helpText)
+        return;
+    if (codeOptions) {
+        codeOptions.style.display = sectionType === 'code' ? 'block' : 'none';
+    }
+    let helpContent = '';
+    switch (sectionType) {
+        case 'text':
+            helpContent = `
+                <strong>Text/Paragraph:</strong><br>
+                • Write content naturally with paragraphs<br>
+                • Use <code>[link text](url)</code> for links<br>
+                • Use <code>**bold**</code> and <code>*italic*</code><br>
+                • Use <code>\`code\`</code> for inline code<br>
+                • Use <code>### Heading</code> for sub-headings<br>
+                • Blank lines create new paragraphs
+            `;
+            break;
+        case 'cards-2':
+        case 'cards-3':
+            helpContent = `
+                <strong>Card Format:</strong><br>
+                • Separate each card with <code>---</code> on its own line<br>
+                • Card format: <code>Title | Description | Optional Code</code><br>
+                • Example:<br>
+                <code>Step 1 | Do this first | sudo apt update</code><br>
+                <code>---</code><br>
+                <code>Step 2 | Then do this | sudo apt upgrade -y</code>
+            `;
+            break;
+        case 'code':
+            helpContent = `
+                <strong>Code Block:</strong><br>
+                • Enter your code directly<br>
+                • Select the language below for syntax highlighting<br>
+                • The copy button will be added automatically
+            `;
+            break;
+        case 'callout-info':
+        case 'callout-warning':
+        case 'callout-danger':
+        case 'callout-success':
+            helpContent = `
+                <strong>Callout Box:</strong><br>
+                • Enter the message for the callout<br>
+                • Supports markdown formatting<br>
+                • Use for important notes, warnings, or tips
+            `;
+            break;
+        case 'steps':
+            helpContent = `
+                <strong>Step-by-Step Instructions:</strong><br>
+                • Each line becomes a numbered step<br>
+                • Use <code>---</code> to separate multi-line steps<br>
+                • Add code with <code>\`\`\`bash</code> and <code>\`\`\`</code>
+            `;
+            break;
+        case 'list':
+            helpContent = `
+                <strong>Bullet List:</strong><br>
+                • Each line becomes a list item<br>
+                • Supports markdown formatting within items
+            `;
+            break;
+        case 'video':
+            helpContent = `
+                <strong>Embedded Video:</strong><br>
+                • Enter YouTube URL: <code>https://youtube.com/watch?v=VIDEO_ID</code><br>
+                • Or Vimeo URL: <code>https://vimeo.com/VIDEO_ID</code><br>
+                • The video will be embedded responsively
+            `;
+            break;
+        case 'image':
+            helpContent = `
+                <strong>Image with Caption:</strong><br>
+                • Format: <code>image_path | caption text | alt text</code><br>
+                • Example: <code>assets/img/screenshot.png | Setup complete | Screenshot showing setup</code>
+            `;
+            break;
+        case 'links':
+            helpContent = `
+                <strong>Link Collection:</strong><br>
+                • Each line: <code>Link Text | URL | Optional Description</code><br>
+                • Example:<br>
+                <code>Official Docs | https://docs.example.com | Complete reference</code>
+            `;
+            break;
+        default:
+            helpContent = '<strong>Enter your content below.</strong>';
+    }
+    helpText.innerHTML = helpContent;
+}
+window.insertFormat = insertFormat;
+window.updateSectionHelp = updateSectionHelp;
 window.openSectionModalById = (sectionId, projectId) => {
     const data = getAdminData();
     const project = data.projects.find(p => p.id === projectId);
