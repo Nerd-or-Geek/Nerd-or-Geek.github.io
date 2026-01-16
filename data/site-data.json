@@ -166,7 +166,7 @@
           "id": "mkg13ep25g6w6nbdpsu",
           "title": "My Plugin List",
           "type": "list",
-          "content": "WorldEdit\nSimple Voice Chat\n**ViaVersion\nViaBackwards**\nTAB\nShulkerPlus\nPlaceholderAPI\nOrbitalStrike\nLifestealZ\nLagFixer\nEmotePaper\nClickVillagers\nClickMobs\n**Chunky**\nAxiom\nAxGraves\nAdvancedServerList",
+          "content": "WorldEdit\nSimple Voice Chat\n**ViaVersion**\n**ViaBackwards**\nTAB\nShulkerPlus\nPlaceholderAPI\nOrbitalStrike\nLifestealZ\nLagFixer\nEmotePaper\nClickVillagers\nClickMobs\n**Chunky**\nAxiom\nAxGraves\nAdvancedServerList",
           "order": 14
         }
       ],
@@ -261,5 +261,5 @@
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768516592073
+  "lastUpdated": 1768524564467
 }
