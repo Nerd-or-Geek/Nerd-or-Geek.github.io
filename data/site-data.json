@@ -22,7 +22,7 @@
       "id": "static-affiliate-3",
       "name": "Tech Explorations",
       "description": "Learn electronics, Arduino, Raspberry Pi, and practical engineering through hands-on courses.",
-      "link": "https://techexplorations.com/pc/?ref=hbwnc9",
+      "link": "https://techexplorations.com?ref=hbwnc9",
       "icon": "fa-microchip",
       "comingSoon": false,
       "createdAt": 1768499201280
@@ -268,5 +268,5 @@
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768614676698
+  "lastUpdated": 1768616678266
 }
