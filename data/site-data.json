@@ -168,6 +168,13 @@
           "type": "list",
           "content": "WorldEdit\nSimple Voice Chat\n**ViaVersion**\n**ViaBackwards**\nTAB\nShulkerPlus\nPlaceholderAPI\nOrbitalStrike\nLifestealZ\nLagFixer\nEmotePaper\nClickVillagers\nClickMobs\n**Chunky**\nAxiom\nAxGraves\nAdvancedServerList",
           "order": 14
+        },
+        {
+          "id": "mkhnienakjj29mkpxv",
+          "title": "How To Video",
+          "type": "video",
+          "content": "https://www.youtube.com/watch?v=v4VKDmE8yuU",
+          "order": 15
         }
       ],
       "createdAt": 1768499201280
@@ -261,5 +268,5 @@
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768524564467
+  "lastUpdated": 1768614676698
 }
