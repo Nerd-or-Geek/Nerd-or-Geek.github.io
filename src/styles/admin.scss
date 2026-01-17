@@ -70,7 +70,17 @@ $warning-color: #f59e0b;
     
     @media (max-width: 768px) {
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 0.75rem;
+        gap: 0.75rem;
+        
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 }
 
@@ -87,10 +97,13 @@ $warning-color: #f59e0b;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
+    white-space: nowrap;
+    position: relative;
     
     i {
         width: 20px;
         text-align: center;
+        font-size: 1rem;
     }
     
     &:hover {
@@ -103,13 +116,41 @@ $warning-color: #f59e0b;
         color: white;
     }
     
-    @media (max-width: 768px) {
-        flex: 1;
-        justify-content: center;
-        padding: 0.75rem;
-        
-        span {
+    .nav-text {
+        @media (max-width: 768px) {
             display: none;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        flex: 0 0 auto;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        min-width: 70px;
+        gap: 0.35rem;
+        
+        i {
+            font-size: 1.25rem;
+            width: auto;
+        }
+        
+        // Show abbreviated text on mobile
+        &::after {
+            content: attr(data-mobile-label);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        min-width: 60px;
+        padding: 0.6rem 0.75rem;
+        
+        &::after {
+            font-size: 0.6rem;
         }
     }
 }
@@ -215,6 +256,11 @@ $warning-color: #f59e0b;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
 }
 
 .item-card {
@@ -228,6 +274,20 @@ $warning-color: #f59e0b;
     &:hover {
         border-color: rgba(14, 165, 233, 0.3);
         transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+        border-radius: 0.75rem;
+        
+        &:hover {
+            transform: none; // Disable hover transform on touch devices
+        }
+        
+        &:active {
+            transform: scale(0.98);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
     }
 }
 
@@ -354,6 +414,23 @@ $warning-color: #f59e0b;
         border-color: $danger-color;
         color: $danger-color;
     }
+    
+    @media (max-width: 768px) {
+        padding: 0.75rem 0.5rem;
+        min-height: 44px; // iOS recommended touch target
+        font-size: 0.85rem;
+        
+        i {
+            font-size: 1rem;
+        }
+        
+        // Hide text on small screens, show only icons
+        @media (max-width: 400px) {
+            span {
+                display: none;
+            }
+        }
+    }
 }
 
 // Modal Styles
@@ -378,6 +455,11 @@ $warning-color: #f59e0b;
         opacity: 1;
         visibility: visible;
     }
+    
+    @media (max-width: 768px) {
+        padding: 0;
+        align-items: flex-start;
+    }
 }
 
 .modal-content {
@@ -388,6 +470,7 @@ $warning-color: #f59e0b;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     
     &.modal-large {
         max-width: 700px;
@@ -399,6 +482,27 @@ $warning-color: #f59e0b;
         display: flex;
         flex-direction: column;
     }
+    
+    @media (max-width: 768px) {
+        max-width: 100%;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
+        
+        &.modal-large {
+            max-width: 100%;
+        }
+        
+        &.modal-fullscreen {
+            max-width: 100%;
+            height: 100vh;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        border-radius: 0;
+    }
 }
 
 .modal-header {
@@ -407,16 +511,33 @@ $warning-color: #f59e0b;
     align-items: center;
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    z-index: 10;
     
     h3 {
         color: $text-light;
         font-size: 1.25rem;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+        
+        h3 {
+            font-size: 1.1rem;
+        }
     }
 }
 
 .modal-close {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -427,10 +548,18 @@ $warning-color: #f59e0b;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
     
     &:hover {
         background: rgba(239, 68, 68, 0.2);
         color: $danger-color;
+    }
+    
+    @media (max-width: 768px) {
+        width: 44px;
+        height: 44px;
+        font-size: 1.75rem;
     }
 }
 
@@ -440,11 +569,30 @@ $warning-color: #f59e0b;
     gap: 1rem;
     padding: 1rem 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    z-index: 10;
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+        
+        button {
+            width: 100%;
+            min-height: 44px;
+        }
+    }
 }
 
 // Form Styles
 form {
     padding: 1.5rem;
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 }
 
 .form-group {
@@ -460,6 +608,7 @@ form {
     
     input[type="text"],
     input[type="url"],
+    input[type="password"],
     textarea,
     select {
         width: 100%;
@@ -468,8 +617,10 @@ form {
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 0.5rem;
         color: $text-light;
-        font-size: 0.95rem;
+        font-size: 16px; // Prevent iOS zoom on focus
         transition: all 0.2s ease;
+        -webkit-appearance: none;
+        appearance: none;
         
         &::placeholder {
             color: rgba(255, 255, 255, 0.4);
@@ -479,6 +630,11 @@ form {
             outline: none;
             border-color: $primary-color;
             background: rgba(255, 255, 255, 0.08);
+        }
+        
+        @media (max-width: 768px) {
+            padding: 0.875rem 1rem;
+            min-height: 44px;
         }
     }
     
@@ -513,12 +669,19 @@ form {
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
+    padding: 0.5rem 0;
     
     input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+        width: 22px;
+        height: 22px;
         accent-color: $primary-color;
         cursor: pointer;
+        flex-shrink: 0;
+        
+        @media (max-width: 768px) {
+            width: 24px;
+            height: 24px;
+        }
     }
     
     span {
@@ -532,6 +695,10 @@ form {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
     padding: 1rem;
+    
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+    }
 }
 
 .icon-options {
@@ -539,6 +706,10 @@ form {
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 1rem;
+    
+    @media (max-width: 768px) {
+        gap: 0.375rem;
+    }
 }
 
 .icon-option {
@@ -565,6 +736,12 @@ form {
         background: rgba(14, 165, 233, 0.15);
         color: $primary-color;
     }
+    
+    @media (max-width: 768px) {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
 }
 
 .custom-icon-input {
@@ -588,6 +765,22 @@ form {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    
+    @media (max-width: 768px) {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        margin: 0 -1rem -1rem;
+        padding: 1rem;
+        border-radius: 0;
+        
+        button {
+            width: 100%;
+            min-height: 44px;
+        }
+    }
 }
 
 .btn-primary {
@@ -600,9 +793,19 @@ form {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
     
     &:hover {
         background: $primary-dark;
+    }
+    
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 }
 
@@ -616,6 +819,11 @@ form {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
     
     &:hover {
         background: rgba(255, 255, 255, 0.15);
@@ -632,6 +840,11 @@ form {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
     
     &:hover {
         background: rgba(245, 158, 11, 0.3);
@@ -660,6 +873,10 @@ form {
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 }
 
 .docs-editor-sidebar {
@@ -677,14 +894,47 @@ form {
         padding-bottom: 0.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
+    
+    @media (max-width: 768px) {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.75rem;
+        max-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        
+        h4 {
+            margin-bottom: 0.75rem;
+        }
+    }
 }
 
 .docs-sections-list {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    
+    @media (max-width: 768px) {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 0.375rem;
+        padding-bottom: 0.5rem;
+        
+        &::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+    }
 }
 
 .docs-section-item {
@@ -698,6 +948,7 @@ form {
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.2s ease;
+    gap: 0.5rem;
     
     &:hover {
         background: rgba(255, 255, 255, 0.08);
@@ -710,14 +961,48 @@ form {
         color: $primary-color;
     }
     
-    span {
-        flex: 1;
-        font-size: 0.9rem;
+    // Drag and drop states
+    &.dragging {
+        opacity: 0.5;
+        border: 1px dashed $primary-color;
     }
     
-    .section-actions {
+    &.drag-over {
+        border-color: $primary-color;
+        background: rgba(14, 165, 233, 0.2);
+    }
+    
+    .section-drag-handle {
         display: flex;
-        gap: 0.25rem;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        color: rgba(255, 255, 255, 0.3);
+        cursor: grab;
+        flex-shrink: 0;
+        
+        &:active {
+            cursor: grabbing;
+        }
+        
+        &:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    }
+    
+    .section-label {
+        flex: 1;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .section-order-controls {
+        display: flex;
+        gap: 0.125rem;
+        flex-shrink: 0;
         
         button {
             width: 24px;
@@ -728,7 +1013,38 @@ form {
             background: transparent;
             border: none;
             color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.15s ease;
+            
+            &:hover:not(:disabled) {
+                background: rgba(255, 255, 255, 0.1);
+                color: $primary-color;
+            }
+            
+            &:disabled {
+                opacity: 0.2;
+                cursor: not-allowed;
+            }
+        }
+    }
+    
+    .section-actions {
+        display: flex;
+        gap: 0.25rem;
+        flex-shrink: 0;
+        
+        button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
             cursor: pointer;
             border-radius: 0.25rem;
             
@@ -740,6 +1056,32 @@ form {
             &.delete-section:hover {
                 color: $danger-color;
             }
+        }
+    }
+    
+    @media (max-width: 768px) {
+        flex: 0 0 auto;
+        min-width: 140px;
+        max-width: 180px;
+        padding: 0.6rem 0.75rem;
+        
+        .section-drag-handle {
+            display: none; // Hide drag on mobile, use up/down buttons
+        }
+        
+        .section-label {
+            font-size: 0.8rem;
+        }
+        
+        .section-order-controls {
+            button {
+                min-width: 32px;
+                min-height: 32px;
+            }
+        }
+        
+        .section-actions {
+            display: none; // Hide on mobile, use tap to edit
         }
     }
 }
@@ -758,10 +1100,16 @@ form {
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 44px;
     
     &:hover {
         background: rgba(14, 165, 233, 0.25);
         border-style: solid;
+    }
+    
+    @media (max-width: 768px) {
+        margin-top: 0.5rem;
+        padding: 0.6rem 1rem;
     }
 }
 
@@ -769,6 +1117,11 @@ form {
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 }
 
 .no-section-selected {
@@ -786,6 +1139,10 @@ form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    
+    @media (max-width: 768px) {
+        gap: 1rem;
+    }
 }
 
 .settings-card {
@@ -799,6 +1156,9 @@ form {
         color: $text-light;
         font-size: 1.1rem;
         margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
         
         i {
             margin-right: 0.5rem;
@@ -816,6 +1176,19 @@ form {
     &.settings-card-primary {
         border-color: $primary-color;
         background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
+    }
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+        border-radius: 0.75rem;
+        
+        h3 {
+            font-size: 1rem;
+        }
+        
+        p {
+            font-size: 0.85rem;
+        }
     }
 }
 
@@ -857,6 +1230,15 @@ form {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 0.75rem;
+        
+        button {
+            width: 100%;
+        }
+    }
 }
 
 // Toast Notification
@@ -864,8 +1246,10 @@ form {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+    left: 2rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
     background: $success-color;
@@ -890,6 +1274,20 @@ form {
     
     i {
         font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+    
+    @media (min-width: 769px) {
+        left: auto;
+        max-width: 400px;
+    }
+    
+    @media (max-width: 480px) {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -953,6 +1351,9 @@ form {
     align-items: center;
     justify-content: center;
     z-index: 10000;
+    padding: 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .login-container {
@@ -963,8 +1364,12 @@ form {
     padding: 2.5rem;
     width: 100%;
     max-width: 400px;
-    margin: 1rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    
+    @media (max-width: 480px) {
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
 }
 
 .login-header {
@@ -975,6 +1380,7 @@ form {
         font-size: 3rem;
         color: $primary-color;
         margin-bottom: 1rem;
+        display: block;
     }
     
     h2 {
@@ -986,6 +1392,18 @@ form {
     p {
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.9rem;
+    }
+    
+    @media (max-width: 480px) {
+        margin-bottom: 1.5rem;
+        
+        i {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
     }
 }
 

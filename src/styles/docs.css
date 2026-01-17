@@ -149,6 +149,7 @@
     position: sticky;
     top: 80px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: var(--docs-border) transparent;
 }
@@ -158,10 +159,24 @@
         flex: none;
         border-right: none;
         border-bottom: 1px solid var(--docs-border);
-        padding: 1.5rem;
+        padding: 1rem;
         max-height: none;
         position: relative;
         top: 0;
+    }
+    
+    .docs-sidebar.collapsed .docs-toc {
+        display: none;
+    }
+    
+    .docs-sidebar.collapsed .docs-nav-header {
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .docs-sidebar {
+        padding: 0.75rem;
     }
 }
 
@@ -194,6 +209,17 @@
     border-left: 3px solid transparent;
     font-size: 0.9375rem;
     letter-spacing: -0.01em;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .docs-link,
+    .docs-sublink {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
 }
 
 .docs-link:hover,
@@ -225,11 +251,18 @@
     padding: var(--space-2xl) var(--space-xl);
     min-height: 100vh;
     max-width: 1200px;
+    overflow-x: hidden;
 }
 
 @media (max-width: 768px) {
     .docs-main {
-        padding: var(--space-lg);
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .docs-main {
+        padding: 0.75rem;
     }
 }
 
