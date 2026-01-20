@@ -44,6 +44,9 @@ function getBasePath() {
 function getProjectLinkForSearch(project) {
     const basePath = getBasePath();
     if (project.staticUrl) {
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            return project.staticUrl;
+        }
         return `${basePath}${project.staticUrl}`;
     }
     return `${basePath}projects/docs.html?id=${encodeURIComponent(project.id)}`;
@@ -402,9 +405,12 @@ async function renderDynamicAffiliates() {
 }
 function getProjectLink(project) {
     if (project.staticUrl) {
-        return project.staticUrl;
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            return project.staticUrl;
+        }
+        return `${getBasePath()}${project.staticUrl}`;
     }
-    return `projects/docs.html?id=${encodeURIComponent(project.id)}`;
+    return `${getBasePath()}projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 async function renderDynamicProjects() {
     const data = await fetchSiteData();
@@ -474,7 +480,17 @@ function showDynamicProjectDocs(projectId) {
     if (!project)
         return;
     const basePath = getBasePath();
-    window.location.href = `${basePath}projects/docs.html?id=${encodeURIComponent(projectId)}`;
+    if (project.staticUrl) {
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            window.location.href = project.staticUrl;
+        }
+        else {
+            window.location.href = `${basePath}${project.staticUrl}`;
+        }
+    }
+    else {
+        window.location.href = `${basePath}projects/docs.html?id=${encodeURIComponent(projectId)}`;
+    }
 }
 window.showDynamicProjectDocs = showDynamicProjectDocs;
 function showPreviewModeBanner() {

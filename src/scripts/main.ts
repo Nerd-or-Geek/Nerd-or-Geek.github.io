@@ -496,6 +496,7 @@ interface AdminProject {
     tags: string[];
     icon: string;
     customImage?: string;
+    staticUrl?: string;
 }
 
 interface AdminSoftware {
@@ -738,7 +739,7 @@ function showDynamicProjectDocs(projectId: string): void {
     const project = data.projects.find(p => p.id === projectId);
     if (!project) return;
     
-    // Navigate to the dynamic documentation page
+    // Navigate to the dynamic documentation page or static URL
     const basePath = getBasePath();
     // Use staticUrl if available
     if (project.staticUrl) {
