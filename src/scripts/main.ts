@@ -104,6 +104,10 @@ function getProjectLinkForSearch(project: any): string {
     const basePath = getBasePath();
     // Use static URL if project has one, otherwise use dynamic docs page
     if (project.staticUrl) {
+        // Use staticUrl directly, with basePath if not absolute
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            return project.staticUrl;
+        }
         return `${basePath}${project.staticUrl}`;
     }
     return `${basePath}projects/docs.html?id=${encodeURIComponent(project.id)}`;
@@ -638,9 +642,13 @@ async function renderDynamicAffiliates(): Promise<void> {
 function getProjectLink(project: AdminProject): string {
     // Use static URL if project has one, otherwise use dynamic docs page
     if ((project as any).staticUrl) {
-        return (project as any).staticUrl;
+        // Use staticUrl directly, with basePath if not absolute
+        if (/^https?:\/\//.test((project as any).staticUrl)) {
+            return (project as any).staticUrl;
+        }
+        return `${getBasePath()}${(project as any).staticUrl}`;
     }
-    return `projects/docs.html?id=${encodeURIComponent(project.id)}`;
+    return `${getBasePath()}projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 
 /**
@@ -732,7 +740,16 @@ function showDynamicProjectDocs(projectId: string): void {
     
     // Navigate to the dynamic documentation page
     const basePath = getBasePath();
-    window.location.href = `${basePath}projects/docs.html?id=${encodeURIComponent(projectId)}`;
+    // Use staticUrl if available
+    if (project.staticUrl) {
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            window.location.href = project.staticUrl;
+        } else {
+            window.location.href = `${basePath}${project.staticUrl}`;
+        }
+    } else {
+        window.location.href = `${basePath}projects/docs.html?id=${encodeURIComponent(projectId)}`;
+    }
 }
 
 // Make showDynamicProjectDocs available globally
