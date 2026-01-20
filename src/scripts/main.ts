@@ -642,12 +642,12 @@ async function renderDynamicAffiliates(): Promise<void> {
  */
 function getProjectLink(project: AdminProject): string {
     // Use static URL if project has one, otherwise use dynamic docs page
-    if ((project as any).staticUrl) {
+    if (project.staticUrl) {
         // Use staticUrl directly, with basePath if not absolute
-        if (/^https?:\/\//.test((project as any).staticUrl)) {
-            return (project as any).staticUrl;
+        if (/^https?:\/\//.test(project.staticUrl)) {
+            return project.staticUrl;
         }
-        return `${getBasePath()}${(project as any).staticUrl}`;
+        return `${getBasePath()}${project.staticUrl}`;
     }
     return `${getBasePath()}projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
