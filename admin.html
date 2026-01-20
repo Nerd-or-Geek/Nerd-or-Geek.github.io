@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="src/styles/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="index.html" class="header-nav-link">Home</a>
+                <a href="projects.html" class="header-nav-link">Projects</a>
+            </nav>
+            <div class="admin-badge">
+                <i class="fas fa-shield-halved"></i> Admin Portal
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-container">
+            <!-- Sidebar Navigation -->
+            <aside class="admin-sidebar">
+                <nav class="admin-nav">
+                    <button class="admin-nav-btn active" data-section="affiliates" data-mobile-label="Links">
+                        <i class="fas fa-handshake"></i> <span class="nav-text">Affiliates</span>
+                    </button>
+                    <button class="admin-nav-btn" data-section="projects" data-mobile-label="Docs">
+                        <i class="fas fa-folder-open"></i> <span class="nav-text">Projects</span>
+                    </button>
+                    <button class="admin-nav-btn" data-section="software" data-mobile-label="Apps">
+                        <i class="fas fa-code"></i> <span class="nav-text">Software</span>
+                    </button>
+                    <button class="admin-nav-btn" data-section="settings" data-mobile-label="Config">
+                        <i class="fas fa-cog"></i> <span class="nav-text">Settings</span>
+                        <span class="unpublished-badge" id="settingsBadge" style="display: none;">!</span>
+                    </button>
+                </nav>
+                <div class="admin-status">
+                    <div class="sync-status" id="sidebarSyncStatus">
+                        <span class="sync-dot synced"></span>
+                        <span class="sync-text">Published</span>
+                    </div>
+                </div>
+                <div class="admin-actions">
+                    <button class="admin-export-btn" id="exportData">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="admin-logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Affiliates Section -->
+                <section class="admin-section active" id="section-affiliates">
+                    <div class="section-header-admin">
+                        <h2><i class="fas fa-handshake"></i> Affiliate Partners</h2>
+                        <button class="add-btn" id="addAffiliate">
+                            <i class="fas fa-plus"></i> Add Affiliate
+                        </button>
+                    </div>
+                    <div class="items-grid" id="affiliatesList">
+                        <!-- Affiliates will be rendered here -->
+                    </div>
+                </section>
+
+                <!-- Projects Section -->
+                <section class="admin-section" id="section-projects">
+                    <div class="section-header-admin">
+                        <h2><i class="fas fa-folder-open"></i> Projects</h2>
+                        <button class="add-btn" id="addProject">
+                            <i class="fas fa-plus"></i> Add Project
+                        </button>
+                    </div>
+                    <div class="items-grid" id="projectsList">
+                        <!-- Projects will be rendered here -->
+                    </div>
+                </section>
+
+                <!-- Software Section -->
+                <section class="admin-section" id="section-software">
+                    <div class="section-header-admin">
+                        <h2><i class="fas fa-code"></i> Software & Tools</h2>
+                        <button class="add-btn" id="addSoftware">
+                            <i class="fas fa-plus"></i> Add Software
+                        </button>
+                    </div>
+                    <div class="items-grid" id="softwareList">
+                        <!-- Software will be rendered here -->
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section class="admin-section" id="section-settings">
+                    <div class="section-header-admin">
+                        <h2><i class="fas fa-cog"></i> Settings</h2>
+                    </div>
+                    <div class="settings-content">
+                        <!-- GitHub Integration -->
+                        <div class="settings-card settings-card-primary">
+                            <h3><i class="fab fa-github"></i> GitHub Integration</h3>
+                            <p>Connect to GitHub to push changes directly from the admin portal.</p>
+                            <div class="github-setup" id="githubSetup">
+                                <div class="form-group">
+                                    <label for="githubToken">Personal Access Token</label>
+                                    <div class="token-input-group">
+                                        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                                        <button type="button" class="btn-icon" id="toggleTokenVisibility">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <small>Create a token at <a href="https://github.com/settings/tokens/new" target="_blank">GitHub Settings</a> with <code>repo</code> scope</small>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="githubOwner">Repository Owner</label>
+                                        <input type="text" id="githubOwner" placeholder="Nerd-or-Geek">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="githubRepo">Repository Name</label>
+                                        <input type="text" id="githubRepo" placeholder="nerd-or-geek.github.io">
+                                    </div>
+                                </div>
+                                <div class="settings-actions">
+                                    <button class="btn-primary" id="saveGithubSettings">
+                                        <i class="fas fa-save"></i> Save GitHub Settings
+                                    </button>
+                                    <button class="btn-secondary" id="testGithubConnection">
+                                        <i class="fas fa-plug"></i> Test Connection
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="github-status" id="githubStatus" style="display: none;">
+                                <div class="status-connected">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Connected to <strong id="connectedRepo"></strong></span>
+                                    <button class="btn-link" id="editGithubSettings">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Publish Changes -->
+                        <div class="settings-card" id="publishCard">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Publish Changes</h3>
+                            <div class="publish-status" id="publishStatus">
+                                <div class="status-indicator status-synced" id="syncedStatus">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>All changes are published</span>
+                                </div>
+                                <div class="status-indicator status-pending" id="pendingStatus" style="display: none;">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>You have unpublished changes</span>
+                                </div>
+                            </div>
+                            <div class="settings-actions">
+                                <button class="btn-primary btn-large" id="pushToGithub" disabled>
+                                    <i class="fas fa-cloud-upload-alt"></i> Push to GitHub
+                                </button>
+                                <button class="btn-secondary" id="exportSiteData">
+                                    <i class="fas fa-download"></i> Export JSON
+                                </button>
+                            </div>
+                            <p class="settings-note" id="noGithubNote">
+                                <i class="fas fa-info-circle"></i> Configure GitHub above to enable direct push, or export JSON manually.
+                            </p>
+                        </div>
+
+                        <!-- Preview Mode -->
+                        <div class="settings-card">
+                            <h3><i class="fas fa-eye"></i> Preview Mode</h3>
+                            <p>Preview your changes on the live site before publishing.</p>
+                            <div class="preview-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="previewModeToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label">Enable Preview Mode</span>
+                            </div>
+                            <p class="settings-note">When enabled, the main site will show your local changes instead of published data.</p>
+                        </div>
+
+                        <div class="settings-card">
+                            <h3>Data Management</h3>
+                            <p>Manage your local data and backups.</p>
+                            <div class="settings-actions">
+                                <button class="btn-secondary" id="importData">
+                                    <i class="fas fa-upload"></i> Import Data
+                                </button>
+                                <input type="file" id="importFile" accept=".json" style="display: none;">
+                                <button class="btn-secondary" id="clearAllData">
+                                    <i class="fas fa-trash"></i> Clear All Data
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-card">
+                            <h3>Reset to Defaults</h3>
+                            <p>Reset all data to the default content including comprehensive documentation for Pinecraft and P4wnP1 projects.</p>
+                            <div class="settings-actions">
+                                <button class="btn-warning" id="resetToDefaults">
+                                    <i class="fas fa-undo"></i> Reset to Defaults
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Adding/Editing Affiliates -->
+    <div class="modal" id="affiliateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="affiliateModalTitle">Add Affiliate</h3>
+                <button class="modal-close" data-modal="affiliateModal">&times;</button>
+            </div>
+            <form id="affiliateForm">
+                <input type="hidden" id="affiliateId">
+                <div class="form-group">
+                    <label for="affiliateName">Affiliate Name *</label>
+                    <input type="text" id="affiliateName" required placeholder="e.g., Raspberry Pi Tips School">
+                </div>
+                <div class="form-group">
+                    <label for="affiliateDescription">Description *</label>
+                    <textarea id="affiliateDescription" required placeholder="Brief description of the affiliate..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="affiliateLink">Affiliate Link *</label>
+                    <input type="url" id="affiliateLink" required placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Icon</label>
+                    <div class="icon-selector">
+                        <div class="icon-options" id="affiliateIconOptions">
+                            <button type="button" class="icon-option active" data-icon="fa-graduation-cap"><i class="fas fa-graduation-cap"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-robot"><i class="fas fa-robot"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-microchip"><i class="fas fa-microchip"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-laptop-code"><i class="fas fa-laptop-code"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-server"><i class="fas fa-server"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-cloud"><i class="fas fa-cloud"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-store"><i class="fas fa-store"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-book"><i class="fas fa-book"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-toolbox"><i class="fas fa-toolbox"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-gamepad"><i class="fas fa-gamepad"></i></button>
+                        </div>
+                        <div class="custom-icon-input">
+                            <label for="affiliateCustomIcon">Or enter custom icon class:</label>
+                            <input type="text" id="affiliateCustomIcon" placeholder="e.g., fa-star">
+                        </div>
+                    </div>
+                    <input type="hidden" id="affiliateIcon" value="fa-graduation-cap">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="affiliateComingSoon">
+                        <span>Mark as "Coming Soon"</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" data-modal="affiliateModal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Affiliate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Projects -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="projectModalTitle">Add Project</h3>
+                <button class="modal-close" data-modal="projectModal">&times;</button>
+            </div>
+            <form id="projectForm">
+                <input type="hidden" id="projectId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="projectName">Project Name *</label>
+                        <input type="text" id="projectName" required placeholder="e.g., Pinecraft">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectBadge">Badge</label>
+                        <select id="projectBadge">
+                            <option value="">None</option>
+                            <option value="Popular">Popular</option>
+                            <option value="New">New</option>
+                            <option value="Security">Security</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Beginner">Beginner</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Short Description *</label>
+                    <textarea id="projectDescription" required placeholder="Brief description for the project card..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectTags">Tags (comma-separated)</label>
+                    <input type="text" id="projectTags" placeholder="e.g., Raspberry Pi, Minecraft, Server">
+                </div>
+                <div class="form-group">
+                    <label>Project Icon/Image</label>
+                    <div class="icon-selector">
+                        <div class="icon-options" id="projectIconOptions">
+                            <button type="button" class="icon-option active" data-icon="fa-cube"><i class="fas fa-cube"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-usb"><i class="fas fa-usb"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-server"><i class="fas fa-server"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-network-wired"><i class="fas fa-network-wired"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-shield-halved"><i class="fas fa-shield-halved"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-microchip"><i class="fas fa-microchip"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-gamepad"><i class="fas fa-gamepad"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-robot"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <div class="custom-icon-input">
+                            <label for="projectCustomImage">Or enter image path:</label>
+                            <input type="text" id="projectCustomImage" placeholder="assets/img/projects/myproject.png">
+                        </div>
+                    </div>
+                    <input type="hidden" id="projectIcon" value="fa-cube">
+                </div>
+                
+                <!-- Theme Settings -->
+                <div class="form-group theme-settings">
+                    <label>Documentation Theme</label>
+                    <div class="theme-presets">
+                        <button type="button" class="theme-preset active" data-theme="default">
+                            <span class="theme-preview theme-default"></span>
+                            <span>Default</span>
+                        </button>
+                        <button type="button" class="theme-preset" data-theme="ocean">
+                            <span class="theme-preview theme-ocean"></span>
+                            <span>Ocean</span>
+                        </button>
+                        <button type="button" class="theme-preset" data-theme="forest">
+                            <span class="theme-preview theme-forest"></span>
+                            <span>Forest</span>
+                        </button>
+                        <button type="button" class="theme-preset" data-theme="sunset">
+                            <span class="theme-preview theme-sunset"></span>
+                            <span>Sunset</span>
+                        </button>
+                        <button type="button" class="theme-preset" data-theme="midnight">
+                            <span class="theme-preview theme-midnight"></span>
+                            <span>Midnight</span>
+                        </button>
+                        <button type="button" class="theme-preset" data-theme="custom">
+                            <span class="theme-preview theme-custom"><i class="fas fa-palette"></i></span>
+                            <span>Custom</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="projectThemePreset" value="default">
+                    
+                    <!-- Custom Color Inputs (shown when custom is selected) -->
+                    <div class="custom-theme-colors" id="customThemeColors" style="display: none;">
+                        <div class="color-row">
+                            <div class="color-input">
+                                <label for="themePrimaryColor">Primary Color</label>
+                                <input type="color" id="themePrimaryColor" value="#0ea5e9">
+                            </div>
+                            <div class="color-input">
+                                <label for="themeAccentColor">Accent Color</label>
+                                <input type="color" id="themeAccentColor" value="#38bdf8">
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-input">
+                                <label for="themeTextColor">Text Color</label>
+                                <input type="color" id="themeTextColor" value="#f8fafc">
+                            </div>
+                            <div class="color-input">
+                                <label for="themeCardBgColor">Card Background</label>
+                                <input type="color" id="themeCardBgColor" value="#1e293b">
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-input">
+                                <label for="themeHeroBgColor">Hero Background</label>
+                                <input type="color" id="themeHeroBgColor" value="#0f172a">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" data-modal="projectModal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Project Documentation Editor -->
+    <div class="modal" id="docsModal">
+        <div class="modal-content modal-fullscreen">
+            <div class="modal-header">
+                <h3 id="docsModalTitle">Edit Documentation</h3>
+                <button class="modal-close" data-modal="docsModal">&times;</button>
+            </div>
+            <div class="docs-editor">
+                <input type="hidden" id="docsProjectId">
+                <div class="docs-editor-sidebar">
+                    <h4>Sections</h4>
+                    <div class="docs-sections-list" id="docsSectionsList">
+                        <!-- Sections will be rendered here -->
+                    </div>
+                    <button class="add-section-btn" id="addDocsSection">
+                        <i class="fas fa-plus"></i> Add Section
+                    </button>
+                </div>
+                <div class="docs-editor-main">
+                    <div id="currentSectionEditor">
+                        <p class="no-section-selected">Select a section to edit or add a new one.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-modal="docsModal">Close</button>
+                <button type="button" class="btn-primary" id="saveDocs">Save Documentation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Software -->
+    <div class="modal" id="softwareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="softwareModalTitle">Add Software</h3>
+                <button class="modal-close" data-modal="softwareModal">&times;</button>
+            </div>
+            <form id="softwareForm">
+                <input type="hidden" id="softwareId">
+                <div class="form-group">
+                    <label for="softwareName">Software Name *</label>
+                    <input type="text" id="softwareName" required placeholder="e.g., Photo Metadata App">
+                </div>
+                <div class="form-group">
+                    <label for="softwareDescription">Description *</label>
+                    <textarea id="softwareDescription" required placeholder="Brief description of the software..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="softwareLink">GitHub/Link *</label>
+                    <input type="url" id="softwareLink" required placeholder="https://github.com/...">
+                </div>
+                <div class="form-group">
+                    <label>Icon</label>
+                    <div class="icon-selector">
+                        <div class="icon-options" id="softwareIconOptions">
+                            <button type="button" class="icon-option active" data-icon="fa-code"><i class="fas fa-code"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-image"><i class="fas fa-image"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-shield-halved"><i class="fas fa-shield-halved"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-car"><i class="fas fa-car"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-terminal"><i class="fas fa-terminal"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-database"><i class="fas fa-database"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-mobile-alt"><i class="fas fa-mobile-alt"></i></button>
+                            <button type="button" class="icon-option" data-icon="fa-desktop"><i class="fas fa-desktop"></i></button>
+                        </div>
+                        <div class="custom-icon-input">
+                            <label for="softwareCustomImage">Or enter image path:</label>
+                            <input type="text" id="softwareCustomImage" placeholder="assets/img/projects/myapp.png">
+                        </div>
+                    </div>
+                    <input type="hidden" id="softwareIcon" value="fa-code">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="softwareUnderDev">
+                        <span>Mark as "Under Development"</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" data-modal="softwareModal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Software</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Section Editor Modal -->
+    <div class="modal" id="sectionModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="sectionModalTitle">Add Section</h3>
+                <button class="modal-close" data-modal="sectionModal">&times;</button>
+            </div>
+            <form id="sectionForm">
+                <input type="hidden" id="sectionId">
+                <input type="hidden" id="sectionProjectId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sectionTitle">Section Title *</label>
+                        <input type="text" id="sectionTitle" required placeholder="e.g., Installation">
+                    </div>
+                    <div class="form-group">
+                        <label for="sectionType">Section Type</label>
+                        <select id="sectionType" onchange="updateSectionHelp()">
+                            <option value="text">Text/Paragraph</option>
+                            <option value="cards-2">2-Column Cards</option>
+                            <option value="cards-3">3-Column Cards</option>
+                            <option value="code">Code Block</option>
+                            <option value="callout-info">Info Callout</option>
+                            <option value="callout-warning">Warning Callout</option>
+                            <option value="callout-danger">Danger Callout</option>
+                            <option value="callout-success">Success Callout</option>
+                            <option value="steps">Step-by-Step Instructions</option>
+                            <option value="list">Bullet List</option>
+                            <option value="video">Embedded Video</option>
+                            <option value="image">Image with Caption</option>
+                            <option value="links">Link Collection</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Formatting Toolbar -->
+                <div class="editor-toolbar">
+                    <span class="toolbar-label">Insert:</span>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('link')" title="Insert Link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('bold')" title="Bold Text">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('italic')" title="Italic Text">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('code')" title="Inline Code">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('codeblock')" title="Code Block">
+                        <i class="fas fa-terminal"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('heading')" title="Sub-heading">
+                        <i class="fas fa-heading"></i>
+                    </button>
+                    <button type="button" class="toolbar-btn" onclick="insertFormat('newline')" title="Line Break">
+                        <i class="fas fa-level-down-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sectionContent">Content *</label>
+                    <textarea id="sectionContent" rows="15" required placeholder="Enter section content..."></textarea>
+                    <div class="form-help" id="sectionHelpText">
+                        <strong>Formatting Guide:</strong><br>
+                        • Use <code>[link text](url)</code> for links<br>
+                        • Use <code>**bold**</code> for bold text<br>
+                        • Use <code>*italic*</code> for italic text<br>
+                        • Use <code>`code`</code> for inline code<br>
+                        • Use <code>```language</code> and <code>```</code> for code blocks<br>
+                        • Use <code>### Heading</code> for sub-headings<br>
+                        • Blank lines create new paragraphs
+                    </div>
+                </div>
+                
+                <!-- Code Language Selector (shown for code blocks) -->
+                <div class="form-group code-options" id="codeOptions" style="display: none;">
+                    <label for="codeLanguage">Code Language</label>
+                    <select id="codeLanguage">
+                        <option value="bash">Bash/Shell</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="python">Python</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="json">JSON</option>
+                        <option value="yaml">YAML</option>
+                        <option value="text">Plain Text</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" data-modal="sectionModal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Section</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay" style="display: flex;">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-shield-halved"></i>
+                <h2>Admin Portal</h2>
+                <p>Enter your password to access the admin portal</p>
+            </div>
+            <form id="adminLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="adminPassword" required placeholder="Enter admin password" autocomplete="current-password">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+                <div class="login-error" id="loginError" style="display: none;"></div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="login-footer">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Saved successfully!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="dist/scripts/admin.js" type="module"></script>
+</body>
+</html>

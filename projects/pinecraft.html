@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinecraft Documentation | Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="../index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="../index.html" class="header-nav-link">Home</a>
+                <a href="../projects.html" class="header-nav-link active">Projects</a>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search docs..."
+                    aria-label="Search"
+                >
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="docs-wrapper">
+        <aside class="docs-sidebar">
+            <nav class="docs-nav">
+                <div class="docs-nav-header">
+                    <h3>Pinecraft Docs</h3>
+                </div>
+                <ul class="docs-toc">
+                    <li><a href="#overview" class="docs-link">Overview</a></li>
+                    <li><a href="#requirements" class="docs-link">Requirements</a></li>
+                    <li><a href="#installation" class="docs-link">Installation</a></li>
+                    <li><a href="#server-management" class="docs-link">Server Management</a></li>
+                    <li><a href="#customization" class="docs-link">Customization</a></li>
+                    <li><a href="#networking" class="docs-link">Networking</a></li>
+                    <li><a href="#troubleshooting" class="docs-link">Troubleshooting</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="docs-main">
+            <div class="docs-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../projects.html">Projects</a>
+                <span class="separator">/</span>
+                <span class="current">Pinecraft Docs</span>
+            </div>
+            <section class="docs-hero">
+                <div class="docs-hero-content">
+                    <h1 class="docs-title">Pinecraft</h1>
+                    <p class="docs-subtitle">Minecraft Java Server & Pinecraft on Raspberry Pi 4</p>
+                    <div class="docs-meta">
+                        <span class="docs-badge">Tutorial</span>
+                        <span class="docs-badge">Raspberry Pi</span>
+                        <span class="docs-badge">Minecraft</span>
+                    </div>
+                </div>
+                <div class="docs-hero-image">
+                    <img src="../assets/img/projects/Pinecraft.png" alt="Pinecraft project logo">
+                </div>
+            </section>
+            <article class="docs-content">
+                <!-- Overview -->
+                <section id="overview" class="docs-section">
+                    <h2 class="docs-heading">Overview</h2>
+                    <p>Pinecraft is a lightweight Minecraft Java server distribution for Raspberry Pi 4, featuring the Paper server implementation optimized for resource-constrained environments.</p>
+                </section>
+
+                <!-- Requirements -->
+                <section id="requirements" class="docs-section">
+                    <h2 class="docs-heading">Requirements</h2>
+                    <p>Verify you have all necessary hardware before starting installation.</p>
+                    
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h3>Required Hardware</h3>
+                            <ul>
+                                <li>Raspberry Pi 4 (4GB or 8GB RAM)</li>
+                                <li>MicroSD card (32GB+ Class 10/UHS-1)</li>
+                                <li>Official Raspberry Pi power supply (3A USB-C)</li>
+                                <li>Ethernet cable or reliable WiFi</li>
+                                <li>Computer for setup (Windows, macOS, Linux)</li>
+                            </ul>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Optional Hardware</h3>
+                            <ul>
+                                <li>Heatsink and fan for cooling</li>
+                                <li>External SSD for improved performance</li>
+                                <li>Case with ventilation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <!-- Installation -->
+                <section id="installation" class="docs-section">
+                    <h2 class="docs-heading">Installation</h2>
+                    <p>Follow these steps to prepare your Raspberry Pi and install Pinecraft.</p>
+                    
+                    <h3>Prepare Raspberry Pi OS</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4>Download Imager</h4>
+                            <p>Get the official Raspberry Pi Imager from the Raspberry Pi website.</p>
+                            <p><a href="https://www.raspberrypi.com/software/" target="_blank">Download Raspberry Pi Imager</a></p>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Flash OS</h4>
+                            <p>Use the Imager to flash Raspberry Pi OS Lite (64-bit) to your MicroSD card.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Configure First Boot</h4>
+                            <p>In Imager settings, enable SSH, set hostname, username/password, and WiFi if needed.</p>
+                        </div>
+                    </div>
+
+                    <h3>Configure System</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4>Expand Filesystem</h4>
+                            <p>Ensure the full SD card capacity is available to the system.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">sudo raspi-config</code></pre>
+                            </div>
+                            <p>Select: Advanced Options → Expand Filesystem</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Update Packages</h4>
+                            <p>Update and upgrade all system packages to the latest versions.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">sudo apt update && sudo apt upgrade -y</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Install Git</h4>
+                            <p>Install Git to clone the Pinecraft repository.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">sudo apt install git -y</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Install Pinecraft</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4>Clone Repository</h4>
+                            <p>Download the Pinecraft installer from GitHub.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">git clone https://github.com/cat5TV/pinecraft.git</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Run Installer</h4>
+                            <p>Execute the installation script with elevated privileges.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">cd pinecraft && sudo ./install.sh</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Verify Status</h4>
+                            <p>Confirm the server service is running after installation.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">/etc/init.d/pinecraft status</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Server Management -->
+                <section id="server-management" class="docs-section">
+                    <h2 class="docs-heading">Server Management</h2>
+                    <p>Essential commands for controlling the Pinecraft server.</p>
+                    
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h3>Start Server</h3>
+                            <p>Launch the Minecraft server process.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">~/minecraft/server</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Stop Server</h3>
+                            <p>Gracefully shut down the server.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">/etc/init.d/pinecraft stop</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Restart Server</h3>
+                            <p>Stop and restart the server process.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">~/minecraft/restart</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Check Status</h3>
+                            <p>Verify if the server is currently running.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">/etc/init.d/pinecraft status</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>View Logs</h3>
+                            <p>Monitor server output in real-time.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">tail -f /var/log/pinecraft.log</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Customization -->
+                <section id="customization" class="docs-section">
+                    <h2 class="docs-heading">Customization</h2>
+                    <p>Extend your server with plugins, custom worlds, and Paper updates.</p>
+                    
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h3>Update Paper</h3>
+                            <p>Download the latest Paper build from PaperMC for performance and security updates.</p>
+                            <p><a href="https://papermc.io/downloads" target="_blank">Download Paper JAR</a></p>
+                            <p>Replace <code>Minecraft.jar</code> in the server directory and restart.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Install Plugins</h3>
+                            <p>Add Paper-compatible plugins to extend server functionality.</p>
+                            <p>Place JAR files in the <code>plugins/</code> directory. Restart the server to apply.</p>
+                            <p><a href="https://papermc.io/" target="_blank">Browse PaperMC Plugins</a></p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Add Custom World</h3>
+                            <p>Import pre-built or existing Minecraft worlds into your server.</p>
+                            <p>Copy world folder to server directory. Edit <code>server.properties</code> and set <code>level-name</code> to match.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Networking -->
+                <section id="networking" class="docs-section">
+                    <h2 class="docs-heading">Networking</h2>
+                    <p>Connect players to your server on the local network or remotely.</p>
+                    
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h3>Get Local IP</h3>
+                            <p>Find your Pi's local IP address for LAN connections.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">hostname -I</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Local Connection</h3>
+                            <p>Connect from the same network using your Pi's local IP.</p>
+                            <p>In Minecraft Java Edition: Multiplayer → Direct Connect → Enter local IP.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Get External IP</h3>
+                            <p>Find your public IP for remote player connections.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">curl ifconfig.me</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Port Forwarding</h3>
+                            <p>Enable remote access by forwarding Minecraft's default port.</p>
+                            <p>In your router admin panel, forward TCP port <code>25565</code> to your Pi's local IP address.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Remote Connection</h3>
+                            <p>Players outside your network connect using your external IP.</p>
+                            <p>Share your external IP. Players enter it in Direct Connect.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Security Tip</h3>
+                            <p>Protect your server from unauthorized access.</p>
+                            <p>Enable whitelist in <code>server.properties</code>: set <code>white-list=true</code> and add trusted players.</p>
+                        </div>
+                    </div>
+                </section>
+                <!-- Troubleshooting -->
+                <section id="troubleshooting" class="docs-section">
+                    <h2 class="docs-heading">Troubleshooting</h2>
+                    <p>Solutions for common issues encountered during setup or operation.</p>
+                    
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h3>Server Won't Start</h3>
+                            <p>Check logs for startup errors and diagnostics.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">tail -f /var/log/pinecraft.log</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Connection Issues</h3>
+                            <p>Verify server is running and network is properly configured.</p>
+                            <p>LAN: Confirm same network. Remote: Check port 25565 is forwarded to Pi's local IP.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Check Disk Space</h3>
+                            <p>Low storage can cause crashes and world corruption.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">df -h</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Performance Issues</h3>
+                            <p>Reduce server load for smoother gameplay.</p>
+                            <p>Lower <code>view-distance</code> in <code>server.properties</code>. Limit max players. Use Paper for optimizations.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Java Errors</h3>
+                            <p>Ensure correct Java version is installed.</p>
+                            <div class="docs-code-block">
+                                <div class="code-header">
+                                    <span>bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre><code class="language-bash">java -version</code></pre>
+                            </div>
+                        </div>
+                        <div class="docs-card">
+                            <h3>Get Help</h3>
+                            <p>Community support for advanced issues.</p>
+                            <p><a href="https://github.com/cat5TV/pinecraft/issues" target="_blank">Pinecraft GitHub Issues</a></p>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="footer-logo">
+                <p>Tech tutorials, Raspberry Pi projects, and open-source tools.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <a href="../index.html">Home</a>
+                    <a href="../projects.html">Projects</a>
+                    <a href="../index.html#affiliates">Affiliates</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../dist/scripts/main.js" type="module"></script>
+</body>
+</html>

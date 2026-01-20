@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects - Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Sidebar Toggle Button -->
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Logo and Site Name -->
+            <a href="index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+
+            <!-- Nav Buttons -->
+            <nav class="header-nav">
+                <a href="index.html" class="header-nav-link">Home</a>
+                <a href="projects.html" class="header-nav-link active">Projects</a>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search..."
+                    aria-label="Search"
+                >
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- YouTube Link -->
+            <a href="https://www.youtube.com/@Nerd-or-Geek" 
+               class="youtube-link youtube-link-header" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="YouTube Channel">
+                <i class="fab fa-youtube"></i>
+                <span>View My YouTube Channel</span>
+            </a>
+
+            <!-- GitHub Link -->
+            <a href="https://github.com/Nerd-or-Geek" 
+               class="github-link" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="GitHub Profile">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close Sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="projects.html" class="nav-link">All Projects</a></li>
+                <li><a href="index.html#youtube" class="nav-link">YouTube</a></li>
+                <li><a href="index.html#affiliates" class="nav-link">Affiliates</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Overlay (for closing sidebar on click) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="page-header">
+            <span class="hero-badge">📁 Project Gallery</span>
+            <h1>All Projects</h1>
+            <p>Explore all of my Raspberry Pi projects, apps, and software creations</p>
+        </section>
+
+        <section class="content-section featured-projects-section" id="all-projects">
+            <div class="section-header">
+                <h2><i class="fas fa-folder-open"></i> Projects</h2>
+                <p class="section-description">Step-by-step guides for Raspberry Pi builds</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <img src="assets/img/projects/Pinecraft.png" alt="Pinecraft" class="project-image">
+                        <span class="project-badge">Popular</span>
+                    </div>
+                    <div class="project-content">
+                        <h3>Pinecraft</h3>
+                        <p>Step-by-step guide to install and run a Minecraft Java server on Raspberry Pi 4.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Raspberry Pi</span>
+                            <span class="project-tag">Minecraft</span>
+                        </div>
+                        <a href="projects/pinecraft.html" class="cta-button"><i class="fas fa-book"></i> Install Guide</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <img src="assets/img/projects/p4wnp1.png" alt="P4wnP1" class="project-image">
+                        <span class="project-badge">Security</span>
+                    </div>
+                    <div class="project-content">
+                        <h3>P4wnP1</h3>
+                        <p>Highly customizable USB attack platform for Raspberry Pi Zero and Zero W.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Pi Zero</span>
+                            <span class="project-tag">Security</span>
+                        </div>
+                        <a href="projects/p4wnp1.html" class="cta-button"><i class="fas fa-book"></i> Install Guide</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section apps-section" id="other-apps">
+            <div class="section-header">
+                <h2><i class="fas fa-code"></i> Software & Tools</h2>
+                <p class="section-description">Open-source applications I've built</p>
+            </div>
+            <div class="apps-grid">
+                <div class="app-card">
+                    <div class="app-logo-wrap">
+                        <img src="assets/img/projects/photo-metadata.png" alt="Photo Metadata App logo" class="app-logo">
+                    </div>
+                    <h3>Photo Metadata App</h3>
+                    <p>A clean, self-built tool to view and manage photo metadata quickly. Built by me from scratch.</p>
+                    <a href="https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill" class="app-link" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="app-card">
+                    <div class="app-logo-wrap">
+                        <img src="assets/img/projects/cyberpatriot.png" alt="CyberPatriot Runbook logo" class="app-logo">
+                    </div>
+                    <span class="app-badge app-badge-warn">Under Development</span>
+                    <h3>CyberPatriot Runbook</h3>
+                    <p>A practical runbook for CyberPatriot prep with checklists and steps to streamline competition readiness.</p>
+                    <a href="https://github.com/michael6gledhill/cyberpatriot-runbook" class="app-link" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="app-card">
+                    <div class="app-logo-wrap">
+                        <img src="assets/img/projects/TransportMod.png" alt="TransportMod logo" class="app-logo">
+                    </div>
+                    <span class="app-badge app-badge-warn">Under Development</span>
+                    <h3>TransportMod</h3>
+                    <p>A comprehensive transportation modification mod for enhanced game mechanics.</p>
+                    <a href="https://github.com/Nerd-or-Geek/TransportMod" class="app-link" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="footer-logo">
+                <p>Tech tutorials, Raspberry Pi projects, and open-source tools.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="index.html#affiliates">Affiliates</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="dist/scripts/main.js" type="module"></script>
+</body>
+</html>

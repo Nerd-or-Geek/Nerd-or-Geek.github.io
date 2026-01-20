@@ -1,0 +1,6 @@
+# Background Image Placement
+
+Please save the blue textured background image as:
+`assets/img/background.jpg`
+
+The CSS has been updated to use this image as the website background.

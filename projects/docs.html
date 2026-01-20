@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Documentation | Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="../index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="../index.html" class="header-nav-link">Home</a>
+                <a href="../projects.html" class="header-nav-link active">Projects</a>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search docs..."
+                    aria-label="Search"
+                >
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="docs-wrapper">
+        <aside class="docs-sidebar" id="docsSidebar">
+            <nav class="docs-nav">
+                <div class="docs-nav-header">
+                    <h3 id="sidebarTitle">Documentation</h3>
+                    <button class="docs-sidebar-toggle" id="docsSidebarToggle" aria-label="Toggle table of contents">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+                <ul class="docs-toc" id="docsToc">
+                    <!-- Table of contents will be rendered here -->
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="docs-main">
+            <div class="docs-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../projects.html">Projects</a>
+                <span class="separator">/</span>
+                <span class="current" id="breadcrumbCurrent">Documentation</span>
+            </div>
+            
+            <section class="docs-hero" id="docsHero">
+                <div class="docs-hero-content">
+                    <h1 class="docs-title" id="docsTitle">Loading...</h1>
+                    <p class="docs-subtitle" id="docsSubtitle"></p>
+                    <div class="docs-meta" id="docsMeta">
+                        <!-- Tags will be rendered here -->
+                    </div>
+                </div>
+                <div class="docs-hero-image" id="docsHeroImage">
+                    <!-- Image will be rendered here -->
+                </div>
+            </section>
+            
+            <article class="docs-content" id="docsContent">
+                <!-- Documentation sections will be rendered here -->
+            </article>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek?" class="footer-logo">
+                    <p>Exploring tech, one project at a time. From Raspberry Pi builds to security tools, I share my journey through tutorials and guides.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank" rel="noopener" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener" aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../projects.html">Projects</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../dist/scripts/main.js" type="module"></script>
+    <script>
+        // Dynamic Documentation Renderer
+        const ADMIN_STORAGE_KEY = 'nerdOrGeekAdminData';
+        
+        // Cache for site data
+        let cachedSiteData = null;
+        
+        function getProjectIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+        
+        async function fetchSiteData() {
+            // Return cached data if available
+            if (cachedSiteData) {
+                return cachedSiteData;
+            }
+            
+            // Try to fetch from static JSON file (works on GitHub Pages)
+            try {
+                const response = await fetch('../data/site-data.json');
+                if (response.ok) {
+                    cachedSiteData = await response.json();
+                    return cachedSiteData;
+                }
+            } catch (e) {
+                console.log('Could not fetch site-data.json, falling back to localStorage');
+            }
+            
+            // Fallback to localStorage for local development
+            const data = localStorage.getItem(ADMIN_STORAGE_KEY);
+            if (data) {
+                try {
+                    cachedSiteData = JSON.parse(data);
+                    return cachedSiteData;
+                } catch {
+                    return null;
+                }
+            }
+            return null;
+        }
+        
+        function getAdminData() {
+            // Synchronous fallback for compatibility
+            const data = localStorage.getItem(ADMIN_STORAGE_KEY);
+            return data ? JSON.parse(data) : null;
+        }
+        
+        // Theme presets
+        const THEME_PRESETS = {
+            default: {
+                primaryColor: '#0ea5e9',
+                accentColor: '#38bdf8',
+                textColor: '#f8fafc',
+                cardBgColor: '#1e293b',
+                heroBgColor: '#0f172a'
+            },
+            ocean: {
+                primaryColor: '#06b6d4',
+                accentColor: '#22d3ee',
+                textColor: '#f0fdfa',
+                cardBgColor: '#134e4a',
+                heroBgColor: '#042f2e'
+            },
+            forest: {
+                primaryColor: '#22c55e',
+                accentColor: '#4ade80',
+                textColor: '#f0fdf4',
+                cardBgColor: '#14532d',
+                heroBgColor: '#052e16'
+            },
+            sunset: {
+                primaryColor: '#f97316',
+                accentColor: '#fb923c',
+                textColor: '#fff7ed',
+                cardBgColor: '#7c2d12',
+                heroBgColor: '#431407'
+            },
+            midnight: {
+                primaryColor: '#8b5cf6',
+                accentColor: '#a78bfa',
+                textColor: '#faf5ff',
+                cardBgColor: '#3b0764',
+                heroBgColor: '#1e1b4b'
+            }
+        };
+        
+        function applyTheme(theme) {
+            if (!theme) return;
+            
+            const root = document.documentElement;
+            let colors;
+            
+            if (theme.preset === 'custom') {
+                colors = {
+                    primaryColor: theme.primaryColor || '#0ea5e9',
+                    accentColor: theme.accentColor || '#38bdf8',
+                    textColor: theme.textColor || '#f8fafc',
+                    cardBgColor: theme.cardBgColor || '#1e293b',
+                    heroBgColor: theme.heroBgColor || '#0f172a'
+                };
+            } else {
+                colors = THEME_PRESETS[theme.preset] || THEME_PRESETS.default;
+            }
+            
+            // Apply CSS custom properties
+            root.style.setProperty('--theme-primary', colors.primaryColor);
+            root.style.setProperty('--theme-accent', colors.accentColor);
+            root.style.setProperty('--theme-text', colors.textColor);
+            root.style.setProperty('--theme-card-bg', colors.cardBgColor);
+            root.style.setProperty('--theme-hero-bg', colors.heroBgColor);
+            
+            // Add themed class to body
+            document.body.classList.add('themed-docs');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function parseMarkdown(text) {
+            let html = escapeHtml(text);
+            
+            // Code blocks (```language ... ```)
+            html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) => {
+                const language = lang || 'text';
+                return `<div class="docs-code-block"><div class="code-header"><span>${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-${language}">${code.trim()}</code></pre></div>`;
+            });
+            
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Bold
+            html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            
+            // Italic
+            html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+            
+            // Sub-headings
+            html = html.replace(/^### (.+)$/gm, '<h3 class="docs-subheading">$1</h3>');
+            
+            // Paragraphs
+            html = html.split(/\n\n+/).map(para => {
+                if (para.startsWith('<div') || para.startsWith('<h3') || para.startsWith('<pre')) {
+                    return para;
+                }
+                return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+            
+            return html;
+        }
+        
+        function formatSectionContent(section) {
+            const content = section.content || '';
+            
+            switch (section.type) {
+                case 'text':
+                    return parseMarkdown(content);
+                
+                case 'code':
+                    const lang = section.codeLanguage || 'bash';
+                    return `
+                        <div class="docs-code-block">
+                            <div class="code-header">
+                                <span>${lang}</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre><code class="language-${lang}">${escapeHtml(content)}</code></pre>
+                        </div>
+                    `;
+                
+                case 'callout-info':
+                case 'callout':
+                    return `
+                        <div class="docs-callout docs-callout-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>${parseMarkdown(content)}</div>
+                        </div>
+                    `;
+                
+                case 'callout-warning':
+                    return `
+                        <div class="docs-callout docs-callout-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>${parseMarkdown(content)}</div>
+                        </div>
+                    `;
+                
+                case 'callout-danger':
+                    return `
+                        <div class="docs-callout docs-callout-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>${parseMarkdown(content)}</div>
+                        </div>
+                    `;
+                
+                case 'callout-success':
+                    return `
+                        <div class="docs-callout docs-callout-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div>${parseMarkdown(content)}</div>
+                        </div>
+                    `;
+                
+                case 'cards-2':
+                case 'cards-3':
+                    const cards = content.split('---').map(c => c.trim()).filter(c => c);
+                    const gridClass = section.type === 'cards-2' ? 'docs-grid-2' : 'docs-grid-3';
+                    return `
+                        <div class="${gridClass}">
+                            ${cards.map(card => {
+                                const parts = card.split('|').map(p => p.trim());
+                                return `
+                                    <div class="docs-card">
+                                        <h4>${escapeHtml(parts[0] || '')}</h4>
+                                        <p>${parseMarkdown(parts[1] || '')}</p>
+                                        ${parts[2] ? `
+                                            <div class="docs-code-block">
+                                                <div class="code-header">
+                                                    <span>bash</span>
+                                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                                </div>
+                                                <pre><code>${escapeHtml(parts[2])}</code></pre>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                
+                case 'steps':
+                    const steps = content.split('---').map(s => s.trim()).filter(s => s);
+                    return `
+                        <div class="docs-steps">
+                            ${steps.map((step, i) => `
+                                <div class="docs-step">
+                                    <div class="step-number">${i + 1}</div>
+                                    <div class="step-content">${parseMarkdown(step)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                
+                case 'list':
+                    const items = content.split('\n').filter(item => item.trim());
+                    return `
+                        <ul class="docs-list">
+                            ${items.map(item => `<li>${parseMarkdown(item.trim())}</li>`).join('')}
+                        </ul>
+                    `;
+                
+                case 'video':
+                    let videoHtml = '';
+                    const youtubeMatch = content.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+                    const vimeoMatch = content.match(/vimeo\.com\/(\d+)/);
+                    
+                    if (youtubeMatch) {
+                        videoHtml = `<iframe src="https://www.youtube.com/embed/${youtubeMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    } else if (vimeoMatch) {
+                        videoHtml = `<iframe src="https://player.vimeo.com/video/${vimeoMatch[1]}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+                    } else {
+                        videoHtml = `<p>Invalid video URL</p>`;
+                    }
+                    return `<div class="docs-video">${videoHtml}</div>`;
+                
+                case 'image':
+                    const imgParts = content.split('|').map(p => p.trim());
+                    const imgSrc = imgParts[0] || '';
+                    const caption = imgParts[1] || '';
+                    const alt = imgParts[2] || caption;
+                    return `
+                        <figure class="docs-figure">
+                            <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(alt)}" class="docs-image">
+                            ${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}
+                        </figure>
+                    `;
+                
+                case 'links':
+                    const links = content.split('\n').filter(l => l.trim());
+                    return `
+                        <div class="docs-links">
+                            ${links.map(link => {
+                                const linkParts = link.split('|').map(p => p.trim());
+                                return `
+                                    <a href="${escapeHtml(linkParts[1] || '#')}" target="_blank" rel="noopener" class="docs-link-card">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        <div>
+                                            <strong>${escapeHtml(linkParts[0] || '')}</strong>
+                                            ${linkParts[2] ? `<span>${escapeHtml(linkParts[2])}</span>` : ''}
+                                        </div>
+                                    </a>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                
+                default:
+                    return parseMarkdown(content);
+            }
+        }
+        
+        function generateSlug(title) {
+            return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+        
+        async function renderDocumentation() {
+            const projectId = getProjectIdFromUrl();
+            
+            if (!projectId) {
+                document.getElementById('docsTitle').textContent = 'Project Not Found';
+                document.getElementById('docsSubtitle').textContent = 'No project ID provided in the URL.';
+                return;
+            }
+            
+            const adminData = await fetchSiteData();
+            if (!adminData) {
+                document.getElementById('docsTitle').textContent = 'No Data';
+                document.getElementById('docsSubtitle').textContent = 'Site data not found. Please try refreshing the page.';
+                return;
+            }
+            
+            const project = adminData.projects.find(p => p.id === projectId);
+            if (!project) {
+                document.getElementById('docsTitle').textContent = 'Project Not Found';
+                document.getElementById('docsSubtitle').textContent = `Project with ID "${projectId}" was not found.`;
+                return;
+            }
+            
+            // Apply theme
+            applyTheme(project.theme);
+            
+            // Update page title
+            document.title = `${project.name} Documentation | Nerd or Geek?`;
+            
+            // Update header
+            document.getElementById('docsTitle').textContent = project.name;
+            document.getElementById('docsSubtitle').textContent = project.description;
+            document.getElementById('breadcrumbCurrent').textContent = `${project.name} Docs`;
+            document.getElementById('sidebarTitle').textContent = `${project.name} Docs`;
+            
+            // Update tags
+            const metaContainer = document.getElementById('docsMeta');
+            if (project.badge) {
+                metaContainer.innerHTML = `<span class="docs-badge">${escapeHtml(project.badge)}</span>`;
+            }
+            metaContainer.innerHTML += project.tags.map(tag => 
+                `<span class="docs-badge">${escapeHtml(tag)}</span>`
+            ).join('');
+            
+            // Update hero image
+            const heroImage = document.getElementById('docsHeroImage');
+            if (project.customImage) {
+                heroImage.innerHTML = `<img src="../${project.customImage}" alt="${escapeHtml(project.name)}">`;
+            } else {
+                heroImage.innerHTML = `<div class="docs-hero-icon"><i class="fas ${project.icon}"></i></div>`;
+            }
+            
+            // Generate table of contents
+            const tocContainer = document.getElementById('docsToc');
+            if (project.sections && project.sections.length > 0) {
+                tocContainer.innerHTML = project.sections.map(section => {
+                    const slug = generateSlug(section.title);
+                    return `<li><a href="#${slug}" class="docs-link">${escapeHtml(section.title)}</a></li>`;
+                }).join('');
+            } else {
+                tocContainer.innerHTML = '<li><span class="docs-link muted">No sections yet</span></li>';
+            }
+            
+            // Render documentation content
+            const contentContainer = document.getElementById('docsContent');
+            if (project.sections && project.sections.length > 0) {
+                contentContainer.innerHTML = project.sections.map(section => {
+                    const slug = generateSlug(section.title);
+                    return `
+                        <section id="${slug}" class="docs-section">
+                            <h2 class="docs-heading">${escapeHtml(section.title)}</h2>
+                            ${formatSectionContent(section)}
+                        </section>
+                    `;
+                }).join('');
+            } else {
+                contentContainer.innerHTML = `
+                    <div class="empty-docs">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>No Documentation Yet</h3>
+                        <p>This project doesn't have any documentation sections. Add some in the admin portal!</p>
+                    </div>
+                `;
+            }
+            
+            // Setup smooth scrolling for TOC links
+            document.querySelectorAll('.docs-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Copy code function
+        function copyCode(button) {
+            const codeBlock = button.closest('.docs-code-block');
+            const code = codeBlock.querySelector('code');
+            
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        // Make copyCode available globally
+        window.copyCode = copyCode;
+        
+        // Docs sidebar toggle for mobile
+        function setupDocsSidebarToggle() {
+            const toggle = document.getElementById('docsSidebarToggle');
+            const sidebar = document.getElementById('docsSidebar');
+            
+            if (toggle && sidebar) {
+                // Start collapsed on mobile
+                if (window.innerWidth <= 1024) {
+                    sidebar.classList.add('collapsed');
+                }
+                
+                toggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDocumentation();
+            setupDocsSidebarToggle();
+        });
+    </script>
+</body>
+</html>

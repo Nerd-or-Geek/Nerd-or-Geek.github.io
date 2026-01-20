@@ -1,0 +1,22 @@
+{
+  "name": "nerd-or-geek",
+  "version": "1.0.0",
+  "description": "A website for tech projects and awesome content",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "npm run watch:ts && npm run watch:scss",
+    "build": "npm run build:ts && npm run build:scss",
+    "build:ts": "tsc",
+    "build:scss": "sass src/styles/main.scss src/styles/main.css && sass src/styles/admin.scss src/styles/admin.css",
+    "watch:ts": "tsc --watch",
+    "watch:scss": "sass --watch src/styles:src/styles",
+    "deploy": "npm run build && git add . && git commit -m 'Build deploy' && git push"
+  },
+  "keywords": ["nerd", "geek", "projects", "portfolio"],
+  "author": "Nerd or Geek",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "sass": "^1.69.5"
+  }
+}
