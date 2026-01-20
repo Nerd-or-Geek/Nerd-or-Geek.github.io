@@ -49,7 +49,6 @@
       ],
       "icon": "fa-cube",
       "customImage": "assets/img/projects/Pinecraft.png",
-      "staticUrl": "projects/pinecraft.html",
       "sections": [
         {
           "id": "sec-1",
@@ -191,7 +190,6 @@
       ],
       "icon": "fa-usb",
       "customImage": "assets/img/projects/p4wnp1.png",
-      "staticUrl": "projects/p4wnp1.html",
       "sections": [
         {
           "id": "p4-sec-1",
@@ -260,15 +258,15 @@
     },
     {
       "id": "static-software-3",
-      "name": "TransportMod",
-      "description": "A comprehensive transportation modification mod for enhanced game mechanics.",
-      "link": "https://github.com/Nerd-or-Geek/TransportMod",
-      "icon": "fa-car",
-      "customImage": "assets/img/projects/TransportMod.png",
-      "underDevelopment": true,
+      "name": "Email-Announcement-Email-Formater",
+      "description": "A lightweight web app for building clean, professional email announcements with reusable templates and inline CSS. Design once, reuse anytime—no backend required.",
+      "link": "https://nerd-or-geek.github.io/Email-Announcement-Email-Format/",
+      "icon": "custom",
+      "customImage": "https://github.com/Nerd-or-Geek/Email-Announcement-Email-Format/blob/main/public/Icon2.png?raw=true",
+      "underDevelopment": false,
       "createdAt": 1768499201280
     }
   ],
   "initialized": true,
-  "lastUpdated": 1768616678266
+  "lastUpdated": 1768930336366
 }
