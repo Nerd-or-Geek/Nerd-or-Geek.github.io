@@ -98,11 +98,14 @@ function getBasePath(): string {
 }
 
 /**
- * Get project link - all dynamic projects use the docs.html page
+ * Get project link - uses staticUrl if available, otherwise dynamic docs page
  */
 function getProjectLinkForSearch(project: any): string {
     const basePath = getBasePath();
-    // All projects now use the dynamic docs page
+    // Use static URL if project has one, otherwise use dynamic docs page
+    if (project.staticUrl) {
+        return `${basePath}${project.staticUrl}`;
+    }
     return `${basePath}projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 
@@ -630,10 +633,13 @@ async function renderDynamicAffiliates(): Promise<void> {
 }
 
 /**
- * Get the correct link for a project - all projects use dynamic docs page
+ * Get the correct link for a project - uses staticUrl if available
  */
 function getProjectLink(project: AdminProject): string {
-    // All projects now use the dynamic docs page
+    // Use static URL if project has one, otherwise use dynamic docs page
+    if ((project as any).staticUrl) {
+        return (project as any).staticUrl;
+    }
     return `projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 

@@ -49,6 +49,7 @@
       ],
       "icon": "fa-cube",
       "customImage": "assets/img/projects/Pinecraft.png",
+      "staticUrl": "projects/project-one.html",
       "sections": [
         {
           "id": "sec-1",
@@ -190,6 +191,7 @@
       ],
       "icon": "fa-usb",
       "customImage": "assets/img/projects/p4wnp1.png",
+      "staticUrl": "projects/p4wnp1.html",
       "sections": [
         {
           "id": "p4-sec-1",

@@ -43,6 +43,9 @@ function getBasePath() {
 }
 function getProjectLinkForSearch(project) {
     const basePath = getBasePath();
+    if (project.staticUrl) {
+        return `${basePath}${project.staticUrl}`;
+    }
     return `${basePath}projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 function getMainSearchData() {
@@ -398,6 +401,9 @@ async function renderDynamicAffiliates() {
     });
 }
 function getProjectLink(project) {
+    if (project.staticUrl) {
+        return project.staticUrl;
+    }
     return `projects/docs.html?id=${encodeURIComponent(project.id)}`;
 }
 async function renderDynamicProjects() {
