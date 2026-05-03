@@ -482,6 +482,40 @@ button {
     }
 }
 
+.printables-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.35rem;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: rgba($primary-color, 0.2);
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+}
+
+.printables-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
 // ============================================
 // Header Navigation Styles
 // ============================================
@@ -974,6 +1008,12 @@ button {
 
     .app-badge-warn {
         background: #fbbf24;
+        color: #0f172a;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .app-badge-retired {
+        background: #94a3b8;
         color: #0f172a;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }

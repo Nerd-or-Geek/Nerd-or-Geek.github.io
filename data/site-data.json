@@ -399,11 +399,11 @@
   "software": [
     {
       "id": "static-software-1",
-      "name": "Photo Metadata App",
-      "description": "A clean, self-built tool to view and manage photo metadata quickly. Built by me from scratch.",
-      "link": "https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill",
+      "name": "Gledhill Metadata",
+      "description": "A clean, fast way to batch edit photo metadata, apply reusable templates, and rename images in seconds. Download for macOS, Windows, or Linux AppImage.",
+      "link": "https://nerd-or-geek.github.io/Gledhill-Metadata/",
       "icon": "fa-image",
-      "customImage": "assets/img/projects/photo-metadata.png",
+      "customImage": "assets/img/projects/Gledhill-Metadata.png",
       "underDevelopment": false,
       "createdAt": 1773088216499
     },
@@ -425,6 +425,17 @@
       "icon": "fa-car",
       "customImage": "assets/img/projects/TransportMod.png",
       "underDevelopment": true,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-4",
+      "name": "Photo Metadata Editor",
+      "description": "A clean, self-built tool to view and manage photo metadata quickly. This project is no longer supported or updated.",
+      "link": "https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill",
+      "icon": "fa-image",
+      "customImage": "assets/img/projects/photo-metadata.png",
+      "underDevelopment": false,
+      "noLongerSupported": true,
       "createdAt": 1773088216499
     }
   ],

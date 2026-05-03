@@ -453,10 +453,12 @@ async function renderDynamicSoftware() {
             ? `<img src="${software.customImage}" alt="${escapeHtmlForRender(software.name)}" class="app-logo">`
             : `<div class="app-icon-placeholder"><i class="fas ${software.icon}"></i></div>`}
             </div>
-            ${software.underDevelopment ? '<span class="app-badge app-badge-warn">Under Development</span>' : ''}
+            ${software.noLongerSupported
+            ? '<span class="app-badge app-badge-retired">No Longer Supported / Updated</span>'
+            : (software.underDevelopment ? '<span class="app-badge app-badge-warn">Under Development</span>' : '')}
             <h3>${escapeHtmlForRender(software.name)}</h3>
             <p>${escapeHtmlForRender(software.description)}</p>
-            <a href="${software.link}" class="app-link" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-right"></i></a>
+            <a href="${software.link}" class="app-link" target="_blank" rel="noopener noreferrer">Open Project <i class="fas fa-arrow-right"></i></a>
         `;
         container.appendChild(card);
     });
