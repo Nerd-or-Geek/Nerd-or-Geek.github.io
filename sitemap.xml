@@ -30,7 +30,7 @@
     <priority>0.5</priority>
   </url>
 
-  <url>
+  <url> 
     <loc>https://nerd-or-geek.github.io/sitemap.html</loc>
     <lastmod>2026-05-11</lastmod>
     <changefreq>monthly</changefreq>
