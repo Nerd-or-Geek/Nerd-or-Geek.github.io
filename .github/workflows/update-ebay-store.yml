@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   update-store-items:
     runs-on: ubuntu-latest
@@ -33,11 +36,14 @@ jobs:
             throw new Error(`Missing required GitHub secrets: ${missing.join(', ')}`);
           }
 
+          if (process.env.EBAY_CLIENT_ID.includes('SBX') || process.env.EBAY_CLIENT_SECRET.includes('SBX')) {
+            throw new Error('Sandbox eBay keys detected. Live ebay.com listings require Production eBay application keys, not Sandbox keys. Create a Production keyset in the eBay Developer portal and update EBAY_CLIENT_ID and EBAY_CLIENT_SECRET in GitHub Actions secrets.');
+          }
+
           const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
           const searchUrl = new URL('https://api.ebay.com/buy/browse/v1/item_summary/search');
-          searchUrl.searchParams.set('q', '*');
           searchUrl.searchParams.set('limit', '100');
-          searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}}`);
+          searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
 
           function formatMoney(money) {
             if (!money || money.value === undefined || !money.currency) return '';

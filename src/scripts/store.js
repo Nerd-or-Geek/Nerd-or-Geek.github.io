@@ -57,11 +57,12 @@ function renderStatus(message, type = 'info') {
     statusEl.dataset.status = type;
 }
 
-function showEmpty(message) {
+function showEmpty(message, detail = '') {
     if (!emptyEl) return;
     emptyEl.innerHTML = `
-        <h3>No store items to show yet</h3>
+        <h3>Store listings are not loaded yet</h3>
         <p>${escapeHtml(message)}</p>
+        ${detail ? `<p>${escapeHtml(detail)}</p>` : ''}
         <a href="${EBAY_STORE_URL}" class="cta-button" target="_blank" rel="noopener noreferrer">
             Open eBay Store <i class="fas fa-external-link-alt"></i>
         </a>
@@ -87,7 +88,10 @@ function renderItems() {
     grid.innerHTML = '';
 
     if (state.items.length === 0) {
-        showEmpty('The local store data file is empty. Visit the live eBay store for current listings.');
+        showEmpty(
+            'The public store page is ready, but data/store-items.json has not been populated with eBay listings yet.',
+            'Add the required GitHub Actions secrets, then run the “Update eBay store data” workflow to refresh this file automatically.'
+        );
         return;
     }
 
@@ -148,7 +152,7 @@ async function loadStoreItems() {
             category: item.category || inferCategory(item),
         }));
 
-        renderStatus(state.items.length ? `${state.items.length} eBay listings loaded.` : 'Store data loaded, but no listings were found.', state.items.length ? 'success' : 'empty');
+        renderStatus(state.items.length ? `${state.items.length} eBay listings loaded.` : 'Store data file is empty. Run the eBay refresh workflow to load listings.', state.items.length ? 'success' : 'empty');
         renderItems();
     } catch (error) {
         console.warn('Store data error:', error);
