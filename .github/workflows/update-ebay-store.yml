@@ -25,6 +25,7 @@ jobs:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
+          EBAY_SEARCH_KEYWORDS: ${{ vars.EBAY_SEARCH_KEYWORDS }}
         run: |
           node <<'NODE'
           const fs = require('fs');
@@ -41,9 +42,25 @@ jobs:
           }
 
           const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
-          const searchUrl = new URL('https://api.ebay.com/buy/browse/v1/item_summary/search');
-          searchUrl.searchParams.set('limit', '100');
-          searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
+          const searchEndpoint = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+          const defaultKeywords = [
+            'raspberry pi',
+            'pi zero',
+            'gpio',
+            'quectel',
+            'modem',
+            'cellular',
+            'speaker',
+            'electronics',
+            'kit',
+            'parts',
+            'mystery box'
+          ];
+          const searchKeywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
+            .split(',')
+            .map(keyword => keyword.trim())
+            .filter(Boolean);
+          const keywords = searchKeywords.length ? searchKeywords : defaultKeywords;
 
           function formatMoney(money) {
             if (!money || money.value === undefined || !money.currency) return '';
@@ -88,20 +105,35 @@ jobs:
             }
 
             const tokenData = await tokenResponse.json();
-            const searchResponse = await fetch(searchUrl, {
-              headers: {
-                Authorization: `Bearer ${tokenData.access_token}`,
-                'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-                Accept: 'application/json',
-              },
-            });
 
-            if (!searchResponse.ok) {
-              throw new Error(`eBay Browse API request failed: ${searchResponse.status} ${await searchResponse.text()}`);
+            const itemMap = new Map();
+            for (const keyword of keywords) {
+              const searchUrl = new URL(searchEndpoint);
+              searchUrl.searchParams.set('q', keyword);
+              searchUrl.searchParams.set('limit', '100');
+              searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
+
+              const searchResponse = await fetch(searchUrl, {
+                headers: {
+                  Authorization: `Bearer ${tokenData.access_token}`,
+                  'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+                  Accept: 'application/json',
+                },
+              });
+
+              if (!searchResponse.ok) {
+                throw new Error(`eBay Browse API request failed for keyword "${keyword}": ${searchResponse.status} ${await searchResponse.text()}`);
+              }
+
+              const searchData = await searchResponse.json();
+              for (const item of searchData.itemSummaries || []) {
+                if (item.itemId) {
+                  itemMap.set(item.itemId, item);
+                }
+              }
             }
 
-            const searchData = await searchResponse.json();
-            const items = (searchData.itemSummaries || []).map(item => ({
+            const items = Array.from(itemMap.values()).map(item => ({
               title: item.title || '',
               price: formatMoney(item.price),
               image: item.image?.imageUrl || item.thumbnailImages?.[0]?.imageUrl || '',
