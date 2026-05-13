@@ -74,12 +74,13 @@ function renderStatus(message, type = 'info') {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.dataset.status = type;
+    statusEl.hidden = !message;
 }
 
-function showEmpty(message, detail = '') {
+function showEmpty(title, message, detail = '') {
     if (!emptyEl) return;
     emptyEl.innerHTML = `
-        <h3>Store listings are not loaded yet</h3>
+        <h3>${escapeHtml(title)}</h3>
         <p>${escapeHtml(message)}</p>
         ${detail ? `<p>${escapeHtml(detail)}</p>` : ''}
         <a href="${EBAY_STORE_URL}" class="cta-button" target="_blank" rel="noopener noreferrer">
@@ -130,15 +131,16 @@ function renderItems() {
 
     if (state.items.length === 0) {
         showEmpty(
-            'The automatic eBay listing file is empty right now, so live product cards are not available yet.',
-            'Use the category previews below or open the live eBay store. Once the refresh workflow writes listing data, this page will switch to real product cards automatically.'
+            'Browse the live Nerd or Geek eBay store',
+            'Live product cards will appear here after the eBay refresh workflow writes listing data.',
+            'For now, these category previews link directly to the official eBay store for Raspberry Pi gear, accessories, and cellular hardware.'
         );
         renderPreviewItems();
         return;
     }
 
     if (visibleItems.length === 0) {
-        showEmpty('No listings match that search or filter. Try another term, or open the live eBay store.');
+        showEmpty('No matching listings', 'No listings match that search or filter. Try another term, or open the live eBay store.');
         return;
     }
 
@@ -194,13 +196,13 @@ async function loadStoreItems() {
             category: item.category || inferCategory(item),
         }));
 
-        renderStatus(state.items.length ? `${state.items.length} eBay listings loaded.` : 'Store data file is empty. Run the eBay refresh workflow to load listings.', state.items.length ? 'success' : 'empty');
+        renderStatus(state.items.length ? `${state.items.length} eBay listings loaded.` : '', state.items.length ? 'success' : 'empty');
         renderItems();
     } catch (error) {
         console.warn('Store data error:', error);
         state.items = [];
         renderStatus('Unable to load local store data.', 'error');
-        showEmpty('The store data file could not be loaded. You can still browse and checkout securely on eBay.');
+        showEmpty('Open the live eBay store', 'The store data file could not be loaded. You can still browse and checkout securely on eBay.');
     }
 }
 
