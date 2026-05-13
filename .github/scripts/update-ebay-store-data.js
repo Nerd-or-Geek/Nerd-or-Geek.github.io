@@ -16,6 +16,7 @@ const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
 const browseSearchEndpoint = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
 const outputPath = path.join('data', 'store-items.json');
 const defaultStoreNames = ['Nerd-or-Geek', 'NerdOrGeek', 'nerd-or-geek'];
+const allowEmptyStoreData = process.env.EBAY_ALLOW_EMPTY_STORE_DATA === 'true';
 const defaultKeywords = [
   'raspberry pi',
   'pi zero',
@@ -184,6 +185,7 @@ async function fetchStoreItemsFromFinding() {
   const itemMap = new Map();
   const failures = [];
 
+  console.log(`Trying eBay store names: ${storeNameCandidates.join(', ')}`);
   for (const storeName of storeNameCandidates) {
     try {
       let pageNumber = 1;
@@ -200,6 +202,7 @@ async function fetchStoreItemsFromFinding() {
 
         const searchResult = compactObject(response?.searchResult);
         const items = Array.isArray(searchResult?.item) ? searchResult.item : [];
+        console.log(`Finding API store "${storeName}" page ${pageNumber} returned ${items.length} item(s).`);
         items.map(mapFindingItem).forEach(item => addItem(itemMap, item));
 
         const pagination = compactObject(response?.paginationOutput);
@@ -246,13 +249,20 @@ async function getBrowseToken() {
 }
 
 async function fetchStoreItemsFromBrowse() {
-  if (!process.env.EBAY_SELLER_USERNAME) return [];
+  if (!process.env.EBAY_SELLER_USERNAME) {
+    console.log('Skipping Browse API fallback because EBAY_SELLER_USERNAME is not set.');
+    return [];
+  }
 
   const token = await getBrowseToken();
-  if (!token) return [];
+  if (!token) {
+    console.log('Skipping Browse API fallback because EBAY_CLIENT_SECRET is not set.');
+    return [];
+  }
 
   const itemMap = new Map();
   const queryTerms = keywords.length ? keywords : defaultKeywords;
+  console.log(`Trying Browse API fallback keywords: ${queryTerms.join(', ')}`);
   for (const keyword of queryTerms) {
     let offset = 0;
     let total = 0;
@@ -278,6 +288,7 @@ async function fetchStoreItemsFromBrowse() {
 
       const data = await searchResponse.json();
       const items = data.itemSummaries || [];
+      console.log(`Browse API keyword "${keyword}" offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
       items.filter(sellerMatches).map(mapBrowseItem).forEach(item => addItem(itemMap, item));
       total = Number(data.total) || 0;
       offset += items.length || 100;
@@ -293,6 +304,13 @@ async function main() {
 
   if (!items.length) {
     items = await fetchStoreItemsFromBrowse();
+  }
+
+  if (!items.length && !allowEmptyStoreData) {
+    throw new Error(
+      'No eBay store listings were returned, so data/store-items.json was not overwritten. ' +
+      'Check EBAY_STORE_NAME and EBAY_SELLER_USERNAME. Recommended values: EBAY_STORE_NAME=NerdOrGeek or Nerd-or-Geek, and EBAY_SELLER_USERNAME as the public seller username shown by eBay.'
+    );
   }
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
