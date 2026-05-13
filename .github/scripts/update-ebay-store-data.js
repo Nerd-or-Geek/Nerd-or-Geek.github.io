@@ -150,11 +150,14 @@ function mapBrowseItem(item) {
 
 function sellerMatches(item) {
   const seller = normalizeSeller(item.seller?.username || item.seller?.userName || item.seller || '');
-  return !seller || sellerCandidates.has(seller);
+  return Boolean(seller) && sellerCandidates.has(seller);
 }
 
-function addItem(itemMap, item) {
+function addItem(itemMap, item, { requireSeller = true } = {}) {
   if (!item.title || !item.url) return;
+  if (requireSeller && !sellerMatches(item)) {
+    return;
+  }
   const key = item.itemId || item.url;
   itemMap.set(key, item);
 }
@@ -185,6 +188,7 @@ async function fetchFindingPage(storeName, pageNumber) {
 async function fetchStoreItemsFromFinding() {
   const itemMap = new Map();
   const failures = [];
+  const seenSellers = new Set();
 
   console.log(`Trying eBay store names: ${storeNameCandidates.join(', ')}`);
   for (const storeName of storeNameCandidates) {
@@ -204,7 +208,10 @@ async function fetchStoreItemsFromFinding() {
         const searchResult = compactObject(response?.searchResult);
         const items = Array.isArray(searchResult?.item) ? searchResult.item : [];
         console.log(`Finding API store "${storeName}" page ${pageNumber} returned ${items.length} item(s).`);
-        items.map(mapFindingItem).forEach(item => addItem(itemMap, item));
+        items.map(mapFindingItem).forEach(item => {
+          if (item.seller) seenSellers.add(item.seller);
+          addItem(itemMap, item);
+        });
 
         const pagination = compactObject(response?.paginationOutput);
         totalPages = Number(compactText(pagination?.totalPages)) || 1;
@@ -212,7 +219,7 @@ async function fetchStoreItemsFromFinding() {
       } while (pageNumber <= totalPages);
 
       if (itemMap.size) {
-        console.log(`Loaded ${itemMap.size} listings from eBay store "${storeName}" using Finding API.`);
+        console.log(`Loaded ${itemMap.size} verified listings from eBay store "${storeName}" using Finding API.`);
         return Array.from(itemMap.values());
       }
 
@@ -223,6 +230,7 @@ async function fetchStoreItemsFromFinding() {
   }
 
   console.log(`Finding API did not return store items. Attempts: ${failures.join(' | ')}`);
+  console.log(`Finding API seller usernames seen: ${Array.from(seenSellers).join(', ') || '(none)'}`);
   return [];
 }
 
@@ -286,6 +294,7 @@ async function fetchStoreItemsFromBrowseAllSellerItems() {
   }
 
   const itemMap = new Map();
+  const seenSellers = new Set();
   let offset = 0;
   let total = 0;
 
@@ -295,7 +304,10 @@ async function fetchStoreItemsFromBrowseAllSellerItems() {
       const data = await searchBrowseItems({ keyword: ' ', offset });
       const items = data.itemSummaries || [];
       console.log(`Browse API seller search offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
-      items.map(mapBrowseItem).forEach(item => addItem(itemMap, item));
+      items.map(mapBrowseItem).forEach(item => {
+        if (item.seller) seenSellers.add(item.seller);
+        addItem(itemMap, item);
+      });
       total = Number(data.total) || 0;
       offset += items.length || 100;
     } while (offset < total && offset < 1000);
@@ -309,7 +321,8 @@ async function fetchStoreItemsFromBrowseAllSellerItems() {
     return [];
   }
 
-  console.log(`Loaded ${itemMap.size} listings using Browse API seller search.`);
+  console.log(`Browse API seller usernames seen: ${Array.from(seenSellers).slice(0, 20).join(', ') || '(none)'}`);
+  console.log(`Loaded ${itemMap.size} verified listings using Browse API seller search.`);
   return Array.from(itemMap.values());
 }
 
@@ -326,6 +339,7 @@ async function fetchStoreItemsFromBrowseKeywords() {
   }
 
   const itemMap = new Map();
+  const seenSellers = new Set();
   const queryTerms = keywords.length ? keywords : defaultKeywords;
   console.log(`Trying Browse API fallback keywords: ${queryTerms.join(', ')}`);
   for (const keyword of queryTerms) {
@@ -333,13 +347,17 @@ async function fetchStoreItemsFromBrowseKeywords() {
       const data = await searchBrowseItems({ keyword, offset: 0 });
       const items = data.itemSummaries || [];
       console.log(`Browse API keyword "${keyword}" returned ${items.length} item(s), total ${data.total || 0}.`);
-      items.filter(sellerMatches).map(mapBrowseItem).forEach(item => addItem(itemMap, item));
+      items.map(mapBrowseItem).forEach(item => {
+        if (item.seller) seenSellers.add(item.seller);
+        addItem(itemMap, item);
+      });
     } catch (error) {
       console.log(`Browse API keyword "${keyword}" failed: ${error.message}`);
     }
   }
 
-  console.log(`Loaded ${itemMap.size} listings using Browse API keyword fallback.`);
+  console.log(`Browse API keyword seller usernames seen: ${Array.from(seenSellers).slice(0, 20).join(', ') || '(none)'}`);
+  console.log(`Loaded ${itemMap.size} verified listings using Browse API keyword fallback.`);
   return Array.from(itemMap.values());
 }
 

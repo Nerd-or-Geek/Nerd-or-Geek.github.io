@@ -1,5 +1,8 @@
 const STORE_CONFIG = window.NERD_OR_GEEK_STORE_CONFIG || {};
 const EBAY_STORE_URL = STORE_CONFIG.ebayStoreUrl || 'https://www.ebay.com/str/NerdOrGeek';
+const ALLOWED_SELLERS = (STORE_CONFIG.allowedSellers || ['Nerd-or-Geek', 'NerdOrGeek', 'nerd-or-geek'])
+    .map(normalizeSellerName)
+    .filter(Boolean);
 const STORE_DATA_URL = 'data/store-items.json';
 
 const state = {
@@ -54,6 +57,15 @@ function escapeHtml(text = '') {
 
 function normalize(text = '') {
     return text.toLowerCase();
+}
+
+function normalizeSellerName(text = '') {
+    return String(text).toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function sellerIsAllowed(item) {
+    const seller = normalizeSellerName(item.seller || '');
+    return Boolean(seller) && ALLOWED_SELLERS.includes(seller);
 }
 
 function inferCategory(item) {
@@ -191,10 +203,12 @@ async function loadStoreItems() {
             throw new Error('Store data is not an array');
         }
 
-        state.items = data.map(item => ({
-            ...item,
-            category: item.category || inferCategory(item),
-        }));
+        state.items = data
+            .filter(sellerIsAllowed)
+            .map(item => ({
+                ...item,
+                category: item.category || inferCategory(item),
+            }));
 
         renderStatus(state.items.length ? `${state.items.length} eBay listings loaded.` : '', state.items.length ? 'success' : 'empty');
         renderItems();
