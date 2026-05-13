@@ -8,6 +8,27 @@ const state = {
     category: 'All',
 };
 
+const categoryPreviewItems = [
+    {
+        title: 'Raspberry Pi',
+        description: 'Raspberry Pi boards and compact Pi hardware for projects, testing, automation, and learning.',
+        image: 'assets/img/projects/Photo-8.jpg',
+        url: `${EBAY_STORE_URL}?_nkw=raspberry+pi`,
+    },
+    {
+        title: 'Accessories',
+        description: 'GPIO expansion boards, speakers, cables, add-ons, and other practical maker accessories.',
+        image: 'assets/img/projects/Photo-15.jpg',
+        url: `${EBAY_STORE_URL}?_nkw=accessories`,
+    },
+    {
+        title: 'Cellular',
+        description: 'Cellular modules, modems, and connected hardware for Raspberry Pi and IoT experiments.',
+        image: 'assets/img/projects/Photo-1.jpg',
+        url: `${EBAY_STORE_URL}?_nkw=cellular`,
+    },
+];
+
 const categoryRules = {
     'Raspberry Pi': ['raspberry pi', 'pi zero', 'pi 4', 'pi 5', 'gpio'],
     Cellular: ['modem', 'cellular', 'lte', '5g', '4g', 'quectel'],
@@ -72,6 +93,28 @@ function hideEmpty() {
     if (emptyEl) emptyEl.hidden = true;
 }
 
+function renderPreviewItems() {
+    if (!grid) return;
+    grid.innerHTML = '';
+    categoryPreviewItems.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'store-product-card';
+        card.innerHTML = `
+            <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="store-product-link">
+                <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)} store category preview" class="store-product-image" loading="lazy">
+                <div class="store-product-content">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <div class="store-product-meta">
+                        <span>${escapeHtml(item.description)}</span>
+                    </div>
+                    <span class="store-product-button">Browse on eBay <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+        `;
+        grid.appendChild(card);
+    });
+}
+
 function itemMatches(item) {
     const matchesQuery = !state.query || normalize(item.title).includes(state.query);
     const category = item.category || inferCategory(item);
@@ -87,9 +130,10 @@ function renderItems() {
 
     if (state.items.length === 0) {
         showEmpty(
-            'The public store page is ready, but data/store-items.json has not been populated with eBay listings yet.',
-            'Add the required GitHub Actions secrets, then run the “Update eBay store data” workflow to refresh this file automatically.'
+            'The automatic eBay listing file is empty right now, so live product cards are not available yet.',
+            'Use the category previews below or open the live eBay store. Once the refresh workflow writes listing data, this page will switch to real product cards automatically.'
         );
+        renderPreviewItems();
         return;
     }
 

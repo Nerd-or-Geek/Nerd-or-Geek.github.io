@@ -24,6 +24,14 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+      - name: Refresh eBay store data
+        env:
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
+          EBAY_SEARCH_KEYWORDS: ${{ vars.EBAY_SEARCH_KEYWORDS }}
+        run: node .github/scripts/update-ebay-store-data.js
+
       - name: Install dependencies
         run: npm ci
 
