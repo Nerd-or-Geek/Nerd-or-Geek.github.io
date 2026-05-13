@@ -1,5 +1,5 @@
 const STORE_CONFIG = window.NERD_OR_GEEK_STORE_CONFIG || {};
-const EBAY_STORE_URL = STORE_CONFIG.ebayStoreUrl || 'https://www.ebay.com/str/nerdorgeek';
+const EBAY_STORE_URL = STORE_CONFIG.ebayStoreUrl || 'https://www.ebay.com/str/NerdOrGeek';
 const STORE_DATA_URL = 'data/store-items.json';
 
 const state = {
@@ -10,10 +10,8 @@ const state = {
 
 const categoryRules = {
     'Raspberry Pi': ['raspberry pi', 'pi zero', 'pi 4', 'pi 5', 'gpio'],
-    Modems: ['modem', 'cellular', 'lte', '5g', '4g', 'quectel'],
-    'DIY Electronics': ['diy', 'electronics', 'kit', 'sensor', 'module', 'board'],
-    'Mystery Boxes': ['mystery', 'box', 'bundle', 'lot'],
-    Parts: ['part', 'speaker', 'cable', 'adapter', 'accessory', 'hat'],
+    Cellular: ['modem', 'cellular', 'lte', '5g', '4g', 'quectel'],
+    Accessories: ['accessory', 'accessories', 'speaker', 'cable', 'adapter', 'hat', 'part', 'parts', 'kit', 'module', 'board'],
 };
 
 const grid = document.getElementById('storeGrid');
@@ -44,7 +42,7 @@ function inferCategory(item) {
             return category;
         }
     }
-    return 'Parts';
+    return 'Accessories';
 }
 
 function formatDetail(value, fallback) {

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -47,20 +47,29 @@ jobs:
             'raspberry pi',
             'pi zero',
             'gpio',
+            'accessories',
+            'accessory',
             'quectel',
             'modem',
             'cellular',
             'speaker',
-            'electronics',
             'kit',
-            'parts',
-            'mystery box'
+            'parts'
           ];
           const searchKeywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
             .split(',')
             .map(keyword => keyword.trim())
             .filter(Boolean);
           const keywords = searchKeywords.length ? searchKeywords : defaultKeywords;
+          const expectedSellers = new Set(
+            [
+              process.env.EBAY_SELLER_USERNAME,
+              'NerdOrGeek',
+              'nerd-or-geek'
+            ]
+              .filter(Boolean)
+              .map(value => value.toLowerCase())
+          );
 
           function formatMoney(money) {
             if (!money || money.value === undefined || !money.currency) return '';
@@ -86,6 +95,22 @@ jobs:
             return formatted ? `${formatted} shipping` : '';
           }
 
+          function sellerMatches(item) {
+            const sellerUsername = item.seller?.username || item.seller?.userName || '';
+            return expectedSellers.has(sellerUsername.toLowerCase());
+          }
+
+          function inferCategory(title) {
+            const normalized = title.toLowerCase();
+            if (normalized.includes('raspberry') || normalized.includes('pi zero') || normalized.includes('gpio')) {
+              return 'Raspberry Pi';
+            }
+            if (normalized.includes('cellular') || normalized.includes('modem') || normalized.includes('lte') || normalized.includes('5g') || normalized.includes('4g') || normalized.includes('quectel')) {
+              return 'Cellular';
+            }
+            return 'Accessories';
+          }
+
           async function main() {
             const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
             const tokenResponse = await fetch(tokenUrl, {
@@ -107,6 +132,7 @@ jobs:
             const tokenData = await tokenResponse.json();
 
             const itemMap = new Map();
+            let rawItemCount = 0;
             for (const keyword of keywords) {
               const searchUrl = new URL(searchEndpoint);
               searchUrl.searchParams.set('q', keyword);
@@ -127,11 +153,14 @@ jobs:
 
               const searchData = await searchResponse.json();
               for (const item of searchData.itemSummaries || []) {
-                if (item.itemId) {
+                rawItemCount += 1;
+                if (item.itemId && sellerMatches(item)) {
                   itemMap.set(item.itemId, item);
                 }
               }
             }
+
+            console.log(`Found ${rawItemCount} raw search results and kept ${itemMap.size} matching seller items.`);
 
             const items = Array.from(itemMap.values()).map(item => ({
               title: item.title || '',
@@ -140,7 +169,9 @@ jobs:
               url: item.itemWebUrl || '',
               condition: item.condition || '',
               shipping: formatShipping(item),
+              category: inferCategory(item.title || ''),
               itemId: item.itemId || '',
+              seller: item.seller?.username || '',
             })).filter(item => item.title && item.url);
 
             const outputPath = path.join('data', 'store-items.json');
