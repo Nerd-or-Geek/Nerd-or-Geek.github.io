@@ -1,24 +1,26 @@
 const fs = require('fs');
 const path = require('path');
 
-const required = ['EBAY_CLIENT_ID', 'EBAY_CLIENT_SECRET', 'EBAY_SELLER_USERNAME'];
+const required = ['EBAY_CLIENT_ID'];
 const missing = required.filter(name => !process.env[name]);
 if (missing.length) {
   throw new Error(`Missing required GitHub secrets: ${missing.join(', ')}`);
 }
 
-if (process.env.EBAY_CLIENT_ID.includes('SBX') || process.env.EBAY_CLIENT_SECRET.includes('SBX')) {
-  throw new Error('Sandbox eBay keys detected. Live ebay.com listings require Production eBay application keys, not Sandbox keys. Create a Production keyset in the eBay Developer portal and update EBAY_CLIENT_ID and EBAY_CLIENT_SECRET in GitHub Actions secrets.');
+if (process.env.EBAY_CLIENT_ID.includes('SBX') || process.env.EBAY_CLIENT_SECRET?.includes('SBX')) {
+  throw new Error('Sandbox eBay keys detected. Live ebay.com listings require Production eBay application keys, not Sandbox keys.');
 }
 
+const findingEndpoint = 'https://svcs.ebay.com/services/search/FindingService/v1';
 const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
-const searchEndpoint = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+const browseSearchEndpoint = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+const outputPath = path.join('data', 'store-items.json');
+const defaultStoreNames = ['Nerd-or-Geek', 'NerdOrGeek', 'nerd-or-geek'];
 const defaultKeywords = [
   'raspberry pi',
   'pi zero',
   'gpio',
   'accessories',
-  'accessory',
   'quectel',
   'modem',
   'cellular',
@@ -26,36 +28,69 @@ const defaultKeywords = [
   'kit',
   'parts',
 ];
-const searchKeywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
+
+const storeNameCandidates = unique([
+  process.env.EBAY_STORE_NAME,
+  process.env.EBAY_SELLER_USERNAME,
+  ...defaultStoreNames,
+]);
+const sellerCandidates = new Set(unique([
+  process.env.EBAY_SELLER_USERNAME,
+  process.env.EBAY_STORE_NAME,
+  ...defaultStoreNames,
+]).map(normalizeSeller));
+const keywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
   .split(',')
   .map(keyword => keyword.trim())
   .filter(Boolean);
-const keywords = searchKeywords.length ? searchKeywords : defaultKeywords;
-const expectedSellers = new Set(
-  [
-    process.env.EBAY_SELLER_USERNAME,
-    'NerdOrGeek',
-    'nerd-or-geek',
-  ]
+
+function unique(values) {
+  return values
     .filter(Boolean)
-    .map(value => value.toLowerCase())
-);
+    .map(value => String(value).trim())
+    .filter(Boolean)
+    .filter((value, index, array) => array.findIndex(item => item.toLowerCase() === value.toLowerCase()) === index);
+}
+
+function normalizeSeller(value = '') {
+  return String(value).toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function compactText(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function compactObject(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 function formatMoney(money) {
-  if (!money || money.value === undefined || !money.currency) return '';
-  const amount = Number(money.value);
-  if (!Number.isFinite(amount)) return `${money.value} ${money.currency}`;
+  if (!money) return '';
+  const value = compactText(money.value ?? money.__value__ ?? money);
+  const currency = compactText(money.currency ?? money['@currencyId'] ?? money['@currencyID'] ?? 'USD');
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return value ? `${value} ${currency}` : '';
   try {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: money.currency,
+      currency,
     }).format(amount);
   } catch {
-    return `${money.value} ${money.currency}`;
+    return `${value} ${currency}`;
   }
 }
 
-function formatShipping(item) {
+function formatFindingShipping(item) {
+  const shippingInfo = compactObject(item.shippingInfo);
+  const cost = compactObject(shippingInfo?.shippingServiceCost);
+  if (!cost) return '';
+  const value = Number(compactText(cost.__value__ ?? cost.value));
+  if (Number.isFinite(value) && value === 0) return 'Free shipping';
+  const formatted = formatMoney(cost);
+  return formatted ? `${formatted} shipping` : '';
+}
+
+function formatBrowseShipping(item) {
   const option = item.shippingOptions?.[0];
   const cost = option?.shippingCost;
   if (!cost) return '';
@@ -63,11 +98,6 @@ function formatShipping(item) {
   if (Number.isFinite(value) && value === 0) return 'Free shipping';
   const formatted = formatMoney(cost);
   return formatted ? `${formatted} shipping` : '';
-}
-
-function sellerMatches(item) {
-  const sellerUsername = item.seller?.username || item.seller?.userName || '';
-  return expectedSellers.has(sellerUsername.toLowerCase());
 }
 
 function inferCategory(title) {
@@ -81,7 +111,119 @@ function inferCategory(title) {
   return 'Accessories';
 }
 
-async function main() {
+function mapFindingItem(item) {
+  const title = compactText(item.title) || '';
+  const sellingStatus = compactObject(item.sellingStatus);
+  const currentPrice = compactObject(sellingStatus?.currentPrice);
+  const condition = compactObject(item.condition);
+  const sellerInfo = compactObject(item.sellerInfo);
+
+  return {
+    title,
+    price: formatMoney(currentPrice),
+    image: compactText(item.galleryURL) || compactText(item.pictureURLLarge) || compactText(item.pictureURLSuperSize) || '',
+    url: compactText(item.viewItemURL) || '',
+    condition: compactText(condition?.conditionDisplayName) || '',
+    shipping: formatFindingShipping(item),
+    category: inferCategory(title),
+    itemId: compactText(item.itemId) || '',
+    seller: compactText(sellerInfo?.sellerUserName) || '',
+  };
+}
+
+function mapBrowseItem(item) {
+  const title = item.title || '';
+  return {
+    title,
+    price: formatMoney(item.price),
+    image: item.image?.imageUrl || item.thumbnailImages?.[0]?.imageUrl || '',
+    url: item.itemWebUrl || '',
+    condition: item.condition || '',
+    shipping: formatBrowseShipping(item),
+    category: inferCategory(title),
+    itemId: item.itemId || '',
+    seller: item.seller?.username || item.seller?.userName || '',
+  };
+}
+
+function sellerMatches(item) {
+  const seller = normalizeSeller(item.seller?.username || item.seller?.userName || item.seller || '');
+  return !seller || sellerCandidates.has(seller);
+}
+
+function addItem(itemMap, item) {
+  if (!item.title || !item.url) return;
+  const key = item.itemId || item.url;
+  itemMap.set(key, item);
+}
+
+async function fetchFindingPage(storeName, pageNumber) {
+  const requestUrl = new URL(findingEndpoint);
+  requestUrl.searchParams.set('OPERATION-NAME', 'findItemsIneBayStores');
+  requestUrl.searchParams.set('SERVICE-VERSION', '1.13.0');
+  requestUrl.searchParams.set('SECURITY-APPNAME', process.env.EBAY_CLIENT_ID);
+  requestUrl.searchParams.set('RESPONSE-DATA-FORMAT', 'JSON');
+  requestUrl.searchParams.set('REST-PAYLOAD', '');
+  requestUrl.searchParams.set('GLOBAL-ID', 'EBAY-US');
+  requestUrl.searchParams.set('siteid', '0');
+  requestUrl.searchParams.set('storeName', storeName);
+  requestUrl.searchParams.set('paginationInput.entriesPerPage', '100');
+  requestUrl.searchParams.set('paginationInput.pageNumber', String(pageNumber));
+  requestUrl.searchParams.set('outputSelector(0)', 'SellerInfo');
+  requestUrl.searchParams.set('outputSelector(1)', 'PictureURLLarge');
+  requestUrl.searchParams.set('outputSelector(2)', 'PictureURLSuperSize');
+
+  const response = await fetch(requestUrl);
+  if (!response.ok) {
+    throw new Error(`Finding API request failed for store "${storeName}": ${response.status} ${await response.text()}`);
+  }
+  return response.json();
+}
+
+async function fetchStoreItemsFromFinding() {
+  const itemMap = new Map();
+  const failures = [];
+
+  for (const storeName of storeNameCandidates) {
+    try {
+      let pageNumber = 1;
+      let totalPages = 1;
+
+      do {
+        const data = await fetchFindingPage(storeName, pageNumber);
+        const response = compactObject(data.findItemsIneBayStoresResponse);
+        const ack = compactText(response?.ack);
+        if (ack !== 'Success' && ack !== 'Warning') {
+          const errorMessage = compactText(compactObject(compactObject(response?.errorMessage)?.error)?.message) || 'unknown eBay Finding API error';
+          throw new Error(errorMessage);
+        }
+
+        const searchResult = compactObject(response?.searchResult);
+        const items = Array.isArray(searchResult?.item) ? searchResult.item : [];
+        items.map(mapFindingItem).forEach(item => addItem(itemMap, item));
+
+        const pagination = compactObject(response?.paginationOutput);
+        totalPages = Number(compactText(pagination?.totalPages)) || 1;
+        pageNumber += 1;
+      } while (pageNumber <= totalPages);
+
+      if (itemMap.size) {
+        console.log(`Loaded ${itemMap.size} listings from eBay store "${storeName}" using Finding API.`);
+        return Array.from(itemMap.values());
+      }
+
+      failures.push(`${storeName}: no items returned`);
+    } catch (error) {
+      failures.push(`${storeName}: ${error.message}`);
+    }
+  }
+
+  console.log(`Finding API did not return store items. Attempts: ${failures.join(' | ')}`);
+  return [];
+}
+
+async function getBrowseToken() {
+  if (!process.env.EBAY_CLIENT_SECRET) return '';
   const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
   const tokenResponse = await fetch(tokenUrl, {
     method: 'POST',
@@ -100,51 +242,59 @@ async function main() {
   }
 
   const tokenData = await tokenResponse.json();
+  return tokenData.access_token || '';
+}
+
+async function fetchStoreItemsFromBrowse() {
+  if (!process.env.EBAY_SELLER_USERNAME) return [];
+
+  const token = await getBrowseToken();
+  if (!token) return [];
 
   const itemMap = new Map();
-  let rawItemCount = 0;
-  for (const keyword of keywords) {
-    const searchUrl = new URL(searchEndpoint);
-    searchUrl.searchParams.set('q', keyword);
-    searchUrl.searchParams.set('limit', '100');
-    searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
+  const queryTerms = keywords.length ? keywords : defaultKeywords;
+  for (const keyword of queryTerms) {
+    let offset = 0;
+    let total = 0;
 
-    const searchResponse = await fetch(searchUrl, {
-      headers: {
-        Authorization: `Bearer ${tokenData.access_token}`,
-        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-        Accept: 'application/json',
-      },
-    });
+    do {
+      const searchUrl = new URL(browseSearchEndpoint);
+      searchUrl.searchParams.set('q', keyword);
+      searchUrl.searchParams.set('limit', '100');
+      searchUrl.searchParams.set('offset', String(offset));
+      searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
 
-    if (!searchResponse.ok) {
-      throw new Error(`eBay Browse API request failed for keyword "${keyword}": ${searchResponse.status} ${await searchResponse.text()}`);
-    }
+      const searchResponse = await fetch(searchUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+          Accept: 'application/json',
+        },
+      });
 
-    const searchData = await searchResponse.json();
-    for (const item of searchData.itemSummaries || []) {
-      rawItemCount += 1;
-      if (item.itemId && sellerMatches(item)) {
-        itemMap.set(item.itemId, item);
+      if (!searchResponse.ok) {
+        throw new Error(`eBay Browse API request failed for keyword "${keyword}": ${searchResponse.status} ${await searchResponse.text()}`);
       }
-    }
+
+      const data = await searchResponse.json();
+      const items = data.itemSummaries || [];
+      items.filter(sellerMatches).map(mapBrowseItem).forEach(item => addItem(itemMap, item));
+      total = Number(data.total) || 0;
+      offset += items.length || 100;
+    } while (offset < total && offset < 1000);
   }
 
-  console.log(`Found ${rawItemCount} raw search results and kept ${itemMap.size} matching seller items.`);
+  console.log(`Loaded ${itemMap.size} listings using Browse API keyword fallback.`);
+  return Array.from(itemMap.values());
+}
 
-  const items = Array.from(itemMap.values()).map(item => ({
-    title: item.title || '',
-    price: formatMoney(item.price),
-    image: item.image?.imageUrl || item.thumbnailImages?.[0]?.imageUrl || '',
-    url: item.itemWebUrl || '',
-    condition: item.condition || '',
-    shipping: formatShipping(item),
-    category: inferCategory(item.title || ''),
-    itemId: item.itemId || '',
-    seller: item.seller?.username || '',
-  })).filter(item => item.title && item.url);
+async function main() {
+  let items = await fetchStoreItemsFromFinding();
 
-  const outputPath = path.join('data', 'store-items.json');
+  if (!items.length) {
+    items = await fetchStoreItemsFromBrowse();
+  }
+
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(items, null, 2)}\n`);
   console.log(`Wrote ${items.length} store items to ${outputPath}`);

@@ -29,6 +29,7 @@ jobs:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
+          EBAY_STORE_NAME: ${{ vars.EBAY_STORE_NAME }}
           EBAY_SEARCH_KEYWORDS: ${{ vars.EBAY_SEARCH_KEYWORDS }}
         run: node .github/scripts/update-ebay-store-data.js
 
