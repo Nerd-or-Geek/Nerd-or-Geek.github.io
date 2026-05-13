@@ -44,6 +44,7 @@ const keywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
   .split(',')
   .map(keyword => keyword.trim())
   .filter(Boolean);
+let browseAccessToken = '';
 
 function unique(values) {
   return values
@@ -226,6 +227,7 @@ async function fetchStoreItemsFromFinding() {
 }
 
 async function getBrowseToken() {
+  if (browseAccessToken) return browseAccessToken;
   if (!process.env.EBAY_CLIENT_SECRET) return '';
   const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
   const tokenResponse = await fetch(tokenUrl, {
@@ -245,18 +247,81 @@ async function getBrowseToken() {
   }
 
   const tokenData = await tokenResponse.json();
-  return tokenData.access_token || '';
+  browseAccessToken = tokenData.access_token || '';
+  return browseAccessToken;
 }
 
-async function fetchStoreItemsFromBrowse() {
+async function searchBrowseItems({ keyword = ' ', offset = 0 }) {
+  const searchUrl = new URL(browseSearchEndpoint);
+  searchUrl.searchParams.set('q', keyword);
+  searchUrl.searchParams.set('limit', '100');
+  searchUrl.searchParams.set('offset', String(offset));
+  searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
+
+  const searchResponse = await fetch(searchUrl, {
+    headers: {
+      Authorization: `Bearer ${await getBrowseToken()}`,
+      'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+      Accept: 'application/json',
+    },
+  });
+
+  if (!searchResponse.ok) {
+    throw new Error(`eBay Browse API request failed for query "${keyword.trim() || '(blank)'}": ${searchResponse.status} ${await searchResponse.text()}`);
+  }
+
+  return searchResponse.json();
+}
+
+async function fetchStoreItemsFromBrowseAllSellerItems() {
   if (!process.env.EBAY_SELLER_USERNAME) {
-    console.log('Skipping Browse API fallback because EBAY_SELLER_USERNAME is not set.');
+    console.log('Skipping Browse API seller search because EBAY_SELLER_USERNAME is not set.');
     return [];
   }
 
   const token = await getBrowseToken();
   if (!token) {
-    console.log('Skipping Browse API fallback because EBAY_CLIENT_SECRET is not set.');
+    console.log('Skipping Browse API seller search because EBAY_CLIENT_SECRET is not set.');
+    return [];
+  }
+
+  const itemMap = new Map();
+  let offset = 0;
+  let total = 0;
+
+  console.log(`Trying Browse API seller search for EBAY_SELLER_USERNAME with a blank query.`);
+  try {
+    do {
+      const data = await searchBrowseItems({ keyword: ' ', offset });
+      const items = data.itemSummaries || [];
+      console.log(`Browse API seller search offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
+      items.map(mapBrowseItem).forEach(item => addItem(itemMap, item));
+      total = Number(data.total) || 0;
+      offset += items.length || 100;
+    } while (offset < total && offset < 1000);
+  } catch (error) {
+    console.log(`Browse API seller search failed: ${error.message}`);
+    return [];
+  }
+
+  if (total > 1000 && itemMap.size > 1000) {
+    console.log('Browse API seller search returned more than 1000 items, which looks like an unfiltered marketplace search. Ignoring those results.');
+    return [];
+  }
+
+  console.log(`Loaded ${itemMap.size} listings using Browse API seller search.`);
+  return Array.from(itemMap.values());
+}
+
+async function fetchStoreItemsFromBrowseKeywords() {
+  if (!process.env.EBAY_SELLER_USERNAME) {
+    console.log('Skipping Browse API keyword fallback because EBAY_SELLER_USERNAME is not set.');
+    return [];
+  }
+
+  const token = await getBrowseToken();
+  if (!token) {
+    console.log('Skipping Browse API keyword fallback because EBAY_CLIENT_SECRET is not set.');
     return [];
   }
 
@@ -264,35 +329,14 @@ async function fetchStoreItemsFromBrowse() {
   const queryTerms = keywords.length ? keywords : defaultKeywords;
   console.log(`Trying Browse API fallback keywords: ${queryTerms.join(', ')}`);
   for (const keyword of queryTerms) {
-    let offset = 0;
-    let total = 0;
-
-    do {
-      const searchUrl = new URL(browseSearchEndpoint);
-      searchUrl.searchParams.set('q', keyword);
-      searchUrl.searchParams.set('limit', '100');
-      searchUrl.searchParams.set('offset', String(offset));
-      searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}},buyingOptions:{FIXED_PRICE|AUCTION}`);
-
-      const searchResponse = await fetch(searchUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-          Accept: 'application/json',
-        },
-      });
-
-      if (!searchResponse.ok) {
-        throw new Error(`eBay Browse API request failed for keyword "${keyword}": ${searchResponse.status} ${await searchResponse.text()}`);
-      }
-
-      const data = await searchResponse.json();
+    try {
+      const data = await searchBrowseItems({ keyword, offset: 0 });
       const items = data.itemSummaries || [];
-      console.log(`Browse API keyword "${keyword}" offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
+      console.log(`Browse API keyword "${keyword}" returned ${items.length} item(s), total ${data.total || 0}.`);
       items.filter(sellerMatches).map(mapBrowseItem).forEach(item => addItem(itemMap, item));
-      total = Number(data.total) || 0;
-      offset += items.length || 100;
-    } while (offset < total && offset < 1000);
+    } catch (error) {
+      console.log(`Browse API keyword "${keyword}" failed: ${error.message}`);
+    }
   }
 
   console.log(`Loaded ${itemMap.size} listings using Browse API keyword fallback.`);
@@ -300,10 +344,14 @@ async function fetchStoreItemsFromBrowse() {
 }
 
 async function main() {
-  let items = await fetchStoreItemsFromFinding();
+  let items = await fetchStoreItemsFromBrowseAllSellerItems();
 
   if (!items.length) {
-    items = await fetchStoreItemsFromBrowse();
+    items = await fetchStoreItemsFromFinding();
+  }
+
+  if (!items.length) {
+    items = await fetchStoreItemsFromBrowseKeywords();
   }
 
   if (!items.length && !allowEmptyStoreData) {
