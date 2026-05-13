@@ -1,0 +1,131 @@
+name: Update eBay store data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  update-store-items:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Refresh store item JSON
+        env:
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const required = ['EBAY_CLIENT_ID', 'EBAY_CLIENT_SECRET', 'EBAY_SELLER_USERNAME'];
+          const missing = required.filter(name => !process.env[name]);
+          if (missing.length) {
+            throw new Error(`Missing required GitHub secrets: ${missing.join(', ')}`);
+          }
+
+          const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
+          const searchUrl = new URL('https://api.ebay.com/buy/browse/v1/item_summary/search');
+          searchUrl.searchParams.set('q', '*');
+          searchUrl.searchParams.set('limit', '100');
+          searchUrl.searchParams.set('filter', `sellers:{${process.env.EBAY_SELLER_USERNAME}}`);
+
+          function formatMoney(money) {
+            if (!money || money.value === undefined || !money.currency) return '';
+            const amount = Number(money.value);
+            if (!Number.isFinite(amount)) return `${money.value} ${money.currency}`;
+            try {
+              return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: money.currency,
+              }).format(amount);
+            } catch {
+              return `${money.value} ${money.currency}`;
+            }
+          }
+
+          function formatShipping(item) {
+            const option = item.shippingOptions?.[0];
+            const cost = option?.shippingCost;
+            if (!cost) return '';
+            const value = Number(cost.value);
+            if (Number.isFinite(value) && value === 0) return 'Free shipping';
+            const formatted = formatMoney(cost);
+            return formatted ? `${formatted} shipping` : '';
+          }
+
+          async function main() {
+            const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
+            const tokenResponse = await fetch(tokenUrl, {
+              method: 'POST',
+              headers: {
+                Authorization: `Basic ${basicAuth}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams({
+                grant_type: 'client_credentials',
+                scope: 'https://api.ebay.com/oauth/api_scope',
+              }),
+            });
+
+            if (!tokenResponse.ok) {
+              throw new Error(`eBay OAuth token request failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
+            }
+
+            const tokenData = await tokenResponse.json();
+            const searchResponse = await fetch(searchUrl, {
+              headers: {
+                Authorization: `Bearer ${tokenData.access_token}`,
+                'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+                Accept: 'application/json',
+              },
+            });
+
+            if (!searchResponse.ok) {
+              throw new Error(`eBay Browse API request failed: ${searchResponse.status} ${await searchResponse.text()}`);
+            }
+
+            const searchData = await searchResponse.json();
+            const items = (searchData.itemSummaries || []).map(item => ({
+              title: item.title || '',
+              price: formatMoney(item.price),
+              image: item.image?.imageUrl || item.thumbnailImages?.[0]?.imageUrl || '',
+              url: item.itemWebUrl || '',
+              condition: item.condition || '',
+              shipping: formatShipping(item),
+              itemId: item.itemId || '',
+            })).filter(item => item.title && item.url);
+
+            const outputPath = path.join('data', 'store-items.json');
+            fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+            fs.writeFileSync(outputPath, `${JSON.stringify(items, null, 2)}\n`);
+            console.log(`Wrote ${items.length} store items to ${outputPath}`);
+          }
+
+          main().catch(error => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Commit updated store data
+        run: |
+          if git diff --quiet -- data/store-items.json; then
+            echo "No store data changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/store-items.json
+          git commit -m "Update eBay store data"
+          git push
