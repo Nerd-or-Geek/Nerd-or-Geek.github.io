@@ -28,7 +28,6 @@ jobs:
           EBAY_USER_ACCESS_TOKEN: ${{ secrets.EBAY_USER_ACCESS_TOKEN }}
           EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}
           EBAY_STORE_NAME: ${{ vars.EBAY_STORE_NAME }}
-          EBAY_SEARCH_KEYWORDS: ${{ vars.EBAY_SEARCH_KEYWORDS }}
           EBAY_MAX_TRUSTED_LISTINGS: ${{ vars.EBAY_MAX_TRUSTED_LISTINGS }}
         run: node .github/scripts/update-ebay-store-data.js
 
