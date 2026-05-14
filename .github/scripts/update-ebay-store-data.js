@@ -158,7 +158,7 @@ async function fetchInventoryJson(url) {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
-      'Content-Language': 'en-US',
+      'Accept-Language': 'en-US',
     },
   });
 
