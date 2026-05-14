@@ -3,8 +3,8 @@
     {
       "id": "static-affiliate-4",
       "name": "eBay Shop",
-      "description": "The cheapest place to buy a Raspberry Pi! Shop my eBay store for affordable Raspberry Pis, ReSpeaker hats, speakers, and Pi-ready accessories.",
-      "link": "https://www.ebay.com/usr/michael-gledhill",
+      "description": "Check the live Nerd or Geek eBay store for Raspberry Pi boards, ReSpeaker hats, speakers, GPIO parts, cellular modules, and Pi-ready accessories while stock lasts.",
+      "link": "https://www.ebay.com/str/NerdOrGeek",
       "icon": "fa-store",
       "comingSoon": false,
       "createdAt": 1768499201280
@@ -65,7 +65,7 @@
           "id": "sec-1b",
           "title": "Estimated Time",
           "type": "callout-info",
-          "content": "**30–60 minutes** depending on download speeds and hardware. The process involves flashing an OS, configuration, and server setup.",
+          "content": "**30â€“60 minutes** depending on download speeds and hardware. The process involves flashing an OS, configuration, and server setup.",
           "codeLanguage": "",
           "order": 1
         },
@@ -121,7 +121,7 @@
           "id": "sec-6",
           "title": "Step 4: Initial Raspberry Pi Configuration",
           "type": "code",
-          "content": "# Open Raspberry Pi Configuration\nsudo raspi-config\n\n# Navigate to: Advanced Options → Expand Filesystem\n# Then exit raspi-config\n\n# Update the System\nsudo apt update\nsudo apt upgrade -y\n\n# Install Git\nsudo apt install git -y\n\n# Reboot\nsudo reboot",
+          "content": "# Open Raspberry Pi Configuration\nsudo raspi-config\n\n# Navigate to: Advanced Options â†’ Expand Filesystem\n# Then exit raspi-config\n\n# Update the System\nsudo apt update\nsudo apt upgrade -y\n\n# Install Git\nsudo apt install git -y\n\n# Reboot\nsudo reboot",
           "codeLanguage": "bash",
           "order": 8
         },
@@ -209,7 +209,7 @@
           "id": "sec-13",
           "title": "Networking Guide",
           "type": "text",
-          "content": "### Local Network Connection\n\nFor players on the same network, use your Pi's local IP address. Find it with:\n\n```bash\nhostname -I\n```\n\nIn Minecraft: **Multiplayer** → **Direct Connect** → Enter the local IP.\n\n### Remote Connection\n\nFor players outside your network:\n\n1. Find your public IP: `curl ifconfig.me`\n2. Forward TCP port **25565** in your router settings\n3. Share your public IP with players",
+          "content": "### Local Network Connection\n\nFor players on the same network, use your Pi's local IP address. Find it with:\n\n```bash\nhostname -I\n```\n\nIn Minecraft: **Multiplayer** â†’ **Direct Connect** â†’ Enter the local IP.\n\n### Remote Connection\n\nFor players outside your network:\n\n1. Find your public IP: `curl ifconfig.me`\n2. Forward TCP port **25565** in your router settings\n3. Share your public IP with players",
           "codeLanguage": "",
           "order": 19
         },
@@ -267,7 +267,7 @@
           "id": "p4-sec-2",
           "title": "Estimated Time",
           "type": "callout-info",
-          "content": "**15–30 minutes** (including downloads and flashing)",
+          "content": "**15â€“30 minutes** (including downloads and flashing)",
           "codeLanguage": "",
           "order": 1
         },
@@ -356,7 +356,7 @@
           "id": "morse-sec-1",
           "title": "Overview",
           "type": "text",
-          "content": "**Morse-Pi** is a browser-based Morse code trainer for Raspberry Pi with a recommended native Rust backend and an optional legacy Python backend. It works especially well on a Pi Zero-family board with a real key or paddle, but you can also practice from any browser with keyboard shortcuts and on-screen controls.\n\n[Read the full official documentation](https://nerd-or-geek.github.io/Morse-Pi/)\n\n[View the official GitHub repository](https://github.com/Nerd-or-Geek/Morse-Pi)",
+          "content": "**Morse-Pi** is a browser-based Morse code trainer for Raspberry Pi with a recommended native Rust backend and an optional legacy Python backend. It works especially well on a Pi Zero-family board with a real key or paddle, but you can also practice from any browser with keyboard shortcuts and on-screen controls.\n\n[Read the full official documentation](https://nerd-or-geek.org/Morse-Pi/)\n\n[View the official GitHub repository](https://github.com/Nerd-or-Geek/Morse-Pi)",
           "codeLanguage": "",
           "order": 0
         },
@@ -364,7 +364,7 @@
           "id": "morse-sec-2",
           "title": "Estimated Time",
           "type": "callout-info",
-          "content": "**20–45 minutes** for flashing Raspberry Pi OS and first-time setup, plus **10–30 minutes** for the initial Rust build on a Pi Zero.",
+          "content": "**20â€“45 minutes** for flashing Raspberry Pi OS and first-time setup, plus **10â€“30 minutes** for the initial Rust build on a Pi Zero.",
           "codeLanguage": "",
           "order": 1
         },
@@ -388,7 +388,7 @@
           "id": "morse-sec-5",
           "title": "Resources",
           "type": "links",
-          "content": "Official Docs|https://nerd-or-geek.github.io/Morse-Pi/|Read the full Morse-Pi documentation site\nGitHub Repo|https://github.com/Nerd-or-Geek/Morse-Pi|Source code, issues, releases, and install scripts\nRaspberry Pi Imager|https://www.raspberrypi.com/software/|Official tool for flashing Raspberry Pi OS to an SD card\nTroubleshooting|https://nerd-or-geek.github.io/Morse-Pi/troubleshooting.html|Fix Rust build, GPIO, USB HID, and network issues",
+          "content": "Official Docs|https://nerd-or-geek.org/Morse-Pi/|Read the full Morse-Pi documentation site\nGitHub Repo|https://github.com/Nerd-or-Geek/Morse-Pi|Source code, issues, releases, and install scripts\nRaspberry Pi Imager|https://www.raspberrypi.com/software/|Official tool for flashing Raspberry Pi OS to an SD card\nTroubleshooting|https://nerd-or-geek.org/Morse-Pi/troubleshooting.html|Fix Rust build, GPIO, USB HID, and network issues",
           "codeLanguage": "",
           "order": 4
         }
@@ -401,9 +401,19 @@
       "id": "static-software-1",
       "name": "Gledhill Metadata",
       "description": "A clean, fast way to batch edit photo metadata, apply reusable templates, and rename images in seconds. Download for macOS, Windows, or Linux AppImage.",
-      "link": "https://nerd-or-geek.github.io/Gledhill-Metadata/",
+      "link": "https://nerd-or-geek.org/Gledhill-Metadata/",
       "icon": "fa-image",
       "customImage": "assets/img/projects/Gledhill-Metadata.png",
+      "underDevelopment": false,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-raspberry-pi-guide",
+      "name": "What Is a Raspberry Pi?",
+      "description": "A Raspberry Pi guide for DIY electronics, IoT monitoring, GPIO boards, ham radio projects, cellular modems, speakers, and raspberry pi zero w accessories.",
+      "link": "what-is-a-raspberry-pi.html",
+      "icon": "fa-microchip",
+      "customImage": "assets/img/projects/Photo-8.jpg",
       "underDevelopment": false,
       "createdAt": 1773088216499
     },

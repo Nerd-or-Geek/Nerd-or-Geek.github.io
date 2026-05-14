@@ -20,27 +20,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raspberry Pi Monero Mining Setup | Nerd or Geek</title>
-    <meta name="description" content="Step-by-step Raspberry Pi Monero mining setup guide from Nerd or Geek.">
+    <meta name="description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation from Nerd or Geek.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://nerd-or-geek.github.io/projects/monero-mining.html">
+    <link rel="canonical" href="https://nerd-or-geek.org/projects/monero-mining.html">
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Nerd or Geek">
     <meta property="og:title" content="Raspberry Pi Monero Mining Setup | Nerd or Geek">
-    <meta property="og:description" content="Step-by-step Raspberry Pi Monero mining setup guide from Nerd or Geek.">
-    <meta property="og:url" content="https://nerd-or-geek.github.io/projects/monero-mining.html">
-    <meta property="og:image" content="https://nerd-or-geek.github.io/assets/img/Logo-With-Name.png">
+    <meta property="og:description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.">
+    <meta property="og:url" content="https://nerd-or-geek.org/projects/monero-mining.html">
+    <meta property="og:image" content="https://nerd-or-geek.org/assets/img/Logo-With-Name.png">
     <meta property="og:image:alt" content="Nerd or Geek logo">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Raspberry Pi Monero Mining Setup | Nerd or Geek">
-    <meta name="twitter:description" content="Step-by-step Raspberry Pi Monero mining setup guide from Nerd or Geek.">
-    <meta name="twitter:image" content="https://nerd-or-geek.github.io/assets/img/Logo-With-Name.png">
+    <meta name="twitter:description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.">
+    <meta name="twitter:image" content="https://nerd-or-geek.org/assets/img/Logo-With-Name.png">
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
     <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
     <link rel="stylesheet" href="../src/styles/main.css">
     <link rel="stylesheet" href="../src/styles/docs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Raspberry Pi Monero Mining Setup",
+      "description": "Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.",
+      "url": "https://nerd-or-geek.org/projects/monero-mining.html",
+      "author": {
+        "@type": "Organization",
+        "name": "Nerd or Geek"
+      },
+      "about": [
+        "Raspberry Pi",
+        "Monero mining",
+        "Linux project documentation"
+      ]
+    }
+    </script>
 </head>
 <body>
     <!-- Google Tag Manager (noscript) -->
@@ -205,7 +223,7 @@
 
                 <!-- Install Raspberry Pi Imager -->
                 <section id="install-imager" class="docs-section">
-                    <h2 class="docs-heading">Section 1 — Install Raspberry Pi Imager</h2>
+                    <h2 class="docs-heading">Section 1 â€” Install Raspberry Pi Imager</h2>
                     <p>Download and use the official Raspberry Pi Imager to flash the operating system.</p>
                     
                     <div class="docs-steps">
@@ -268,7 +286,7 @@
 
                 <!-- First Boot and System Update -->
                 <section id="first-boot" class="docs-section">
-                    <h2 class="docs-heading">Section 2 — First Boot and System Update</h2>
+                    <h2 class="docs-heading">Section 2 â€” First Boot and System Update</h2>
                     <p>Boot your Raspberry Pi and perform initial system updates.</p>
                     
                     <h3>Connect via SSH</h3>
@@ -308,7 +326,7 @@ sudo reboot</code></pre>
 
                 <!-- Install Required Dependencies -->
                 <section id="dependencies" class="docs-section">
-                    <h2 class="docs-heading">Section 3 — Install Required Dependencies</h2>
+                    <h2 class="docs-heading">Section 3 â€” Install Required Dependencies</h2>
                     <p>Install the build tools and development libraries needed to compile XMRig.</p>
                     
                     <h3>Install Build Tools</h3>
@@ -344,18 +362,18 @@ sudo reboot</code></pre>
                         <div class="docs-card">
                             <h4><i class="fas fa-hammer"></i> Build Tools</h4>
                             <ul>
-                                <li><code>build-essential</code> — GCC, make, core build tools</li>
-                                <li><code>cmake</code> — Build configuration system</li>
-                                <li><code>git</code> — Source code version control</li>
+                                <li><code>build-essential</code> â€” GCC, make, core build tools</li>
+                                <li><code>cmake</code> â€” Build configuration system</li>
+                                <li><code>git</code> â€” Source code version control</li>
                             </ul>
                         </div>
                         <div class="docs-card">
                             <h4><i class="fas fa-cubes"></i> Libraries</h4>
                             <ul>
-                                <li><code>libssl-dev</code> — Cryptography (OpenSSL)</li>
-                                <li><code>libuv1-dev</code> — Async networking</li>
-                                <li><code>libhwloc-dev</code> — CPU topology detection</li>
-                                <li><code>libjansson-dev</code> — JSON parsing</li>
+                                <li><code>libssl-dev</code> â€” Cryptography (OpenSSL)</li>
+                                <li><code>libuv1-dev</code> â€” Async networking</li>
+                                <li><code>libhwloc-dev</code> â€” CPU topology detection</li>
+                                <li><code>libjansson-dev</code> â€” JSON parsing</li>
                             </ul>
                         </div>
                     </div>
@@ -363,7 +381,7 @@ sudo reboot</code></pre>
 
                 <!-- Clone and Build Mining Software -->
                 <section id="build-xmrig" class="docs-section">
-                    <h2 class="docs-heading">Section 4 — Clone and Build Mining Software</h2>
+                    <h2 class="docs-heading">Section 4 â€” Clone and Build Mining Software</h2>
                     <p>Download and compile XMRig, a high-performance open-source Monero CPU miner.</p>
                     
                     <h3>Clone XMRig Repository</h3>
@@ -418,7 +436,7 @@ make -j$(nproc)</code></pre>
 
                 <!-- Monero Wallet Setup -->
                 <section id="wallet-setup" class="docs-section">
-                    <h2 class="docs-heading">Section 5 — Monero Wallet Setup</h2>
+                    <h2 class="docs-heading">Section 5 â€” Monero Wallet Setup</h2>
                     <p>Create a Monero wallet to receive your mining rewards.</p>
                     
                     <div class="docs-steps">
@@ -445,7 +463,7 @@ make -j$(nproc)</code></pre>
                             <div class="step-number">3</div>
                             <div class="step-content">
                                 <h4>Backup Seed Phrase</h4>
-                                <p>Write down the <strong>25-word mnemonic seed phrase</strong> and store it securely offline. This is your wallet backup — never share it or store it digitally.</p>
+                                <p>Write down the <strong>25-word mnemonic seed phrase</strong> and store it securely offline. This is your wallet backup â€” never share it or store it digitally.</p>
                             </div>
                         </div>
                         
@@ -468,15 +486,15 @@ make -j$(nproc)</code></pre>
 
                 <!-- Configure Mining Software -->
                 <section id="configure-miner" class="docs-section">
-                    <h2 class="docs-heading">Section 6 — Configure Mining Software</h2>
+                    <h2 class="docs-heading">Section 6 â€” Configure Mining Software</h2>
                     <p>Configure XMRig with your wallet address and mining pool settings.</p>
                     
                     <h3>Configuration Requirements</h3>
                     <ul>
-                        <li><strong>Wallet address</strong> — Your Monero public address</li>
-                        <li><strong>Mining pool URL</strong> — Pool server address and port</li>
-                        <li><strong>Worker name</strong> — Identifier for this miner</li>
-                        <li><strong>CPU thread configuration</strong> — Number of threads to use</li>
+                        <li><strong>Wallet address</strong> â€” Your Monero public address</li>
+                        <li><strong>Mining pool URL</strong> â€” Pool server address and port</li>
+                        <li><strong>Worker name</strong> â€” Identifier for this miner</li>
+                        <li><strong>CPU thread configuration</strong> â€” Number of threads to use</li>
                     </ul>
 
                     <h3>Create Configuration File</h3>
@@ -549,7 +567,7 @@ make -j$(nproc)</code></pre>
 
                 <!-- Start Mining -->
                 <section id="start-mining" class="docs-section">
-                    <h2 class="docs-heading">Section 7 — Start Mining</h2>
+                    <h2 class="docs-heading">Section 7 â€” Start Mining</h2>
                     <p>Launch XMRig in a screen session for interactive monitoring. Using <code>screen</code> allows you to detach from the mining session while it continues running in the background.</p>
                     
                     <h3>Install Screen</h3>
@@ -663,7 +681,7 @@ screen -dmS xmrig ./xmrig</code></pre>
 
                 <!-- Optional Optimization -->
                 <section id="optimization" class="docs-section">
-                    <h2 class="docs-heading">Section 8 — Optional Optimization</h2>
+                    <h2 class="docs-heading">Section 8 â€” Optional Optimization</h2>
                     <p>Tune your miner for improved performance and stability.</p>
                     
                     <h3>Adjust Thread Count</h3>
@@ -718,7 +736,7 @@ screen -dmS xmrig ./xmrig</code></pre>
 
                 <!-- Autostart on Boot -->
                 <section id="autostart" class="docs-section">
-                    <h2 class="docs-heading">Section 9 — Autostart on Boot (systemd + screen)</h2>
+                    <h2 class="docs-heading">Section 9 â€” Autostart on Boot (systemd + screen)</h2>
                     <p>Configure XMRig to start automatically in a screen session when the Raspberry Pi boots. This method combines the power of systemd for auto-start with screen for interactive monitoring.</p>
 
                     <div class="docs-callout docs-callout-info">
@@ -972,7 +990,7 @@ sdram_freq=550</code></pre>
                     <div class="docs-grid-2">
                         <div class="docs-card">
                             <h4><i class="fas fa-thermometer-half"></i> Temperature</h4>
-                            <p>Keep temperatures under ~80°C for stability. Throttling begins at 85°C.</p>
+                            <p>Keep temperatures under ~80Â°C for stability. Throttling begins at 85Â°C.</p>
                         </div>
                         <div class="docs-card">
                             <h4><i class="fas fa-fan"></i> Cooling</h4>

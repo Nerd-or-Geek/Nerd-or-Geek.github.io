@@ -1610,6 +1610,163 @@ button {
   transition: transform 0.3s ease;
 }
 
+.raspberry-page .raspberry-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 2rem;
+  align-items: center;
+  text-align: left;
+}
+.raspberry-page .raspberry-hero h1,
+.raspberry-page .raspberry-hero p {
+  text-align: left;
+}
+.raspberry-page .raspberry-hero .hero-cta-group {
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+@media (max-width: 992px) {
+  .raspberry-page .raspberry-hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .raspberry-page .raspberry-hero h1,
+  .raspberry-page .raspberry-hero p {
+    text-align: center;
+  }
+  .raspberry-page .raspberry-hero .hero-cta-group {
+    justify-content: center;
+  }
+}
+.raspberry-page .raspberry-hero-copy {
+  min-width: 0;
+}
+.raspberry-page .raspberry-hero-media {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  overflow: hidden;
+}
+.raspberry-page .raspberry-hero-media img {
+  aspect-ratio: 16/10;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+.raspberry-page .raspberry-hero-media figcaption {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 1rem;
+}
+
+.raspberry-section {
+  background: rgba(15, 39, 68, 0.68);
+  border-radius: 1rem;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.raspberry-two-column,
+.raspberry-callout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+@media (max-width: 768px) {
+  .raspberry-two-column,
+  .raspberry-callout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.raspberry-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.raspberry-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+.raspberry-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+.raspberry-card h3 {
+  color: #1e293b;
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+.raspberry-card p {
+  color: #64748b;
+  line-height: 1.7;
+  margin-bottom: 0.85rem;
+}
+.raspberry-card p:last-child {
+  margin-bottom: 0;
+}
+.raspberry-card summary {
+  color: #1e293b;
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.raspberry-kicker {
+  color: #0ea5e9;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+}
+
+.raspberry-cta-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.raspberry-cta-card .cta-button {
+  margin-top: auto;
+}
+
+.raspberry-check-list {
+  list-style: none;
+  margin: 0;
+}
+.raspberry-check-list li {
+  color: #64748b;
+  display: flex;
+  gap: 0.75rem;
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+}
+.raspberry-check-list li::before {
+  color: #0ea5e9;
+  content: ">";
+  flex-shrink: 0;
+  font-weight: 900;
+}
+
+.raspberry-faq {
+  display: grid;
+  gap: 1rem;
+}
+.raspberry-faq .raspberry-card {
+  margin: 0;
+}
+.raspberry-faq .raspberry-card[open] summary {
+  margin-bottom: 0.75rem;
+}
+
 .hidden {
   display: none !important;
 }
