@@ -24,6 +24,7 @@ jobs:
         env:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          EBAY_DEV_ID: ${{ secrets.EBAY_DEV_ID }}
           EBAY_REFRESH_TOKEN: ${{ secrets.EBAY_REFRESH_TOKEN }}
           EBAY_USER_ACCESS_TOKEN: ${{ secrets.EBAY_USER_ACCESS_TOKEN }}
           EBAY_SELLER_USERNAME: ${{ secrets.EBAY_SELLER_USERNAME }}

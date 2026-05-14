@@ -21,6 +21,7 @@ if (process.env.EBAY_CLIENT_ID.includes('SBX') || process.env.EBAY_CLIENT_SECRET
 const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
 const inventoryItemsEndpoint = 'https://api.ebay.com/sell/inventory/v1/inventory_item';
 const inventoryOffersEndpoint = 'https://api.ebay.com/sell/inventory/v1/offer';
+const tradingEndpoint = 'https://api.ebay.com/ws/api.dll';
 const outputPath = path.join('data', 'store-items.json');
 const allowEmptyStoreData = process.env.EBAY_ALLOW_EMPTY_STORE_DATA === 'true';
 const maxTrustedListings = Number(process.env.EBAY_MAX_TRUSTED_LISTINGS || 100);
@@ -33,6 +34,7 @@ const sellerCandidates = new Set(unique([
   'nerd-or-geek',
 ]).map(normalizeSeller));
 let sellUserAccessToken = '';
+let tradingUserAccessToken = '';
 
 function unique(values) {
   return values
@@ -70,6 +72,33 @@ function formatMoney(money) {
   }
 }
 
+function decodeXml(text = '') {
+  return String(text)
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'");
+}
+
+function escapeXml(text = '') {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function getXmlText(xml, tagName) {
+  const match = String(xml).match(new RegExp(`<${tagName}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tagName}>`, 'i'));
+  return match ? decodeXml(match[1].trim()) : '';
+}
+
+function getXmlBlocks(xml, tagName) {
+  return Array.from(String(xml).matchAll(new RegExp(`<${tagName}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tagName}>`, 'gi'))).map(match => match[1]);
+}
+
 function inferCategory(title) {
   const normalized = title.toLowerCase();
   if (normalized.includes('raspberry') || normalized.includes('pi zero') || normalized.includes('gpio')) {
@@ -93,6 +122,26 @@ function mapInventoryOffer(offer, inventoryItem) {
     shipping: '',
     category: inferCategory(title),
     itemId: listingId,
+    seller: process.env.EBAY_SELLER_USERNAME || process.env.EBAY_STORE_NAME || 'Nerd-or-Geek',
+  };
+}
+
+function mapTradingItem(itemXml) {
+  const title = getXmlText(itemXml, 'Title');
+  const itemId = getXmlText(itemXml, 'ItemID');
+  const price = getXmlText(itemXml, 'CurrentPrice') || getXmlText(itemXml, 'BuyItNowPrice') || getXmlText(itemXml, 'StartPrice');
+  const galleryUrl = getXmlText(itemXml, 'GalleryURL');
+  const pictureDetails = getXmlText(itemXml, 'PictureDetails') ? itemXml.match(/<PictureDetails(?:\s[^>]*)?>([\s\S]*?)<\/PictureDetails>/i)?.[1] || '' : '';
+  const image = galleryUrl || getXmlText(pictureDetails, 'PictureURL');
+  return {
+    title,
+    price: price ? formatMoney({ value: price, currency: 'USD' }) : '',
+    image,
+    url: getXmlText(itemXml, 'ViewItemURL') || (itemId ? `https://www.ebay.com/itm/${itemId}` : ''),
+    condition: getXmlText(itemXml, 'ConditionDisplayName'),
+    shipping: '',
+    category: inferCategory(title),
+    itemId,
     seller: process.env.EBAY_SELLER_USERNAME || process.env.EBAY_STORE_NAME || 'Nerd-or-Geek',
   };
 }
@@ -146,6 +195,41 @@ async function getSellUserToken() {
   const tokenData = await tokenResponse.json();
   sellUserAccessToken = tokenData.access_token || '';
   return sellUserAccessToken;
+}
+
+async function getTradingUserToken() {
+  if (tradingUserAccessToken) return tradingUserAccessToken;
+  if (process.env.EBAY_USER_ACCESS_TOKEN) {
+    tradingUserAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
+    return tradingUserAccessToken;
+  }
+  if (!process.env.EBAY_REFRESH_TOKEN || !process.env.EBAY_CLIENT_SECRET) {
+    return '';
+  }
+
+  const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
+  const tokenResponse = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: process.env.EBAY_REFRESH_TOKEN,
+      scope: 'https://api.ebay.com/oauth/api_scope',
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    console.log(`eBay base-scope token refresh failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
+    tradingUserAccessToken = await getSellUserToken();
+    return tradingUserAccessToken;
+  }
+
+  const tokenData = await tokenResponse.json();
+  tradingUserAccessToken = tokenData.access_token || '';
+  return tradingUserAccessToken;
 }
 
 async function fetchInventoryJson(url) {
@@ -223,8 +307,91 @@ async function fetchStoreItemsFromInventory() {
   return Array.from(itemMap.values());
 }
 
+async function fetchTradingPage(pageNumber) {
+  const token = await getTradingUserToken();
+  if (!token) {
+    console.log('Skipping Trading API because a base-scope OAuth token could not be created.');
+    return '';
+  }
+
+  const requestXml = `<?xml version="1.0" encoding="utf-8"?>
+<GetMyeBaySellingRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+  <RequesterCredentials>
+    <eBayAuthToken>${escapeXml(token)}</eBayAuthToken>
+  </RequesterCredentials>
+  <DetailLevel>ReturnAll</DetailLevel>
+  <ErrorLanguage>en_US</ErrorLanguage>
+  <Version>1451</Version>
+  <ActiveList>
+    <Include>true</Include>
+    <Pagination>
+      <EntriesPerPage>100</EntriesPerPage>
+      <PageNumber>${pageNumber}</PageNumber>
+    </Pagination>
+  </ActiveList>
+</GetMyeBaySellingRequest>`;
+
+  const headers = {
+    'Content-Type': 'text/xml',
+    'X-EBAY-API-CALL-NAME': 'GetMyeBaySelling',
+    'X-EBAY-API-SITEID': '0',
+    'X-EBAY-API-COMPATIBILITY-LEVEL': '1451',
+    'X-EBAY-API-IAF-TOKEN': token,
+  };
+
+  if (process.env.EBAY_DEV_ID) headers['X-EBAY-API-DEV-NAME'] = process.env.EBAY_DEV_ID;
+  if (process.env.EBAY_CLIENT_ID) headers['X-EBAY-API-APP-NAME'] = process.env.EBAY_CLIENT_ID;
+  if (process.env.EBAY_CLIENT_SECRET) headers['X-EBAY-API-CERT-NAME'] = process.env.EBAY_CLIENT_SECRET;
+
+  const response = await fetch(tradingEndpoint, {
+    method: 'POST',
+    headers,
+    body: requestXml,
+  });
+
+  const responseText = await response.text();
+  if (!response.ok) {
+    throw new Error(`eBay Trading API request failed: ${response.status} ${responseText}`);
+  }
+  return responseText;
+}
+
+async function fetchStoreItemsFromTrading() {
+  const itemMap = new Map();
+  let pageNumber = 1;
+  let totalPages = 1;
+
+  do {
+    const xml = await fetchTradingPage(pageNumber);
+    if (!xml) return [];
+
+    const ack = getXmlText(xml, 'Ack');
+    if (ack !== 'Success' && ack !== 'Warning') {
+      const message = getXmlText(xml, 'LongMessage') || getXmlText(xml, 'ShortMessage') || 'unknown Trading API error';
+      console.log(`Trading API did not return active listings: ${message}`);
+      return [];
+    }
+
+    const activeList = xml.match(/<ActiveList(?:\s[^>]*)?>([\s\S]*?)<\/ActiveList>/i)?.[1] || '';
+    const items = getXmlBlocks(activeList, 'Item');
+    console.log(`Trading API active listings page ${pageNumber} returned ${items.length} item(s).`);
+    items.map(mapTradingItem).forEach(item => addItem(itemMap, item));
+
+    const pagination = activeList.match(/<PaginationResult(?:\s[^>]*)?>([\s\S]*?)<\/PaginationResult>/i)?.[1] || '';
+    totalPages = Number(getXmlText(pagination, 'TotalNumberOfPages')) || 1;
+    pageNumber += 1;
+  } while (pageNumber <= totalPages && pageNumber <= 10);
+
+  console.log(`Loaded ${itemMap.size} active listings using Trading API.`);
+  return Array.from(itemMap.values());
+}
+
 async function main() {
   let items = await fetchStoreItemsFromInventory();
+
+  if (!items.length) {
+    items = await fetchStoreItemsFromTrading();
+  }
 
   if (!items.length && !allowEmptyStoreData) {
     throw new Error(
