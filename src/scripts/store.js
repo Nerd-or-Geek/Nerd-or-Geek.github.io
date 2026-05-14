@@ -3,6 +3,7 @@ const EBAY_STORE_URL = STORE_CONFIG.ebayStoreUrl || 'https://www.ebay.com/str/Ne
 const ALLOWED_SELLERS = (STORE_CONFIG.allowedSellers || ['Nerd-or-Geek', 'NerdOrGeek', 'nerd-or-geek'])
     .map(normalizeSellerName)
     .filter(Boolean);
+const MAX_TRUSTED_LISTINGS = Number(STORE_CONFIG.maxTrustedListings || 100);
 const STORE_DATA_URL = 'data/store-items.json';
 
 const state = {
@@ -66,6 +67,10 @@ function normalizeSellerName(text = '') {
 function sellerIsAllowed(item) {
     const seller = normalizeSellerName(item.seller || '');
     return Boolean(seller) && ALLOWED_SELLERS.includes(seller);
+}
+
+function storeDataLooksTrusted(data) {
+    return data.length <= MAX_TRUSTED_LISTINGS;
 }
 
 function inferCategory(item) {
@@ -201,6 +206,10 @@ async function loadStoreItems() {
         const data = await response.json();
         if (!Array.isArray(data)) {
             throw new Error('Store data is not an array');
+        }
+
+        if (!storeDataLooksTrusted(data)) {
+            throw new Error(`Store data has ${data.length} listings, which exceeds the trusted limit.`);
         }
 
         state.items = data

@@ -14,9 +14,12 @@ if (process.env.EBAY_CLIENT_ID.includes('SBX') || process.env.EBAY_CLIENT_SECRET
 const findingEndpoint = 'https://svcs.ebay.com/services/search/FindingService/v1';
 const tokenUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
 const browseSearchEndpoint = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+const inventoryItemsEndpoint = 'https://api.ebay.com/sell/inventory/v1/inventory_item';
+const inventoryOffersEndpoint = 'https://api.ebay.com/sell/inventory/v1/offer';
 const outputPath = path.join('data', 'store-items.json');
 const defaultStoreNames = ['Nerd-or-Geek', 'NerdOrGeek', 'nerd-or-geek'];
 const allowEmptyStoreData = process.env.EBAY_ALLOW_EMPTY_STORE_DATA === 'true';
+const maxTrustedListings = Number(process.env.EBAY_MAX_TRUSTED_LISTINGS || 100);
 const defaultKeywords = [
   'raspberry pi',
   'pi zero',
@@ -45,6 +48,7 @@ const keywords = (process.env.EBAY_SEARCH_KEYWORDS || '')
   .map(keyword => keyword.trim())
   .filter(Boolean);
 let browseAccessToken = '';
+let sellUserAccessToken = '';
 
 function unique(values) {
   return values
@@ -148,6 +152,22 @@ function mapBrowseItem(item) {
   };
 }
 
+function mapInventoryOffer(offer, inventoryItem) {
+  const title = inventoryItem.product?.title || offer.sku || '';
+  const listingId = offer.listing?.listingId || '';
+  return {
+    title,
+    price: formatMoney(offer.pricingSummary?.price),
+    image: inventoryItem.product?.imageUrls?.[0] || '',
+    url: listingId ? `https://www.ebay.com/itm/${listingId}` : '',
+    condition: inventoryItem.condition || '',
+    shipping: '',
+    category: inferCategory(title),
+    itemId: listingId,
+    seller: process.env.EBAY_SELLER_USERNAME || process.env.EBAY_STORE_NAME || 'Nerd-or-Geek',
+  };
+}
+
 function sellerMatches(item) {
   const seller = normalizeSeller(item.seller?.username || item.seller?.userName || item.seller || '');
   return Boolean(seller) && sellerCandidates.has(seller);
@@ -160,6 +180,10 @@ function addItem(itemMap, item, { requireSeller = true } = {}) {
   }
   const key = item.itemId || item.url;
   itemMap.set(key, item);
+}
+
+function listingCountLooksTrusted(count) {
+  return count <= maxTrustedListings;
 }
 
 async function fetchFindingPage(storeName, pageNumber) {
@@ -219,6 +243,10 @@ async function fetchStoreItemsFromFinding() {
       } while (pageNumber <= totalPages);
 
       if (itemMap.size) {
+        if (!listingCountLooksTrusted(itemMap.size)) {
+          console.log(`Finding API returned ${itemMap.size} verified listings, which exceeds the trusted limit of ${maxTrustedListings}. Ignoring as likely untrusted data.`);
+          return [];
+        }
         console.log(`Loaded ${itemMap.size} verified listings from eBay store "${storeName}" using Finding API.`);
         return Array.from(itemMap.values());
       }
@@ -257,6 +285,114 @@ async function getBrowseToken() {
   const tokenData = await tokenResponse.json();
   browseAccessToken = tokenData.access_token || '';
   return browseAccessToken;
+}
+
+async function getSellUserToken() {
+  if (sellUserAccessToken) return sellUserAccessToken;
+  if (process.env.EBAY_USER_ACCESS_TOKEN) {
+    sellUserAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
+    return sellUserAccessToken;
+  }
+  if (!process.env.EBAY_REFRESH_TOKEN || !process.env.EBAY_CLIENT_SECRET) {
+    return '';
+  }
+
+  const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
+  const tokenResponse = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: process.env.EBAY_REFRESH_TOKEN,
+      scope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    throw new Error(`eBay user token refresh failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
+  }
+
+  const tokenData = await tokenResponse.json();
+  sellUserAccessToken = tokenData.access_token || '';
+  return sellUserAccessToken;
+}
+
+async function fetchInventoryJson(url) {
+  const token = await getSellUserToken();
+  if (!token) {
+    throw new Error('EBAY_REFRESH_TOKEN or EBAY_USER_ACCESS_TOKEN is not set.');
+  }
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      'Content-Language': 'en-US',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`eBay Inventory API request failed: ${response.status} ${await response.text()}`);
+  }
+
+  return response.json();
+}
+
+async function fetchInventoryItems() {
+  const itemMap = new Map();
+  let offset = 0;
+  let total = 0;
+
+  do {
+    const url = new URL(inventoryItemsEndpoint);
+    url.searchParams.set('limit', '100');
+    url.searchParams.set('offset', String(offset));
+    const data = await fetchInventoryJson(url);
+    const items = data.inventoryItems || [];
+    console.log(`Inventory API items offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
+    items.forEach(item => {
+      if (item.sku) itemMap.set(item.sku, item);
+    });
+    total = Number(data.total) || 0;
+    offset += items.length || 100;
+  } while (offset < total && offset < 1000);
+
+  return itemMap;
+}
+
+async function fetchOffersForSku(sku) {
+  const url = new URL(inventoryOffersEndpoint);
+  url.searchParams.set('sku', sku);
+  url.searchParams.set('marketplace_id', 'EBAY_US');
+  url.searchParams.set('limit', '100');
+  url.searchParams.set('offset', '0');
+  const data = await fetchInventoryJson(url);
+  return data.offers || [];
+}
+
+async function fetchStoreItemsFromInventory() {
+  const token = await getSellUserToken();
+  if (!token) {
+    console.log('Skipping Inventory API because EBAY_REFRESH_TOKEN or EBAY_USER_ACCESS_TOKEN is not set.');
+    return [];
+  }
+
+  const inventoryItems = await fetchInventoryItems();
+  const itemMap = new Map();
+
+  for (const [sku, inventoryItem] of inventoryItems.entries()) {
+    const offers = await fetchOffersForSku(sku);
+    offers
+      .filter(offer => offer.status === 'PUBLISHED' && offer.listing?.listingStatus === 'ACTIVE')
+      .map(offer => mapInventoryOffer(offer, inventoryItem))
+      .forEach(item => addItem(itemMap, item));
+  }
+
+  console.log(`Loaded ${itemMap.size} active listings using Sell Inventory API.`);
+  return Array.from(itemMap.values());
 }
 
 async function searchBrowseItems({ keyword = ' ', offset = 0 }) {
@@ -304,11 +440,15 @@ async function fetchStoreItemsFromBrowseAllSellerItems() {
       const data = await searchBrowseItems({ keyword: ' ', offset });
       const items = data.itemSummaries || [];
       console.log(`Browse API seller search offset ${offset} returned ${items.length} item(s), total ${data.total || 0}.`);
+      total = Number(data.total) || 0;
+      if (!listingCountLooksTrusted(total)) {
+        console.log(`Browse API seller search total ${total} exceeds the trusted limit of ${maxTrustedListings}. Ignoring as likely unfiltered marketplace data.`);
+        return [];
+      }
       items.map(mapBrowseItem).forEach(item => {
         if (item.seller) seenSellers.add(item.seller);
         addItem(itemMap, item);
       });
-      total = Number(data.total) || 0;
       offset += items.length || 100;
     } while (offset < total && offset < 1000);
   } catch (error) {
@@ -316,8 +456,8 @@ async function fetchStoreItemsFromBrowseAllSellerItems() {
     return [];
   }
 
-  if (total > 1000 && itemMap.size > 1000) {
-    console.log('Browse API seller search returned more than 1000 items, which looks like an unfiltered marketplace search. Ignoring those results.');
+  if (!listingCountLooksTrusted(itemMap.size)) {
+    console.log(`Browse API seller search kept ${itemMap.size} listings, which exceeds the trusted limit of ${maxTrustedListings}. Ignoring as likely untrusted data.`);
     return [];
   }
 
@@ -357,12 +497,16 @@ async function fetchStoreItemsFromBrowseKeywords() {
   }
 
   console.log(`Browse API keyword seller usernames seen: ${Array.from(seenSellers).slice(0, 20).join(', ') || '(none)'}`);
+  if (!listingCountLooksTrusted(itemMap.size)) {
+    console.log(`Browse API keyword fallback kept ${itemMap.size} listings, which exceeds the trusted limit of ${maxTrustedListings}. Ignoring as likely untrusted data.`);
+    return [];
+  }
   console.log(`Loaded ${itemMap.size} verified listings using Browse API keyword fallback.`);
   return Array.from(itemMap.values());
 }
 
 async function main() {
-  let items = await fetchStoreItemsFromBrowseAllSellerItems();
+  let items = await fetchStoreItemsFromInventory();
 
   if (!items.length) {
     items = await fetchStoreItemsFromFinding();
@@ -377,6 +521,10 @@ async function main() {
       'No eBay store listings were returned, so data/store-items.json was not overwritten. ' +
       'Check EBAY_STORE_NAME and EBAY_SELLER_USERNAME. Recommended values: EBAY_STORE_NAME=NerdOrGeek or Nerd-or-Geek, and EBAY_SELLER_USERNAME as the public seller username shown by eBay.'
     );
+  }
+
+  if (!listingCountLooksTrusted(items.length)) {
+    throw new Error(`Refusing to write ${items.length} eBay listings because that exceeds EBAY_MAX_TRUSTED_LISTINGS=${maxTrustedListings}. This usually means eBay returned marketplace items that are not from your store.`);
   }
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
