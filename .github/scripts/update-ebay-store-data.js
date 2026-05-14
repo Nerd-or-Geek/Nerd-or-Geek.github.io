@@ -164,12 +164,7 @@ function listingCountLooksTrusted(count) {
   return count <= maxTrustedListings;
 }
 
-async function getSellUserToken() {
-  if (sellUserAccessToken) return sellUserAccessToken;
-  if (process.env.EBAY_USER_ACCESS_TOKEN) {
-    sellUserAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
-    return sellUserAccessToken;
-  }
+async function refreshUserAccessToken(scope, label) {
   if (!process.env.EBAY_REFRESH_TOKEN || !process.env.EBAY_CLIENT_SECRET) {
     return '';
   }
@@ -184,52 +179,65 @@ async function getSellUserToken() {
     body: new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token: process.env.EBAY_REFRESH_TOKEN,
-      scope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      scope,
     }),
   });
 
   if (!tokenResponse.ok) {
-    throw new Error(`eBay user token refresh failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
+    throw new Error(`eBay ${label} token refresh failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
   }
 
   const tokenData = await tokenResponse.json();
-  sellUserAccessToken = tokenData.access_token || '';
-  return sellUserAccessToken;
+  return tokenData.access_token || '';
+}
+
+async function getSellUserToken() {
+  if (sellUserAccessToken) return sellUserAccessToken;
+
+  if (process.env.EBAY_REFRESH_TOKEN) {
+    if (process.env.EBAY_USER_ACCESS_TOKEN) {
+      console.log('EBAY_USER_ACCESS_TOKEN is set, but EBAY_REFRESH_TOKEN is preferred because access tokens expire quickly.');
+    }
+    sellUserAccessToken = await refreshUserAccessToken(
+      'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      'sell.inventory'
+    );
+    return sellUserAccessToken;
+  }
+
+  if (process.env.EBAY_USER_ACCESS_TOKEN) {
+    console.log('Using EBAY_USER_ACCESS_TOKEN fallback. This token expires quickly; EBAY_REFRESH_TOKEN is recommended for GitHub Actions.');
+    sellUserAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
+    return sellUserAccessToken;
+  }
+
+  return '';
 }
 
 async function getTradingUserToken() {
   if (tradingUserAccessToken) return tradingUserAccessToken;
+
+  if (process.env.EBAY_REFRESH_TOKEN) {
+    try {
+      tradingUserAccessToken = await refreshUserAccessToken(
+        'https://api.ebay.com/oauth/api_scope',
+        'base-scope'
+      );
+      return tradingUserAccessToken;
+    } catch (error) {
+      console.log(error.message);
+      tradingUserAccessToken = await getSellUserToken();
+      return tradingUserAccessToken;
+    }
+  }
+
   if (process.env.EBAY_USER_ACCESS_TOKEN) {
+    console.log('Using EBAY_USER_ACCESS_TOKEN fallback for Trading API. This token expires quickly; EBAY_REFRESH_TOKEN is recommended for GitHub Actions.');
     tradingUserAccessToken = process.env.EBAY_USER_ACCESS_TOKEN;
     return tradingUserAccessToken;
   }
-  if (!process.env.EBAY_REFRESH_TOKEN || !process.env.EBAY_CLIENT_SECRET) {
-    return '';
-  }
 
-  const basicAuth = Buffer.from(`${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`).toString('base64');
-  const tokenResponse = await fetch(tokenUrl, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${basicAuth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: process.env.EBAY_REFRESH_TOKEN,
-      scope: 'https://api.ebay.com/oauth/api_scope',
-    }),
-  });
-
-  if (!tokenResponse.ok) {
-    console.log(`eBay base-scope token refresh failed: ${tokenResponse.status} ${await tokenResponse.text()}`);
-    tradingUserAccessToken = await getSellUserToken();
-    return tradingUserAccessToken;
-  }
-
-  const tokenData = await tokenResponse.json();
-  tradingUserAccessToken = tokenData.access_token || '';
-  return tradingUserAccessToken;
+  return '';
 }
 
 async function fetchInventoryJson(url) {
@@ -247,7 +255,14 @@ async function fetchInventoryJson(url) {
   });
 
   if (!response.ok) {
-    throw new Error(`eBay Inventory API request failed: ${response.status} ${await response.text()}`);
+    const responseText = await response.text();
+    if (response.status === 401) {
+      throw new Error(
+        `eBay Inventory API request failed: ${response.status} ${responseText}\n` +
+        'The Inventory API rejected the bearer token. In GitHub secrets, use EBAY_REFRESH_TOKEN for the long-lived seller refresh token and remove any stale EBAY_USER_ACCESS_TOKEN secret.'
+      );
+    }
+    throw new Error(`eBay Inventory API request failed: ${response.status} ${responseText}`);
   }
 
   return response.json();
