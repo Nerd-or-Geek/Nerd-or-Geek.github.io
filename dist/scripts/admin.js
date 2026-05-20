@@ -119,15 +119,6 @@ const DEFAULT_AFFILIATES = [
         icon: 'fa-microchip',
         comingSoon: false,
         createdAt: Date.now()
-    },
-    {
-        id: 'static-affiliate-4',
-        name: 'eBay Shop',
-        description: 'Coming soon: my eBay store with affordable Raspberry Pis, respeaker hats, speakers, and Pi-ready accessories.',
-        link: '',
-        icon: 'fa-store',
-        comingSoon: true,
-        createdAt: Date.now()
     }
 ];
 const DEFAULT_PROJECTS = [

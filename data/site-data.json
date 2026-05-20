@@ -1,15 +1,6 @@
 {
   "affiliates": [
     {
-      "id": "static-affiliate-4",
-      "name": "eBay Shop",
-      "description": "Check the live Nerd or Geek eBay store for Raspberry Pi boards, ReSpeaker hats, speakers, GPIO parts, cellular modules, and Pi-ready accessories while stock lasts.",
-      "link": "https://www.ebay.com/str/NerdOrGeek",
-      "icon": "fa-store",
-      "comingSoon": false,
-      "createdAt": 1768499201280
-    },
-    {
       "id": "static-affiliate-1",
       "name": "Raspberry Pi Tips School",
       "description": "Learn everything about Raspberry Pi with comprehensive courses and tutorials. Perfect for beginners and advanced users!",
