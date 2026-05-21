@@ -19,6 +19,7 @@
 // URLs, are displayed as lazy-loaded embedded images.
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
 const MY_MISSION_PASSWORD_HASH = "__MY_MISSION_PASSWORD_HASH__";
+const PASSWORD_HASH_PLACEHOLDER = ["__MY", "MISSION", "PASSWORD", "HASH__"].join("_");
 const MISSION_AUTH_STORAGE_KEY = "myMissionAuthenticated";
 
 const passwordPanel = document.getElementById("missionPasswordPanel");
@@ -59,7 +60,7 @@ function setPasswordMessage(message, type = "info") {
 
 function passwordHashIsConfigured() {
     return Boolean(MY_MISSION_PASSWORD_HASH) &&
-        MY_MISSION_PASSWORD_HASH !== "__MY_MISSION_PASSWORD_HASH__";
+        MY_MISSION_PASSWORD_HASH !== PASSWORD_HASH_PLACEHOLDER;
 }
 
 function arrayBufferToHex(buffer) {

@@ -58,7 +58,7 @@ jobs:
             }
             
             fs.writeFileSync(file, source.replaceAll(placeholder, hash));
-            console.log('✓ Password hash injected successfully');
+            console.log('Password hash injected successfully');
           "
 
       - name: Build TypeScript and SCSS
@@ -70,7 +70,7 @@ jobs:
             echo "::error::Password placeholder was not replaced in source files."
             exit 1
           fi
-          echo "✓ Password placeholder successfully replaced"
+          echo "Password placeholder successfully replaced"
 
       - name: Deploy to GitHub Pages
         env:
