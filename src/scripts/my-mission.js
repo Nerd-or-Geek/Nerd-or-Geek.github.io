@@ -276,12 +276,21 @@ function normalizeSheetRows(data) {
 }
 
 async function fetchMissionRows() {
-    const response = await fetch(MISSION_SHEET_URL, {
+    const fetchOptions = {
         cache: "no-store",
         headers: {
             "Cache-Control": "no-cache"
         }
-    });
+    };
+
+    let response;
+    try {
+        response = await fetch(MISSION_SHEET_URL, fetchOptions);
+    } catch (error) {
+        // OpenSheet may reject the Cache-Control request header during a browser
+        // CORS preflight. Keep no-store and retry without the custom header.
+        response = await fetch(MISSION_SHEET_URL, { cache: "no-store" });
+    }
 
     if (!response.ok) {
         throw new Error(`Sheet request failed with ${response.status}`);
