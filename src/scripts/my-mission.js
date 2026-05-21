@@ -115,7 +115,7 @@ async function sha256Hex(value) {
 }
 
 function missionSessionIsAuthenticated() {
-    return sessionStorage.getItem(MISSION_AUTH_STORAGE_KEY) === "true";
+    return localStorage.getItem(MISSION_AUTH_STORAGE_KEY) === "true";
 }
 
 function showProtectedMissionContent() {
@@ -143,7 +143,7 @@ function startMissionPage() {
 }
 
 function handleMissionLogout() {
-    sessionStorage.removeItem(MISSION_AUTH_STORAGE_KEY);
+    localStorage.removeItem(MISSION_AUTH_STORAGE_KEY);
     hasStartedMissionPage = false;
     if (passwordPanel) passwordPanel.hidden = false;
     if (protectedContent) protectedContent.hidden = true;
@@ -183,7 +183,7 @@ async function handlePasswordSubmit(event) {
             return;
         }
 
-        sessionStorage.setItem(MISSION_AUTH_STORAGE_KEY, "true");
+        localStorage.setItem(MISSION_AUTH_STORAGE_KEY, "true");
         if (passwordInput) passwordInput.value = "";
         startMissionPage();
     } catch (error) {
