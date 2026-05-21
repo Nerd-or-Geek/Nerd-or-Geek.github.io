@@ -3,8 +3,11 @@ name: Deploy static site to GitHub Pages
 
 on:
   schedule:
-    - cron: "0 12 * * 1"
-    - cron: "0 22 * * 1"
+    # GitHub schedules are UTC. These pairs cover Mountain daylight and
+    # standard time, then the workflow gates itself with America/Denver time.
+    - cron: "0 18,19 * * 1" # Monday noon Mountain
+    - cron: "0 4,5 * * 2"   # Monday 10pm Mountain
+    - cron: "0 4,5 * * 3"   # Tuesday 10pm Mountain
   workflow_dispatch:
   push:
     branches: [main]
@@ -18,19 +21,47 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Check Mountain time schedule
+        id: mountain_time
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Manual or push run; continuing."
+            exit 0
+          fi
+
+          mountain_day="$(TZ=America/Denver date +%u)"
+          mountain_hour="$(TZ=America/Denver date +%H)"
+          mountain_time="$(TZ=America/Denver date)"
+          echo "Mountain time is $mountain_time"
+
+          if { [ "$mountain_day" = "1" ] && { [ "$mountain_hour" = "12" ] || [ "$mountain_hour" = "22" ]; }; } || \
+             { [ "$mountain_day" = "2" ] && [ "$mountain_hour" = "22" ]; }; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Scheduled mission update window matched."
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping duplicate daylight/standard-time schedule window."
+          fi
+
       - name: Checkout repository
+        if: steps.mountain_time.outputs.should_run == 'true'
         uses: actions/checkout@v5
 
       - name: Setup Node.js
+        if: steps.mountain_time.outputs.should_run == 'true'
         uses: actions/setup-node@v5
         with:
           node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
+        if: steps.mountain_time.outputs.should_run == 'true'
         run: npm ci
 
       - name: Inject My Mission password hash
+        if: steps.mountain_time.outputs.should_run == 'true'
         env:
           MY_MISSION_PASSWORD_HASH: ${{ secrets.MY_MISSION_PASSWORD_HASH }}
         run: |
@@ -62,9 +93,11 @@ jobs:
           "
 
       - name: Build TypeScript and SCSS
+        if: steps.mountain_time.outputs.should_run == 'true'
         run: npm run build
 
       - name: Verify password placeholder was replaced
+        if: steps.mountain_time.outputs.should_run == 'true'
         run: |
           if grep -R "__MY_MISSION_PASSWORD_HASH__" src/ ; then
             echo "::error::Password placeholder was not replaced in source files."
@@ -73,6 +106,7 @@ jobs:
           echo "Password placeholder successfully replaced"
 
       - name: Deploy to GitHub Pages
+        if: steps.mountain_time.outputs.should_run == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
