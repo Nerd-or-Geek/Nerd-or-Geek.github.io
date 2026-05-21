@@ -20,6 +20,39 @@
 import DOMPurify from "../../dist/vendor/purify.es.mjs";
 import { marked } from "../../dist/vendor/marked.esm.js";
 
+const customMarkdownExtensions = [
+    {
+        name: "customHighlight",
+        level: "inline",
+        start(source) {
+            return source.indexOf("|");
+        },
+        tokenizer(source) {
+            const match = /^\|([^|\n]+)\|/.exec(source);
+            if (!match) return undefined;
+
+            return {
+                type: "customHighlight",
+                raw: match[0],
+                text: match[1]
+            };
+        },
+        renderer(token) {
+            const highlightedText = marked.parseInline(token.text, {
+                async: false,
+                breaks: true,
+                gfm: true
+            });
+
+            return `<span class="custom-highlight">${highlightedText}</span>`;
+        }
+    }
+];
+
+marked.use({
+    extensions: customMarkdownExtensions
+});
+
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
 const MY_MISSION_PASSWORD_HASH = "__MY_MISSION_PASSWORD_HASH__";
 const PASSWORD_HASH_PLACEHOLDER = ["__MY", "MISSION", "PASSWORD", "HASH__"].join("_");

@@ -2224,6 +2224,22 @@ button {
   padding: 0.85rem 1rem;
 }
 
+.custom-highlight {
+  background: #fde68a;
+  border-radius: 0.3rem;
+  box-decoration-break: clone;
+  color: #422006;
+  font-weight: 800;
+  padding: 0.05rem 0.28rem;
+  -webkit-box-decoration-break: clone;
+}
+
+@media (prefers-color-scheme: dark) {
+  .custom-highlight {
+    background: #facc15;
+    color: #1f1600;
+  }
+}
 .mission-scripture-reference.mission-markdown {
   color: #64748b;
 }

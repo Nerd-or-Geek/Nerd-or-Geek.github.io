@@ -72,6 +72,32 @@ Individual build commands:
 - `npm run build:ts` - Compile TypeScript only
 - `npm run build:scss` - Compile SCSS only
 
+## My Mission Markdown Examples
+
+Google Sheet fields that support Markdown include `ScriptureText`, `Thoughts`, `MissionUpdate`, `Notes`, and `ScriptureReference`.
+
+Use pipe characters to highlight important words or phrases:
+
+```markdown
+This is a |highlighted phrase| in a paragraph.
+```
+
+More examples:
+
+```markdown
+The scripture phrase |press forward with a steadfastness in Christ| stood out to me.
+
+Today I learned that **faith** means |acting before I know everything|.
+
+## Mission thought
+
+- Pray for |charity|
+- Study [John 3:16](https://www.churchofjesuschrist.org/study/scriptures/nt/john/3)
+- Remember that |small daily choices matter|
+
+> The invitation to |come unto Christ| felt personal this week.
+```
+
 ### Deployment
 
 The project is configured for GitHub Pages deployment:
