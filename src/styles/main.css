@@ -2347,7 +2347,24 @@ button {
   transform: translateY(-1px);
 }
 
+.mission-map-container {
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 0.75rem;
+  height: 450px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.mission-map-container .leaflet-container {
+  background: #0f2744;
+  height: 100%;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
+  .mission-map-container {
+    height: 320px;
+  }
   .mission-section {
     padding: 1.25rem;
   }

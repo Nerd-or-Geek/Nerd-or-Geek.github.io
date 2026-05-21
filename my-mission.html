@@ -40,6 +40,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 <body>
     <!-- Google Tag Manager (noscript) -->
@@ -119,6 +120,14 @@
             <p>Weekly scripture thoughts, mission updates, and reflections.</p>
         </section>
 
+        <section class="content-section mission-section" aria-labelledby="mission-map-heading">
+            <div class="section-header">
+                <h2 id="mission-map-heading"><i class="fas fa-map-marked-alt"></i> Mission Territory</h2>
+                <p class="section-description">The area covered by this mission across Idaho, Montana, and Wyoming.</p>
+            </div>
+            <div id="missionMap" class="mission-map-container"></div>
+        </section>
+
         <section class="content-section mission-section" aria-labelledby="mission-updates-heading">
             <div class="section-header">
                 <h2 id="mission-updates-heading"><i class="fas fa-book-open"></i> Weekly Updates</h2>
@@ -188,6 +197,7 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GEKk=" crossorigin=""></script>
     <script src="dist/scripts/main.js" type="module"></script>
     <script src="src/scripts/my-mission.js" type="module"></script>
 </body>
