@@ -1826,6 +1826,202 @@ button {
   }
 }
 
+.mission-page .mission-hero {
+  margin-bottom: 2rem;
+}
+
+.mission-section {
+  background: rgba(15, 39, 68, 0.72);
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+}
+
+.mission-status {
+  background: rgba(255, 255, 255, 0.96);
+  border-left: 4px solid #0ea5e9;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+.mission-status[data-status=error] {
+  border-left-color: #ef4444;
+}
+.mission-status[data-status=empty] {
+  border-left-color: #f59e0b;
+}
+
+.mission-week-selector {
+  display: flex;
+  gap: 0.65rem;
+  margin: 0 0 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.mission-week-button {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: #f1f5f9;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font: inherit;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.mission-week-button:hover, .mission-week-button:focus {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: rgba(56, 189, 248, 0.6);
+  outline: none;
+  transform: translateY(-1px);
+}
+.mission-week-button.active {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: white;
+}
+
+.mission-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.mission-card {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.mission-card:hover, .mission-card:focus {
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  outline: none;
+  transform: translateY(-2px);
+}
+.mission-card:focus {
+  outline: 3px solid rgba(14, 165, 233, 0.45);
+  outline-offset: 3px;
+}
+
+.mission-card-image {
+  aspect-ratio: 16/9;
+  background: #e2e8f0;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.mission-card-content {
+  padding: 1.5rem;
+}
+.mission-card-content h3 {
+  color: #1e293b;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+.mission-card-content blockquote {
+  background: #f8fafc;
+  border-left: 4px solid #0ea5e9;
+  border-radius: 0 0.6rem 0.6rem 0;
+  color: #334155;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.7;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.25rem;
+}
+
+.mission-card-meta {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  font-weight: 800;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+}
+.mission-card-meta span {
+  color: #0ea5e9;
+}
+.mission-card-meta time {
+  text-transform: none;
+}
+
+.mission-card-section {
+  margin-top: 1.2rem;
+}
+.mission-card-section h4 {
+  color: #1e293b;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+.mission-card-section p {
+  color: #475569;
+  line-height: 1.7;
+}
+
+.mission-scripture-reference {
+  color: #64748b;
+  font-weight: 800;
+  margin: -0.4rem 0 1rem;
+}
+
+.mission-photos-section {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 1.35rem;
+  padding-top: 1.25rem;
+}
+
+.mission-photos-button {
+  align-items: center;
+  background: #0ea5e9;
+  border-radius: 0.5rem;
+  color: white;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.mission-photos-button:hover, .mission-photos-button:focus {
+  background: #0284c7;
+  color: white;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .mission-section {
+    padding: 1.25rem;
+  }
+  .mission-card-content {
+    padding: 1.2rem;
+  }
+  .mission-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .mission-photos-button {
+    justify-content: center;
+    width: 100%;
+  }
+}
 .project-icon-placeholder {
   width: 100%;
   height: 180px;
