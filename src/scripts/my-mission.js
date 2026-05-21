@@ -66,11 +66,11 @@ const refreshButton = document.getElementById("missionRefreshButton");
 const logoutButton = document.getElementById("missionLogoutButton");
 
 let publishedEntries = [];
-let selectedWeek = "all";
+let selectedWeek = null;
 let isLoadingMissionEntries = false;
 let hasStartedMissionPage = false;
 let missionMap = null;
-let missionLocationMarker = null;
+let missionLocationMarkers = [];
 
 function setStatus(message, type = "info") {
     if (!statusElement) return;
@@ -299,22 +299,27 @@ function renderWeekSelector(entries) {
         return;
     }
 
-    const buttons = [
-        `<button type="button" class="mission-week-button${selectedWeek === "all" ? " active" : ""}" data-week="all" aria-pressed="${selectedWeek === "all"}">All Weeks</button>`,
+    const options = [
+        `<option value="all"${selectedWeek === "all" ? " selected" : ""}>All Weeks</option>`,
         ...weeks.map(entry => {
             const weekId = getWeekId(entry);
-            const isActive = selectedWeek === weekId;
-            return `<button type="button" class="mission-week-button${isActive ? " active" : ""}" data-week="${escapeHtml(weekId)}" aria-pressed="${isActive}">Week ${escapeHtml(weekId)}</button>`;
+            const isSelected = selectedWeek === weekId;
+            return `<option value="${escapeHtml(weekId)}"${isSelected ? " selected" : ""}>Week ${escapeHtml(weekId)}</option>`;
         })
-    ];
+    ].join("");
 
-    weekSelector.innerHTML = buttons.join("");
-    weekSelector.querySelectorAll("[data-week]").forEach(button => {
-        button.addEventListener("click", () => {
-            selectedWeek = button.dataset.week || "all";
+    weekSelector.innerHTML = `<div class="mission-week-select-row">
+        <label for="missionWeekSelect">Jump to week:</label>
+        <select id="missionWeekSelect" class="mission-week-select">${options}</select>
+    </div>`;
+
+    const select = weekSelector.querySelector("#missionWeekSelect");
+    if (select) {
+        select.addEventListener("change", () => {
+            selectedWeek = select.value;
             renderMissionView();
         });
-    });
+    }
 }
 
 function getGooglePhotosAlbumUrl(entry) {
@@ -476,11 +481,15 @@ async function loadMissionEntries() {
             .sort(sortEntriesNewestFirst);
 
         const publishedWeekIds = new Set(publishedEntries.map(getWeekId));
-        selectedWeek = previousSelectedWeek === "all" || publishedWeekIds.has(previousSelectedWeek)
-            ? previousSelectedWeek
-            : "all";
+        if (previousSelectedWeek === null) {
+            selectedWeek = publishedEntries.length > 0 ? getWeekId(publishedEntries[0]) : "all";
+        } else if (previousSelectedWeek === "all" || publishedWeekIds.has(previousSelectedWeek)) {
+            selectedWeek = previousSelectedWeek;
+        } else {
+            selectedWeek = publishedEntries.length > 0 ? getWeekId(publishedEntries[0]) : "all";
+        }
 
-        updateMissionMapLocation(publishedEntries);
+        updateMissionMapLocations(publishedEntries);
         renderMissionView();
         setLastUpdated();
     } catch (error) {
@@ -523,7 +532,17 @@ function initMissionMap() {
     const mapEl = document.getElementById("missionMap");
     if (!mapEl || typeof L === "undefined") return;
 
-    const streetLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    const streetLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    });
+
+    const voyagerLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19
+    });
+
+    const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19
     });
@@ -533,10 +552,21 @@ function initMissionMap() {
         maxZoom: 19
     });
 
+    const topoLayer = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+        maxZoom: 17
+    });
+
     missionMap = L.map("missionMap", { layers: [streetLayer] });
 
     L.control.layers(
-        { "Street": streetLayer, "Satellite": satelliteLayer },
+        {
+            "Street": streetLayer,
+            "Voyager": voyagerLayer,
+            "Dark": darkLayer,
+            "Satellite": satelliteLayer,
+            "Topo": topoLayer
+        },
         {},
         { position: "topright" }
     ).addTo(missionMap);
@@ -552,38 +582,59 @@ function initMissionMap() {
     }
 }
 
-function updateMissionMapLocation(rows) {
+function updateMissionMapLocations(rows) {
     if (!missionMap || typeof L === "undefined") return;
 
-    const entryWithLoc = rows.find(row => getLocValue(row).length > 0);
-    const coords = entryWithLoc ? parseDMSLocation(getLocValue(entryWithLoc)) : null;
-
-    if (missionLocationMarker) {
-        missionMap.removeLayer(missionLocationMarker);
-        missionLocationMarker = null;
+    for (const marker of missionLocationMarkers) {
+        missionMap.removeLayer(marker);
     }
+    missionLocationMarkers = [];
 
-    if (!coords) return;
+    const entriesWithLoc = rows.filter(row => getLocValue(row).length > 0);
 
-    const weekLabel = entryWithLoc.Week ? `Week ${escapeHtml(String(entryWithLoc.Week))}` : "";
-    const icon = L.divIcon({
-        html: '<i class="fas fa-map-pin" style="color:#f59e0b;font-size:1.5rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6));"></i>',
-        className: "",
-        iconSize: [24, 32],
-        iconAnchor: [12, 32],
-        popupAnchor: [0, -32]
-    });
+    for (let i = 0; i < entriesWithLoc.length; i++) {
+        const entry = entriesWithLoc[i];
+        const coords = parseDMSLocation(getLocValue(entry));
+        if (!coords) continue;
 
-    missionLocationMarker = L.marker(coords, { icon, title: "Current Location" })
-        .addTo(missionMap)
-        .bindPopup(`<strong>Current Location</strong>${weekLabel ? `<br>${weekLabel}` : ""}`)
-        .openPopup();
+        const isLatest = i === 0;
+        const weekLabel = entry.Week ? `Week ${escapeHtml(String(entry.Week))}` : "";
+
+        const icon = isLatest
+            ? L.divIcon({
+                html: '<i class="fas fa-map-pin" style="color:#f59e0b;font-size:1.5rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6));"></i>',
+                className: "",
+                iconSize: [24, 32],
+                iconAnchor: [12, 32],
+                popupAnchor: [0, -32]
+            })
+            : L.divIcon({
+                html: '<span style="display:block;width:10px;height:10px;border-radius:50%;background:#93c5fd;border:2px solid rgba(255,255,255,0.6);box-shadow:0 1px 3px rgba(0,0,0,0.5);"></span>',
+                className: "",
+                iconSize: [10, 10],
+                iconAnchor: [5, 5],
+                popupAnchor: [0, -8]
+            });
+
+        const popupContent = isLatest
+            ? `<strong>Current Location</strong>${weekLabel ? `<br>${weekLabel}` : ""}`
+            : weekLabel || "Previous location";
+
+        const marker = L.marker(coords, { icon, title: isLatest ? "Current Location" : (weekLabel || "Previous location") })
+            .addTo(missionMap)
+            .bindPopup(popupContent);
+
+        if (isLatest) marker.openPopup();
+        missionLocationMarkers.push(marker);
+    }
 }
 
 async function loadMapLocation() {
     try {
-        const rows = await fetchMissionRows();
-        updateMissionMapLocation(rows);
+        const rows = (await fetchMissionRows())
+            .filter(entryIsPublished)
+            .sort(sortEntriesNewestFirst);
+        updateMissionMapLocations(rows);
     } catch {
         // Map still shows the territory route without a location marker
     }
