@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TLCF99CZ');</script>
+    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJZ4M1FHDV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PJZ4M1FHDV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mission | Sign In</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLCF99CZ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="header">
+        <div class="header-container">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav" aria-label="Main navigation">
+                <a href="index.html" class="header-nav-link">Home</a>
+                <a href="projects.html" class="header-nav-link">Projects</a>
+                <a href="what-is-a-raspberry-pi.html" class="header-nav-link">Pi Guide</a>
+                <a href="mission-login.html" class="header-nav-link active">My Mission</a>
+            </nav>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search..." aria-label="Search">
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <a href="https://www.youtube.com/@Nerd-or-Geek" class="youtube-link youtube-link-header" target="_blank" rel="noopener noreferrer" aria-label="YouTube Channel">
+                <i class="fab fa-youtube"></i>
+                <span>View My YouTube Channel</span>
+            </a>
+            <a href="https://www.printables.com/@Nerd_or_Geek" class="printables-link" target="_blank" rel="noopener noreferrer" aria-label="Printables Profile">
+                <img src="assets/img/projects/Printables.png" alt="Printables" class="printables-logo">
+            </a>
+            <a href="https://github.com/sponsors/Nerd-or-Geek" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Sponsors">
+                <i class="fas fa-heart"></i>
+            </a>
+            <a href="https://github.com/Nerd-or-Geek" class="github-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="email-signup.html" class="github-link" aria-label="Email Sign Up">
+                <i class="fas fa-user-tie"></i>
+            </a>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close Sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <nav class="sidebar-nav" aria-label="Navigation">
+            <ul class="nav-list">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="projects.html" class="nav-link">All Projects</a></li>
+                <li><a href="what-is-a-raspberry-pi.html" class="nav-link">Raspberry Pi Guide</a></li>
+                <li><a href="mission-login.html" class="nav-link">My Mission</a></li>
+                <li><a href="email-signup.html" class="nav-link">Email Sign Up</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content mission-page">
+        <section class="page-header mission-hero">
+            <span class="hero-badge">Mission Journal</span>
+            <h1>My Mission</h1>
+            <p>Weekly scripture thoughts, mission updates, and reflections.</p>
+        </section>
+
+        <section class="content-section mission-section">
+            <div class="mission-password-panel" aria-labelledby="mission-login-heading">
+                <div class="mission-password-card">
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+                    <h3 id="mission-login-heading">Sign In</h3>
+                    <p>Enter the password to view mission updates.</p>
+                    <form id="missionLoginForm" class="mission-password-form">
+                        <label for="missionPasswordInput">Password</label>
+                        <div class="mission-password-input-row">
+                            <input type="password" id="missionPasswordInput" autocomplete="current-password" required>
+                            <button type="submit">Unlock</button>
+                        </div>
+                        <p class="mission-password-message" id="missionPasswordMessage" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="footer-logo">
+                <p>Tech tutorials, Raspberry Pi projects, and open-source tools.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="mission-login.html">My Mission</a>
+                    <a href="what-is-a-raspberry-pi.html">Raspberry Pi Guide</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="sitemap.html">Sitemap</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://www.printables.com/@Nerd_or_Geek" target="_blank" rel="noopener noreferrer"><i class="fas fa-cube"></i> Printables</a>
+                    <a href="https://github.com/sponsors/Nerd-or-Geek" target="_blank" rel="noopener noreferrer"><i class="fas fa-heart"></i> Sponsor</a>
+                    <a href="email-signup.html" rel="noopener noreferrer"><i class="fas fa-envelope"></i> Email Sign Up</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="dist/scripts/main.js" type="module"></script>
+    <script src="src/scripts/mission-login.js" type="module"></script>
+</body>
+</html>

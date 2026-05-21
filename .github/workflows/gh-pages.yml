@@ -70,10 +70,10 @@ jobs:
             exit 1
           fi
 
-          echo "Injecting password hash into src/scripts/my-mission.js..."
+          echo "Injecting password hash into src/scripts/mission-login.js..."
           node -e "
             const fs = require('fs');
-            const file = 'src/scripts/my-mission.js';
+            const file = 'src/scripts/mission-login.js';
             const placeholder = '__MY_MISSION_PASSWORD_HASH__';
             const hash = process.env.MY_MISSION_PASSWORD_HASH.trim();
             
