@@ -601,12 +601,23 @@ function initMissionMap() {
     const mapEl = document.getElementById("missionMap");
     if (!mapEl || typeof L === "undefined") return;
 
-    missionMap = L.map("missionMap");
-
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    const streetLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19
-    }).addTo(missionMap);
+    });
+
+    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        attribution: "Tiles &copy; Esri &mdash; Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGS, and the GIS User Community",
+        maxZoom: 19
+    });
+
+    missionMap = L.map("missionMap", { layers: [streetLayer] });
+
+    L.control.layers(
+        { "Street": streetLayer, "Satellite": satelliteLayer },
+        {},
+        { position: "topright" }
+    ).addTo(missionMap);
 
     const routeCoords = parseMissionRouteCoords(MISSION_ROUTE_COORDS);
     if (routeCoords.length > 0) {

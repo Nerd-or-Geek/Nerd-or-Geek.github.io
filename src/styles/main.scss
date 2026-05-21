@@ -2582,9 +2582,21 @@ button {
     }
 }
 
+.mission-map-container {
+    border: 1px solid rgba($primary-color, 0.3);
+    border-radius: 0.75rem;
+    height: 450px;
+    overflow: hidden;
+    width: 100%;
+}
+
 @media (max-width: $breakpoint-md) {
     .mission-section {
         padding: 1.25rem;
+    }
+
+    .mission-map-container {
+        height: 320px;
     }
 
     .mission-card-content {

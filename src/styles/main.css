@@ -2355,18 +2355,12 @@ button {
   width: 100%;
 }
 
-.mission-map-container .leaflet-container {
-  background: #0f2744;
-  height: 100%;
-  width: 100%;
-}
-
 @media (max-width: 768px) {
-  .mission-map-container {
-    height: 320px;
-  }
   .mission-section {
     padding: 1.25rem;
+  }
+  .mission-map-container {
+    height: 320px;
   }
   .mission-card-content {
     padding: 1.2rem;
