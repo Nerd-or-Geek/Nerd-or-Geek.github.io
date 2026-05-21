@@ -64,6 +64,7 @@ const passwordForm = document.getElementById("missionPasswordForm");
 const passwordInput = document.getElementById("missionPasswordInput");
 const passwordMessage = document.getElementById("missionPasswordMessage");
 const protectedContent = document.getElementById("missionProtectedContent");
+const mapSection = document.getElementById("missionMapSection");
 const entriesContainer = document.getElementById("missionEntries");
 const statusElement = document.getElementById("missionStatus");
 const weekSelector = document.getElementById("missionWeekSelector");
@@ -120,7 +121,10 @@ function missionSessionIsAuthenticated() {
 
 function showProtectedMissionContent() {
     if (passwordPanel) passwordPanel.hidden = true;
+    if (mapSection) mapSection.hidden = false;
     if (protectedContent) protectedContent.hidden = false;
+    initMissionMap();
+    loadMapLocation();
 }
 
 function startMissionPage() {
@@ -145,6 +149,12 @@ function startMissionPage() {
 function handleMissionLogout() {
     localStorage.removeItem(MISSION_AUTH_STORAGE_KEY);
     hasStartedMissionPage = false;
+    if (missionMap) {
+        missionMap.remove();
+        missionMap = null;
+        missionLocationMarker = null;
+    }
+    if (mapSection) mapSection.hidden = true;
     if (passwordPanel) passwordPanel.hidden = false;
     if (protectedContent) protectedContent.hidden = true;
     if (passwordInput) {
@@ -598,6 +608,7 @@ function getLocValue(row) {
 }
 
 function initMissionMap() {
+    if (missionMap) return;
     const mapEl = document.getElementById("missionMap");
     if (!mapEl || typeof L === "undefined") return;
 
@@ -668,9 +679,6 @@ async function loadMapLocation() {
 }
 
 function initMissionPage() {
-    initMissionMap();
-    loadMapLocation();
-
     if (passwordForm) {
         passwordForm.addEventListener("submit", handlePasswordSubmit);
     }
