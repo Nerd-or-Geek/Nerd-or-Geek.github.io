@@ -1979,10 +1979,78 @@ button {
   margin: -0.4rem 0 1rem;
 }
 
+.mission-individual-photos-section,
 .mission-photos-section {
   border-top: 1px solid #e2e8f0;
   margin-top: 1.35rem;
   padding-top: 1.25rem;
+}
+
+.mission-individual-photos-section h4 {
+  color: #1e293b;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+.mission-direct-photo-grid,
+.mission-photo-card-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin-bottom: 0.75rem;
+}
+.mission-direct-photo-grid:last-child,
+.mission-photo-card-grid:last-child {
+  margin-bottom: 0;
+}
+
+.mission-direct-photo-link {
+  border-radius: 0.65rem;
+  display: block;
+  overflow: hidden;
+}
+.mission-direct-photo-link:focus {
+  outline: 3px solid rgba(14, 165, 233, 0.45);
+  outline-offset: 3px;
+}
+.mission-direct-photo-link img {
+  aspect-ratio: 4/3;
+  background: #e2e8f0;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+  width: 100%;
+}
+.mission-direct-photo-link:hover img, .mission-direct-photo-link:focus img {
+  transform: scale(1.03);
+}
+
+.mission-photo-card-link {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  font-weight: 800;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 120px;
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.mission-photo-card-link i {
+  color: #0ea5e9;
+  font-size: 1.6rem;
+}
+.mission-photo-card-link:hover, .mission-photo-card-link:focus {
+  border-color: rgba(14, 165, 233, 0.55);
+  color: #0ea5e9;
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .mission-photos-button {
@@ -2020,6 +2088,10 @@ button {
   .mission-photos-button {
     justify-content: center;
     width: 100%;
+  }
+  .mission-direct-photo-grid,
+  .mission-photo-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 .project-icon-placeholder {

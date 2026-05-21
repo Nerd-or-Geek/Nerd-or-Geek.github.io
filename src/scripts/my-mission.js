@@ -1,20 +1,22 @@
 // My Mission setup:
 // 1. Create a Google Sheet with columns:
-//    Week, PublishDate, ScriptureReference, ScriptureText, Thoughts, MissionUpdate, Google Photos album, Status
-// 2. Publish the sheet to the web or connect it through a JSON service like OpenSheet.
-// 3. Create one Google Photos album per week.
-// 4. Set the album sharing so anyone with the link can view it.
-// 5. Paste the shared album URL into the "Google Photos album" column.
-// 6. Set Status to Published when a week should appear.
-// 7. Future weeks should remain Draft or have a future PublishDate.
+//    Week, PublishDate, ScriptureReference, ScriptureText, Thoughts, MissionUpdate,
+//    Google Photos album, Google Photos links, Status, Notes
+// 2. Connect the sheet through a JSON service like OpenSheet.
+// 3. Paste the shared Google Photos album URL into the "Google Photos album" column.
+// 4. Paste individual Google Photos photo links into the "Google Photos links" column.
+//    Separate multiple links with new lines, commas, semicolons, or spaces.
+// 5. Set Status to Published when a week should appear.
 //
 // OpenSheet endpoint format:
 // https://opensheet.elk.sh/YOUR_SHEET_ID/Sheet1
 //
 // Google Photos note:
-// This page links to Google Photos albums. It does not embed or fetch Google Photos
-// images directly, which keeps the site simple and compatible with GitHub Pages.
-const MISSION_SHEET_URL = "https://opensheet.elk.sh/1sR077VxVyUfXptI_agBSia20KYVH9I8cLHpSWIqc2ec/Sheet1";
+// Google Photos page links usually cannot be used as direct image files. Regular
+// photos.google.com links are shown as clickable photo cards. Direct image URLs
+// ending in .jpg, .jpeg, .png, .webp, or .gif, plus googleusercontent.com image
+// URLs, are displayed as lazy-loaded embedded images.
+const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
 
 const entriesContainer = document.getElementById("missionEntries");
 const statusElement = document.getElementById("missionStatus");
@@ -59,19 +61,9 @@ function parsePublishDate(value) {
     return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function getTodayEnd() {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    return today;
-}
-
 function getWeekNumber(entry) {
     const week = Number(entry.Week);
     return Number.isFinite(week) ? week : 0;
-}
-
-function getSortTime(entry) {
-    return parsePublishDate(entry.PublishDate)?.getTime() || 0;
 }
 
 function formatDate(value) {
@@ -85,34 +77,85 @@ function formatDate(value) {
     }).format(date);
 }
 
+function normalizeHeader(value) {
+    return String(value || "").trim().toLowerCase().replace(/\s+/g, "");
+}
+
+function findHeaderRowIndex(rows) {
+    return rows.findIndex(row => {
+        const normalizedHeaders = row.map(normalizeHeader);
+        return normalizedHeaders.includes("week") &&
+            normalizedHeaders.includes("publishdate") &&
+            normalizedHeaders.includes("status");
+    });
+}
+
+function rowsToObjectsFromMatrix(rows) {
+    const headerRowIndex = findHeaderRowIndex(rows);
+    if (headerRowIndex === -1) return [];
+
+    const headers = rows[headerRowIndex].map((header, index) => String(header || "").trim() || `Column${index + 1}`);
+    return rows.slice(headerRowIndex + 1)
+        .filter(row => row.some(value => String(value || "").trim() !== ""))
+        .map(row => Object.fromEntries(headers.map((header, index) => [header, row[index] || ""])))
+        .filter(entry => String(entry.Week || "").trim() !== "");
+}
+
+function getKnownColumnValue(row, columnName) {
+    const directValue = row[columnName];
+    if (directValue !== undefined) return directValue;
+
+    const normalizedColumnName = normalizeHeader(columnName);
+    const matchingKey = Object.keys(row).find(key => normalizeHeader(key) === normalizedColumnName);
+    return matchingKey ? row[matchingKey] : undefined;
+}
+
+function objectRowsHaveUsableHeaders(rows) {
+    return rows.some(row =>
+        getKnownColumnValue(row, "Week") !== undefined &&
+        getKnownColumnValue(row, "PublishDate") !== undefined &&
+        getKnownColumnValue(row, "Status") !== undefined
+    );
+}
+
 function normalizeSheetRows(data) {
     if (Array.isArray(data)) {
-        return data;
+        if (objectRowsHaveUsableHeaders(data)) {
+            return data;
+        }
+        return rowsToObjectsFromMatrix(data.map(row => Object.values(row)));
     }
 
     if (Array.isArray(data?.rows)) {
-        return data.rows;
+        if (objectRowsHaveUsableHeaders(data.rows)) {
+            return data.rows;
+        }
+        return rowsToObjectsFromMatrix(data.rows.map(row => Object.values(row)));
     }
 
     if (Array.isArray(data?.values)) {
-        const [headers, ...rows] = data.values;
-        return rows.map(row => Object.fromEntries(headers.map((header, index) => [header, row[index] || ""])));
+        return rowsToObjectsFromMatrix(data.values);
     }
 
     return [];
 }
 
+async function fetchMissionRows() {
+    const response = await fetch(MISSION_SHEET_URL, { cache: "no-store" });
+    if (!response.ok) {
+        throw new Error(`Sheet request failed with ${response.status}`);
+    }
+
+    const data = await response.json();
+    return normalizeSheetRows(data);
+}
+
 function entryIsPublished(entry) {
-    const publishDate = parsePublishDate(entry.PublishDate);
-    const status = String(entry.Status || "").trim().toLowerCase();
-    return status === "published" && publishDate && publishDate.getTime() <= getTodayEnd().getTime();
+    return String(entry.Status || "").trim().toLowerCase() === "published";
 }
 
 function sortEntriesNewestFirst(a, b) {
-    const weekDifference = getWeekNumber(b) - getWeekNumber(a);
-    if (weekDifference !== 0) return weekDifference;
-
-    return getSortTime(b) - getSortTime(a);
+    return getWeekNumber(b) - getWeekNumber(a);
 }
 
 function getWeekId(entry) {
@@ -160,6 +203,66 @@ function getGooglePhotosAlbumUrl(entry) {
     return String(entry["Google Photos album"] || "").trim();
 }
 
+function getGooglePhotosLinks(entry) {
+    const rawLinks = String(entry["Google Photos links"] || "");
+    const extractedLinks = rawLinks.match(/https?:\/\/[^\s,;]+/g);
+
+    if (extractedLinks) {
+        return extractedLinks.map(link => link.trim()).filter(Boolean);
+    }
+
+    return rawLinks
+        .split(/[\s,;]+/)
+        .map(link => link.trim())
+        .filter(Boolean);
+}
+
+function isDirectImageUrl(url) {
+    try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.hostname.endsWith("googleusercontent.com")) {
+            return true;
+        }
+        return /\.(jpe?g|png|webp|gif)$/i.test(parsedUrl.pathname);
+    } catch {
+        return /\.(jpe?g|png|webp|gif)(?:[?#].*)?$/i.test(url);
+    }
+}
+
+function renderIndividualPhotoLinks(entry) {
+    const links = getGooglePhotosLinks(entry);
+    if (links.length === 0) return "";
+
+    const directImageLinks = links.filter(isDirectImageUrl);
+    const photoPageLinks = links.filter(link => !isDirectImageUrl(link));
+    const weekLabel = escapeHtml(entry.Week || "");
+
+    return `
+        <section class="mission-individual-photos-section" aria-label="Week ${weekLabel} individual photos">
+            <h4>Photos</h4>
+            ${directImageLinks.length > 0 ? `
+                <div class="mission-direct-photo-grid">
+                    ${directImageLinks.map((link, index) => `
+                        <a href="${escapeHtml(link)}" class="mission-direct-photo-link" target="_blank" rel="noopener noreferrer">
+                            <img src="${escapeHtml(link)}" alt="Week ${weekLabel} mission photo ${index + 1}" loading="lazy">
+                        </a>
+                    `).join("")}
+                </div>
+            ` : ""}
+            ${photoPageLinks.length > 0 ? `
+                <div class="mission-photo-card-grid">
+                    ${photoPageLinks.map((link, index) => `
+                        <a href="${escapeHtml(link)}" class="mission-photo-card-link" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-image"></i>
+                            <span>View Photo ${index + 1}</span>
+                        </a>
+                    `).join("")}
+                </div>
+            ` : ""}
+        </section>
+    `;
+}
+
 function renderPhotosLink(entry) {
     const albumUrl = getGooglePhotosAlbumUrl(entry);
     if (!albumUrl) return "";
@@ -167,7 +270,7 @@ function renderPhotosLink(entry) {
     return `
         <section class="mission-photos-section" aria-label="Week ${escapeHtml(entry.Week)} photos">
             <a href="${escapeHtml(albumUrl)}" class="mission-photos-button" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-images"></i> View Week Photos
+                <i class="fas fa-images"></i> View Full Google Photos Album
             </a>
         </section>
     `;
@@ -200,6 +303,7 @@ function renderEntry(entry) {
                         <p>${formatText(entry.MissionUpdate)}</p>
                     </section>
                 ` : ""}
+                ${renderIndividualPhotoLinks(entry)}
                 ${renderPhotosLink(entry)}
             </div>
         </article>
@@ -236,13 +340,7 @@ async function loadMissionEntries() {
     setStatus("Loading mission updates...", "info");
 
     try {
-        const response = await fetch(MISSION_SHEET_URL, { cache: "no-store" });
-        if (!response.ok) {
-            throw new Error(`Sheet request failed with ${response.status}`);
-        }
-
-        const data = await response.json();
-        publishedEntries = normalizeSheetRows(data)
+        publishedEntries = (await fetchMissionRows())
             .filter(entryIsPublished)
             .sort(sortEntriesNewestFirst);
 
