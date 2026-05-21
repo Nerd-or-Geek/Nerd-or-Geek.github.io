@@ -5,18 +5,28 @@
   "main": "dist/main.js",
   "scripts": {
     "dev": "npm run watch:ts && npm run watch:scss",
-    "build": "npm run build:ts && npm run build:scss",
+    "build": "npm run build:ts && npm run build:scss && npm run build:vendor",
     "build:ts": "tsc",
     "build:scss": "sass src/styles/main.scss src/styles/main.css && sass src/styles/admin.scss src/styles/admin.css",
+    "build:vendor": "node .github/scripts/copy-vendor-assets.js",
     "watch:ts": "tsc --watch",
     "watch:scss": "sass --watch src/styles:src/styles",
     "deploy": "npm run build && git add . && git commit -m 'Build deploy' && git push"
   },
-  "keywords": ["nerd", "geek", "projects", "portfolio"],
+  "keywords": [
+    "nerd",
+    "geek",
+    "projects",
+    "portfolio"
+  ],
   "author": "Nerd or Geek",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.5",
+    "marked": "^18.0.4"
   }
 }

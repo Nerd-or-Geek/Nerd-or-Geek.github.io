@@ -2354,6 +2354,112 @@ button {
     margin: -0.4rem 0 1rem;
 }
 
+.mission-scripture-text {
+    background: #f8fafc;
+    border-left: 4px solid $primary-color;
+    border-radius: 0 0.6rem 0.6rem 0;
+    margin: 0 0 1.25rem;
+    padding: 1rem 1.25rem;
+}
+
+.mission-markdown {
+    color: #475569;
+    line-height: 1.7;
+
+    > *:first-child {
+        margin-top: 0;
+    }
+
+    > *:last-child {
+        margin-bottom: 0;
+    }
+
+    p,
+    ul,
+    ol,
+    blockquote {
+        margin: 0 0 0.85rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: $secondary-color;
+        line-height: 1.3;
+        margin: 1rem 0 0.5rem;
+    }
+
+    h1,
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 1.05rem;
+    }
+
+    strong {
+        color: $secondary-color;
+        font-weight: 800;
+    }
+
+    em {
+        color: #334155;
+    }
+
+    a {
+        color: $primary-color;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
+
+        &:hover,
+        &:focus {
+            color: #0284c7;
+        }
+    }
+
+    ul,
+    ol {
+        padding-left: 1.35rem;
+    }
+
+    li {
+        margin-bottom: 0.35rem;
+        padding-left: 0.15rem;
+    }
+
+    blockquote {
+        background: #f8fafc;
+        border-left: 4px solid $primary-color;
+        border-radius: 0 0.6rem 0.6rem 0;
+        color: #334155;
+        font-style: italic;
+        padding: 0.85rem 1rem;
+    }
+}
+
+.mission-scripture-reference.mission-markdown {
+    color: #64748b;
+
+    p {
+        margin-bottom: 0;
+    }
+}
+
+.mission-scripture-text.mission-markdown {
+    color: #334155;
+    font-size: 1.05rem;
+    font-style: italic;
+}
+
 .mission-individual-photos-section,
 .mission-photos-section {
     border-top: 1px solid #e2e8f0;

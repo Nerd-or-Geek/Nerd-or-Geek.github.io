@@ -17,6 +17,9 @@
 // photos.google.com links are shown as clickable photo cards. Direct image URLs
 // ending in .jpg, .jpeg, .png, .webp, or .gif, plus googleusercontent.com image
 // URLs, are displayed as lazy-loaded embedded images.
+import DOMPurify from "../../dist/vendor/purify.es.mjs";
+import { marked } from "../../dist/vendor/marked.esm.js";
+
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
 const MY_MISSION_PASSWORD_HASH = "__MY_MISSION_PASSWORD_HASH__";
 const PASSWORD_HASH_PLACEHOLDER = ["__MY", "MISSION", "PASSWORD", "HASH__"].join("_");
@@ -179,8 +182,16 @@ function escapeHtml(value) {
     return div.innerHTML;
 }
 
-function formatText(value) {
-    return escapeHtml(value).replace(/\r?\n/g, "<br>");
+function renderMarkdown(value) {
+    if (!value) return "";
+
+    const html = marked.parse(String(value), {
+        async: false,
+        breaks: true,
+        gfm: true
+    });
+
+    return DOMPurify.sanitize(html);
 }
 
 function parsePublishDate(value) {
@@ -429,7 +440,7 @@ function renderPhotosLink(entry) {
 function renderEntry(entry) {
     const weekLabel = entry.Week ? `Week ${escapeHtml(entry.Week)}` : "Weekly Update";
     const title = escapeHtml(entry.Title || weekLabel);
-    const scriptureReference = escapeHtml(entry.ScriptureReference || "Scripture");
+    const scriptureReference = renderMarkdown(entry.ScriptureReference || "Scripture");
 
     return `
         <article class="mission-card" tabindex="0">
@@ -439,18 +450,28 @@ function renderEntry(entry) {
                     <time datetime="${escapeHtml(entry.PublishDate || "")}">${escapeHtml(formatDate(entry.PublishDate))}</time>
                 </div>
                 <h3>${title}</h3>
-                <p class="mission-scripture-reference">${scriptureReference}</p>
-                ${entry.ScriptureText ? `<blockquote>${formatText(entry.ScriptureText)}</blockquote>` : ""}
+                <div class="mission-scripture-reference mission-markdown">${scriptureReference}</div>
+                ${entry.ScriptureText ? `
+                    <section class="mission-scripture-text mission-markdown" aria-label="Scripture text">
+                        ${renderMarkdown(entry.ScriptureText)}
+                    </section>
+                ` : ""}
                 ${entry.Thoughts ? `
                     <section class="mission-card-section" aria-label="My thoughts">
                         <h4>My Thoughts</h4>
-                        <p>${formatText(entry.Thoughts)}</p>
+                        <div class="mission-markdown">${renderMarkdown(entry.Thoughts)}</div>
                     </section>
                 ` : ""}
                 ${entry.MissionUpdate ? `
                     <section class="mission-card-section" aria-label="Mission update">
                         <h4>Mission Update</h4>
-                        <p>${formatText(entry.MissionUpdate)}</p>
+                        <div class="mission-markdown">${renderMarkdown(entry.MissionUpdate)}</div>
+                    </section>
+                ` : ""}
+                ${entry.Notes ? `
+                    <section class="mission-card-section" aria-label="Notes">
+                        <h4>Notes</h4>
+                        <div class="mission-markdown">${renderMarkdown(entry.Notes)}</div>
                     </section>
                 ` : ""}
                 ${renderIndividualPhotoLinks(entry)}
