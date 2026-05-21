@@ -59,7 +59,7 @@ function setPasswordMessage(message, type = "info") {
 
 function passwordHashIsConfigured() {
     return Boolean(MY_MISSION_PASSWORD_HASH) &&
-        MY_MISSION_PASSWORD_HASH !== "d69f9cff0a8cd60175172e000acaec7cf1607d40b1be4bf4e20650bf6943adae";
+        MY_MISSION_PASSWORD_HASH !== "__MY_MISSION_PASSWORD_HASH__";
 }
 
 function arrayBufferToHex(buffer) {
