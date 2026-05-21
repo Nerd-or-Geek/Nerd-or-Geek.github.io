@@ -2,9 +2,12 @@
 name: Deploy static site to GitHub Pages
 
 on:
+  schedule:
+    - cron: "0 12 * * 1"
+    - cron: "0 22 * * 1"
+  workflow_dispatch:
   push:
     branches: [main]
-  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

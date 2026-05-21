@@ -31,6 +31,7 @@ const statusElement = document.getElementById("missionStatus");
 const weekSelector = document.getElementById("missionWeekSelector");
 const lastUpdatedElement = document.getElementById("missionLastUpdated");
 const refreshButton = document.getElementById("missionRefreshButton");
+const logoutButton = document.getElementById("missionLogoutButton");
 
 let publishedEntries = [];
 let selectedWeek = "all";
@@ -94,7 +95,23 @@ function startMissionPage() {
         });
     }
 
+    if (logoutButton) {
+        logoutButton.addEventListener("click", handleMissionLogout);
+    }
+
     loadMissionEntries();
+}
+
+function handleMissionLogout() {
+    sessionStorage.removeItem(MISSION_AUTH_STORAGE_KEY);
+    hasStartedMissionPage = false;
+    if (passwordPanel) passwordPanel.hidden = false;
+    if (protectedContent) protectedContent.hidden = true;
+    if (passwordInput) {
+        passwordInput.value = "";
+        passwordInput.focus();
+    }
+    if (passwordMessage) passwordMessage.textContent = "";
 }
 
 async function handlePasswordSubmit(event) {

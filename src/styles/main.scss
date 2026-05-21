@@ -2186,6 +2186,37 @@ button {
     }
 }
 
+.mission-logout-button {
+    align-items: center;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 0.5rem;
+    color: rgba(248, 113, 113, 0.9);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-weight: 800;
+    gap: 0.5rem;
+    min-height: 42px;
+    padding: 0.65rem 1rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+
+    &:hover,
+    &:focus {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.6);
+        color: rgba(254, 226, 226, 0.95);
+        outline: none;
+        transform: translateY(-1px);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+}
+
 .mission-week-selector {
     display: flex;
     gap: 0.65rem;
