@@ -18,7 +18,7 @@
 // ending in .jpg, .jpeg, .png, .webp, or .gif, plus googleusercontent.com image
 // URLs, are displayed as lazy-loaded embedded images.
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
-const MY_MISSION_PASSWORD_HASH = "MY_MISSION_PASSWORD_HASH";
+const MY_MISSION_PASSWORD_HASH = "__MY_MISSION_PASSWORD_HASH__";
 const MISSION_AUTH_STORAGE_KEY = "myMissionAuthenticated";
 
 const passwordPanel = document.getElementById("missionPasswordPanel");
@@ -59,7 +59,7 @@ function setPasswordMessage(message, type = "info") {
 
 function passwordHashIsConfigured() {
     return Boolean(MY_MISSION_PASSWORD_HASH) &&
-        MY_MISSION_PASSWORD_HASH !== "__MY_MISSION_PASSWORD_HASH__";
+        MY_MISSION_PASSWORD_HASH !== "d69f9cff0a8cd60175172e000acaec7cf1607d40b1be4bf4e20650bf6943adae";
 }
 
 function arrayBufferToHex(buffer) {

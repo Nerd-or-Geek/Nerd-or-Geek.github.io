@@ -44,6 +44,14 @@ jobs:
       - name: Build TypeScript and SCSS
         run: npm run build
 
+      - name: Verify password placeholder was replaced
+        run: |
+          if grep -R "__MY_MISSION_PASSWORD_HASH__" src/ ; then
+            echo "::error::Password placeholder was not replaced in source files."
+            exit 1
+          fi
+          echo "✓ Password placeholder successfully replaced"
+
       - name: Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
