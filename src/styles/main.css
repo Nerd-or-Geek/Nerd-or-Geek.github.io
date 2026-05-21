@@ -1854,6 +1854,145 @@ button {
   border-left-color: #f59e0b;
 }
 
+.mission-password-panel {
+  display: grid;
+  place-items: center;
+}
+
+.mission-password-card {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  max-width: 520px;
+  padding: 1.75rem;
+  width: 100%;
+}
+.mission-password-card > i {
+  align-items: center;
+  background: rgba(14, 165, 233, 0.12);
+  border-radius: 999px;
+  color: #0ea5e9;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  margin-bottom: 1rem;
+  width: 44px;
+}
+.mission-password-card h3 {
+  color: #1e293b;
+  font-size: 1.3rem;
+  margin-bottom: 0.45rem;
+}
+.mission-password-card p {
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.mission-password-form label {
+  color: #1e293b;
+  display: block;
+  font-weight: 800;
+  margin-bottom: 0.45rem;
+}
+
+.mission-password-input-row {
+  display: flex;
+  gap: 0.65rem;
+}
+.mission-password-input-row input {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  color: #1e293b;
+  flex: 1;
+  font: inherit;
+  min-height: 44px;
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+}
+.mission-password-input-row input:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+  outline: none;
+}
+.mission-password-input-row button {
+  background: #0ea5e9;
+  border: 0;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.mission-password-input-row button:hover, .mission-password-input-row button:focus {
+  background: #0284c7;
+  outline: none;
+  transform: translateY(-1px);
+}
+.mission-password-input-row button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+.mission-password-message {
+  color: #475569;
+  font-weight: 700;
+  margin: 0.8rem 0 0;
+  min-height: 1.5rem;
+}
+.mission-password-message[data-status=error] {
+  color: #b91c1c;
+}
+
+.mission-refresh-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 0 0 1.25rem;
+}
+
+.mission-last-updated {
+  color: rgba(241, 245, 249, 0.88);
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.mission-refresh-button {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 0.5rem;
+  color: #1e293b;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 800;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.mission-refresh-button:hover, .mission-refresh-button:focus {
+  border-color: rgba(14, 165, 233, 0.6);
+  color: #0ea5e9;
+  outline: none;
+  transform: translateY(-1px);
+}
+.mission-refresh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
 .mission-week-selector {
   display: flex;
   gap: 0.65rem;
@@ -2084,6 +2223,19 @@ button {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.35rem;
+  }
+  .mission-password-card {
+    padding: 1.25rem;
+  }
+  .mission-password-input-row {
+    flex-direction: column;
+  }
+  .mission-password-input-row button {
+    width: 100%;
+  }
+  .mission-refresh-button {
+    justify-content: center;
+    width: 100%;
   }
   .mission-photos-button {
     justify-content: center;

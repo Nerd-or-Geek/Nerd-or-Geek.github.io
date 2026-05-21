@@ -122,12 +122,36 @@
         <section class="content-section mission-section" aria-labelledby="mission-updates-heading">
             <div class="section-header">
                 <h2 id="mission-updates-heading"><i class="fas fa-book-open"></i> Weekly Updates</h2>
-                <p class="section-description">Current and past weekly reflections appear here after their publish date.</p>
+                <p class="section-description">Published weekly reflections load directly from the mission sheet each time you visit.</p>
             </div>
 
-            <div class="mission-status" id="missionStatus" role="status" aria-live="polite">Loading mission updates...</div>
-            <nav class="mission-week-selector" id="missionWeekSelector" aria-label="Mission week selector"></nav>
-            <div class="mission-grid" id="missionEntries" aria-live="polite"></div>
+            <section class="mission-password-panel" id="missionPasswordPanel" aria-labelledby="mission-password-heading">
+                <div class="mission-password-card">
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+                    <h3 id="mission-password-heading">Password Required</h3>
+                    <p>Enter the mission page password to view weekly updates.</p>
+                    <form id="missionPasswordForm" class="mission-password-form">
+                        <label for="missionPasswordInput">Password</label>
+                        <div class="mission-password-input-row">
+                            <input type="password" id="missionPasswordInput" autocomplete="current-password" required>
+                            <button type="submit">Unlock</button>
+                        </div>
+                        <p class="mission-password-message" id="missionPasswordMessage" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </section>
+
+            <div id="missionProtectedContent" hidden>
+                <div class="mission-status" id="missionStatus" role="status" aria-live="polite">Loading mission updates...</div>
+                <div class="mission-refresh-row" aria-label="Mission updates refresh controls">
+                    <p class="mission-last-updated" id="missionLastUpdated">Last updated: Not loaded yet.</p>
+                    <button type="button" class="mission-refresh-button" id="missionRefreshButton">
+                        <i class="fas fa-rotate-right"></i> Refresh updates
+                    </button>
+                </div>
+                <nav class="mission-week-selector" id="missionWeekSelector" aria-label="Mission week selector"></nav>
+                <div class="mission-grid" id="missionEntries" aria-live="polite"></div>
+            </div>
         </section>
     </main>
 

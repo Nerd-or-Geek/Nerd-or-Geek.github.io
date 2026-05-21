@@ -27,6 +27,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Inject My Mission password hash
+        env:
+          MY_MISSION_PASSWORD_HASH: ${{ secrets.MY_MISSION_PASSWORD_HASH }}
+        run: |
+          if [ -z "$MY_MISSION_PASSWORD_HASH" ]; then
+            echo "::error::MY_MISSION_PASSWORD_HASH secret is not set."
+            exit 1
+          fi
+
+          node -e "const fs = require('fs'); const file = 'src/scripts/my-mission.js'; const placeholder = '__MY_MISSION_PASSWORD_HASH__'; const hash = process.env.MY_MISSION_PASSWORD_HASH.trim(); const source = fs.readFileSync(file, 'utf8'); if (!source.includes(placeholder)) { console.error('Password hash placeholder was not found.'); process.exit(1); } fs.writeFileSync(file, source.replaceAll(placeholder, hash));"
+
       - name: Build TypeScript and SCSS
         run: npm run build
 

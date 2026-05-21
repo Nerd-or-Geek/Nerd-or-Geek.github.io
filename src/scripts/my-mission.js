@@ -2,7 +2,8 @@
 // 1. Create a Google Sheet with columns:
 //    Week, PublishDate, ScriptureReference, ScriptureText, Thoughts, MissionUpdate,
 //    Google Photos album, Google Photos links, Status, Notes
-// 2. Connect the sheet through a JSON service like OpenSheet.
+// 2. Connect the sheet through a JSON service like OpenSheet. The browser
+//    fetches this URL at page load, so sheet edits do not require a rebuild.
 // 3. Paste the shared Google Photos album URL into the "Google Photos album" column.
 // 4. Paste individual Google Photos photo links into the "Google Photos links" column.
 //    Separate multiple links with new lines, commas, semicolons, or spaces.
@@ -17,13 +18,24 @@
 // ending in .jpg, .jpeg, .png, .webp, or .gif, plus googleusercontent.com image
 // URLs, are displayed as lazy-loaded embedded images.
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";
+const MY_MISSION_PASSWORD_HASH = "__MY_MISSION_PASSWORD_HASH__";
+const MISSION_AUTH_STORAGE_KEY = "myMissionAuthenticated";
 
+const passwordPanel = document.getElementById("missionPasswordPanel");
+const passwordForm = document.getElementById("missionPasswordForm");
+const passwordInput = document.getElementById("missionPasswordInput");
+const passwordMessage = document.getElementById("missionPasswordMessage");
+const protectedContent = document.getElementById("missionProtectedContent");
 const entriesContainer = document.getElementById("missionEntries");
 const statusElement = document.getElementById("missionStatus");
 const weekSelector = document.getElementById("missionWeekSelector");
+const lastUpdatedElement = document.getElementById("missionLastUpdated");
+const refreshButton = document.getElementById("missionRefreshButton");
 
 let publishedEntries = [];
 let selectedWeek = "all";
+let isLoadingMissionEntries = false;
+let hasStartedMissionPage = false;
 
 function setStatus(message, type = "info") {
     if (!statusElement) return;
@@ -36,6 +48,111 @@ function clearStatus() {
     if (!statusElement) return;
     statusElement.textContent = "";
     statusElement.hidden = true;
+}
+
+function setPasswordMessage(message, type = "info") {
+    if (!passwordMessage) return;
+    passwordMessage.textContent = message;
+    passwordMessage.dataset.status = type;
+}
+
+function passwordHashIsConfigured() {
+    return Boolean(MY_MISSION_PASSWORD_HASH) &&
+        MY_MISSION_PASSWORD_HASH !== "__MY_MISSION_PASSWORD_HASH__";
+}
+
+function arrayBufferToHex(buffer) {
+    return [...new Uint8Array(buffer)]
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+}
+
+async function sha256Hex(value) {
+    const encodedValue = new TextEncoder().encode(value);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", encodedValue);
+    return arrayBufferToHex(hashBuffer);
+}
+
+function missionSessionIsAuthenticated() {
+    return sessionStorage.getItem(MISSION_AUTH_STORAGE_KEY) === "true";
+}
+
+function showProtectedMissionContent() {
+    if (passwordPanel) passwordPanel.hidden = true;
+    if (protectedContent) protectedContent.hidden = false;
+}
+
+function startMissionPage() {
+    if (hasStartedMissionPage) return;
+
+    hasStartedMissionPage = true;
+    showProtectedMissionContent();
+
+    if (refreshButton) {
+        refreshButton.addEventListener("click", () => {
+            loadMissionEntries();
+        });
+    }
+
+    loadMissionEntries();
+}
+
+async function handlePasswordSubmit(event) {
+    event.preventDefault();
+
+    if (!passwordHashIsConfigured()) {
+        setPasswordMessage("Password protection is not configured yet.", "error");
+        return;
+    }
+
+    const submittedPassword = passwordInput?.value || "";
+    if (!submittedPassword) {
+        setPasswordMessage("Enter the password to continue.", "error");
+        return;
+    }
+
+    const submitButton = passwordForm?.querySelector("button[type='submit']");
+    if (submitButton) submitButton.disabled = true;
+    setPasswordMessage("Checking password...", "info");
+
+    try {
+        const submittedHash = await sha256Hex(submittedPassword);
+        if (submittedHash.toLowerCase() !== MY_MISSION_PASSWORD_HASH.trim().toLowerCase()) {
+            setPasswordMessage("That password did not work. Please try again.", "error");
+            if (passwordInput) {
+                passwordInput.value = "";
+                passwordInput.focus();
+            }
+            return;
+        }
+
+        sessionStorage.setItem(MISSION_AUTH_STORAGE_KEY, "true");
+        if (passwordInput) passwordInput.value = "";
+        startMissionPage();
+    } catch (error) {
+        console.error("Mission password check failed:", error);
+        setPasswordMessage("This browser could not check the password. Please try again with an updated browser.", "error");
+    } finally {
+        if (submitButton) submitButton.disabled = false;
+    }
+}
+
+function setRefreshButtonLoading(isLoading) {
+    if (!refreshButton) return;
+
+    refreshButton.disabled = isLoading;
+    refreshButton.innerHTML = isLoading
+        ? '<i class="fas fa-rotate-right"></i> Refreshing...'
+        : '<i class="fas fa-rotate-right"></i> Refresh updates';
+}
+
+function setLastUpdated(date = new Date()) {
+    if (!lastUpdatedElement) return;
+
+    lastUpdatedElement.textContent = `Last updated: ${new Intl.DateTimeFormat("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(date)}`;
 }
 
 function escapeHtml(value) {
@@ -141,7 +258,13 @@ function normalizeSheetRows(data) {
 }
 
 async function fetchMissionRows() {
-    const response = await fetch(MISSION_SHEET_URL, { cache: "no-store" });
+    const response = await fetch(MISSION_SHEET_URL, {
+        cache: "no-store",
+        headers: {
+            "Cache-Control": "no-cache"
+        }
+    });
+
     if (!response.ok) {
         throw new Error(`Sheet request failed with ${response.status}`);
     }
@@ -325,7 +448,7 @@ function renderMissionView() {
 
     if (publishedEntries.length === 0) {
         entriesContainer.innerHTML = "";
-        setStatus("No published mission updates are available yet. Check back soon.", "empty");
+        setStatus("No mission updates have been published yet.", "empty");
         return;
     }
 
@@ -335,8 +458,11 @@ function renderMissionView() {
 }
 
 async function loadMissionEntries() {
-    if (!entriesContainer) return;
+    if (!entriesContainer || isLoadingMissionEntries) return;
 
+    isLoadingMissionEntries = true;
+    const previousSelectedWeek = selectedWeek;
+    setRefreshButtonLoading(true);
     setStatus("Loading mission updates...", "info");
 
     try {
@@ -344,14 +470,46 @@ async function loadMissionEntries() {
             .filter(entryIsPublished)
             .sort(sortEntriesNewestFirst);
 
-        selectedWeek = "all";
+        const publishedWeekIds = new Set(publishedEntries.map(getWeekId));
+        selectedWeek = previousSelectedWeek === "all" || publishedWeekIds.has(previousSelectedWeek)
+            ? previousSelectedWeek
+            : "all";
+
         renderMissionView();
+        setLastUpdated();
     } catch (error) {
         console.error("Mission sheet load failed:", error);
         entriesContainer.innerHTML = "";
         if (weekSelector) weekSelector.innerHTML = "";
-        setStatus("Mission updates could not be loaded right now. Please try again later.", "error");
+        setStatus("Mission updates could not be loaded. Check that the Google Sheet is public and the OpenSheet endpoint is available.", "error");
+    } finally {
+        isLoadingMissionEntries = false;
+        setRefreshButtonLoading(false);
     }
 }
 
-loadMissionEntries();
+function initMissionPage() {
+    if (passwordForm) {
+        passwordForm.addEventListener("submit", handlePasswordSubmit);
+    }
+
+    if (!passwordHashIsConfigured()) {
+        setPasswordMessage("Password protection is not configured yet.", "error");
+        if (passwordInput) passwordInput.disabled = true;
+        const submitButton = passwordForm?.querySelector("button[type='submit']");
+        if (submitButton) submitButton.disabled = true;
+        return;
+    }
+
+    if (missionSessionIsAuthenticated()) {
+        startMissionPage();
+    } else if (passwordInput) {
+        passwordInput.focus();
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMissionPage);
+} else {
+    initMissionPage();
+}
