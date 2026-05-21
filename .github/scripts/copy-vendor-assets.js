@@ -12,6 +12,14 @@ const vendorFiles = [
     {
         source: path.join(projectRoot, "node_modules", "dompurify", "dist", "purify.es.mjs"),
         target: path.join(vendorDir, "purify.es.mjs")
+    },
+    {
+        source: path.join(projectRoot, "node_modules", "leaflet", "dist", "leaflet.js"),
+        target: path.join(vendorDir, "leaflet.js")
+    },
+    {
+        source: path.join(projectRoot, "node_modules", "leaflet", "dist", "leaflet.css"),
+        target: path.join(vendorDir, "leaflet.css")
     }
 ];
 
@@ -21,4 +29,12 @@ for (const file of vendorFiles) {
     fs.copyFileSync(file.source, file.target);
 }
 
-console.log("Vendor Markdown assets copied.");
+// Copy Leaflet's marker/control images so the CSS relative paths resolve correctly
+const leafletImgSrc = path.join(projectRoot, "node_modules", "leaflet", "dist", "images");
+const leafletImgDst = path.join(vendorDir, "images");
+fs.mkdirSync(leafletImgDst, { recursive: true });
+for (const img of fs.readdirSync(leafletImgSrc)) {
+    fs.copyFileSync(path.join(leafletImgSrc, img), path.join(leafletImgDst, img));
+}
+
+console.log("Vendor assets copied.");
