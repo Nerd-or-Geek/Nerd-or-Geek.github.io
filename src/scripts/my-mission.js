@@ -1,7 +1,7 @@
 // My Mission setup:
 // 1. Create a Google Sheet with columns:
-//    Week, PublishDate, ScriptureReference, ScriptureText, Thoughts, MissionUpdate,
-//    Google Photos album, Google Photos links, Status, Notes
+//    Week, PublishDate, Status, ScriptureReference, ScriptureText, Thoughts,
+//    Google Photos album, Google Photos links, Loc, Loc Name
 // 2. Connect the sheet through a JSON service like OpenSheet. The browser
 //    fetches this URL at page load, so sheet edits do not require a rebuild.
 // 3. Paste the shared Google Photos album URL into the "Google Photos album" column.
@@ -62,7 +62,6 @@ const entriesContainer = document.getElementById("missionEntries");
 const statusElement = document.getElementById("missionStatus");
 const weekSelector = document.getElementById("missionWeekSelector");
 const lastUpdatedElement = document.getElementById("missionLastUpdated");
-const refreshButton = document.getElementById("missionRefreshButton");
 const logoutButton = document.getElementById("missionLogoutButton");
 
 let publishedEntries = [];
@@ -97,12 +96,6 @@ function startMissionPage() {
     hasStartedMissionPage = true;
     showProtectedMissionContent();
 
-    if (refreshButton) {
-        refreshButton.addEventListener("click", () => {
-            loadMissionEntries();
-        });
-    }
-
     if (logoutButton) {
         logoutButton.addEventListener("click", handleMissionLogout);
     }
@@ -113,15 +106,6 @@ function startMissionPage() {
 function handleMissionLogout() {
     localStorage.removeItem(MISSION_AUTH_STORAGE_KEY);
     window.location.replace("mission-login.html");
-}
-
-function setRefreshButtonLoading(isLoading) {
-    if (!refreshButton) return;
-
-    refreshButton.disabled = isLoading;
-    refreshButton.innerHTML = isLoading
-        ? '<i class="fas fa-rotate-right"></i> Refreshing...'
-        : '<i class="fas fa-rotate-right"></i> Refresh updates';
 }
 
 function setLastUpdated(date = new Date()) {
@@ -401,8 +385,7 @@ function renderPhotosLink(entry) {
 
 function renderEntry(entry) {
     const weekLabel = entry.Week ? `Week ${escapeHtml(entry.Week)}` : "Weekly Update";
-    const title = escapeHtml(entry.Title || weekLabel);
-    const scriptureReference = renderMarkdown(entry.ScriptureReference || "Scripture");
+    const scriptureReference = renderMarkdown(entry.ScriptureReference || "");
 
     return `
         <article class="mission-card" tabindex="0">
@@ -411,30 +394,14 @@ function renderEntry(entry) {
                     <span>${weekLabel}</span>
                     <time datetime="${escapeHtml(entry.PublishDate || "")}">${escapeHtml(formatDate(entry.PublishDate))}</time>
                 </div>
-                <h3>${title}</h3>
-                <div class="mission-scripture-reference mission-markdown">${scriptureReference}</div>
+                ${scriptureReference ? `<div class="mission-scripture-reference mission-markdown">${scriptureReference}</div>` : ""}
                 ${entry.ScriptureText ? `
                     <section class="mission-scripture-text mission-markdown" aria-label="Scripture text">
                         ${renderMarkdown(entry.ScriptureText)}
                     </section>
                 ` : ""}
                 ${entry.Thoughts ? `
-                    <section class="mission-card-section" aria-label="My thoughts">
-                        <h4>My Thoughts</h4>
-                        <div class="mission-markdown">${renderMarkdown(entry.Thoughts)}</div>
-                    </section>
-                ` : ""}
-                ${entry.MissionUpdate ? `
-                    <section class="mission-card-section" aria-label="Mission update">
-                        <h4>Mission Update</h4>
-                        <div class="mission-markdown">${renderMarkdown(entry.MissionUpdate)}</div>
-                    </section>
-                ` : ""}
-                ${entry.Notes ? `
-                    <section class="mission-card-section" aria-label="Notes">
-                        <h4>Notes</h4>
-                        <div class="mission-markdown">${renderMarkdown(entry.Notes)}</div>
-                    </section>
+                    <div class="mission-markdown mission-thoughts">${renderMarkdown(entry.Thoughts)}</div>
                 ` : ""}
                 ${renderIndividualPhotoLinks(entry)}
                 ${renderPhotosLink(entry)}
@@ -472,7 +439,6 @@ async function loadMissionEntries() {
 
     isLoadingMissionEntries = true;
     const previousSelectedWeek = selectedWeek;
-    setRefreshButtonLoading(true);
     setStatus("Loading mission updates...", "info");
 
     try {
@@ -499,7 +465,6 @@ async function loadMissionEntries() {
         setStatus("Mission updates could not be loaded. Check that the Google Sheet is public and the OpenSheet endpoint is available.", "error");
     } finally {
         isLoadingMissionEntries = false;
-        setRefreshButtonLoading(false);
     }
 }
 

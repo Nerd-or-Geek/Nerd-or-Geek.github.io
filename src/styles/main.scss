@@ -2156,35 +2156,6 @@ button {
     margin: 0;
 }
 
-.mission-refresh-button {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    border-radius: 0.5rem;
-    color: $secondary-color;
-    cursor: pointer;
-    display: inline-flex;
-    font: inherit;
-    font-weight: 800;
-    gap: 0.5rem;
-    min-height: 42px;
-    padding: 0.65rem 1rem;
-    transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-
-    &:hover,
-    &:focus {
-        border-color: rgba(14, 165, 233, 0.6);
-        color: $primary-color;
-        outline: none;
-        transform: translateY(-1px);
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-        opacity: 0.7;
-        transform: none;
-    }
-}
 
 .mission-logout-button {
     align-items: center;
@@ -2350,6 +2321,10 @@ button {
         color: #475569;
         line-height: 1.7;
     }
+}
+
+.mission-thoughts {
+    margin-top: 1.2rem;
 }
 
 .mission-scripture-reference {
@@ -2656,11 +2631,6 @@ button {
         button {
             width: 100%;
         }
-    }
-
-    .mission-refresh-button {
-        justify-content: center;
-        width: 100%;
     }
 
     .mission-photos-button {
