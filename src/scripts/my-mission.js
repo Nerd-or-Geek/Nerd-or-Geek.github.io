@@ -527,6 +527,10 @@ function getLocValue(row) {
     return String(row.Loc ?? row.loc ?? row.Location ?? row.location ?? "").trim();
 }
 
+function getLocName(row) {
+    return String(row["Loc Name"] ?? row["loc name"] ?? row["LocName"] ?? row["locname"] ?? "").trim();
+}
+
 function initMissionMap() {
     if (missionMap) return;
     const mapEl = document.getElementById("missionMap");
@@ -557,7 +561,22 @@ function initMissionMap() {
         maxZoom: 17
     });
 
-    missionMap = L.map("missionMap", { layers: [streetLayer] });
+    missionMap = L.map("missionMap", { layers: [streetLayer], scrollWheelZoom: false });
+
+    // Ctrl+scroll to zoom; plain scroll passes through to the page
+    let scrollHintTimer = null;
+    const scrollHint = document.getElementById("missionMapScrollHint");
+    mapEl.addEventListener("wheel", (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            if (e.deltaY < 0) missionMap.zoomIn(1);
+            else missionMap.zoomOut(1);
+        } else if (scrollHint) {
+            scrollHint.classList.add("is-visible");
+            clearTimeout(scrollHintTimer);
+            scrollHintTimer = setTimeout(() => scrollHint.classList.remove("is-visible"), 1800);
+        }
+    }, { passive: false });
 
     L.control.layers(
         {
@@ -590,17 +609,43 @@ function updateMissionMapLocations(rows) {
     }
     missionLocationMarkers = [];
 
+    const now = new Date();
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    const sevenDaysAgo = new Date(todayEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+
     const entriesWithLoc = rows.filter(row => getLocValue(row).length > 0);
 
-    for (let i = 0; i < entriesWithLoc.length; i++) {
-        const entry = entriesWithLoc[i];
+    // Most recent entry whose publish date is today or earlier (skip future dates)
+    const currentEntry = entriesWithLoc.find(entry => {
+        const date = parsePublishDate(entry.PublishDate);
+        return date && date <= todayEnd;
+    });
+
+    for (const entry of entriesWithLoc) {
         const coords = parseDMSLocation(getLocValue(entry));
         if (!coords) continue;
 
-        const isLatest = i === 0;
-        const weekLabel = entry.Week ? `Week ${escapeHtml(String(entry.Week))}` : "";
+        const isCurrent = entry === currentEntry;
+        const locName = getLocName(entry) || (entry.Week ? `Week ${String(entry.Week)}` : "");
 
-        const icon = isLatest
+        let popupHtml;
+        let markerTitle;
+
+        if (isCurrent) {
+            const pubDate = parsePublishDate(entry.PublishDate);
+            if (pubDate && pubDate >= sevenDaysAgo) {
+                popupHtml = `<strong>Current Area</strong>${locName ? `<br>${escapeHtml(locName)}` : ""}`;
+                markerTitle = "Current Area";
+            } else {
+                popupHtml = `<strong>${escapeHtml(locName || "Current Location")}</strong>`;
+                markerTitle = locName || "Current Location";
+            }
+        } else {
+            popupHtml = locName ? `<strong>${escapeHtml(locName)}</strong>` : "Previous location";
+            markerTitle = locName || "Previous location";
+        }
+
+        const icon = isCurrent
             ? L.divIcon({
                 html: '<i class="fas fa-map-pin" style="color:#f59e0b;font-size:1.5rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6));"></i>',
                 className: "",
@@ -616,15 +661,11 @@ function updateMissionMapLocations(rows) {
                 popupAnchor: [0, -8]
             });
 
-        const popupContent = isLatest
-            ? `<strong>Current Location</strong>${weekLabel ? `<br>${weekLabel}` : ""}`
-            : weekLabel || "Previous location";
-
-        const marker = L.marker(coords, { icon, title: isLatest ? "Current Location" : (weekLabel || "Previous location") })
+        const marker = L.marker(coords, { icon, title: markerTitle })
             .addTo(missionMap)
-            .bindPopup(popupContent);
+            .bindPopup(popupHtml);
 
-        if (isLatest) marker.openPopup();
+        if (isCurrent) marker.openPopup();
         missionLocationMarkers.push(marker);
     }
 }
