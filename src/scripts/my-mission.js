@@ -50,7 +50,15 @@ const customMarkdownExtensions = [
 ];
 
 marked.use({
-    extensions: customMarkdownExtensions
+    extensions: customMarkdownExtensions,
+    renderer: {
+        image({ href, title, text }) {
+            if (!href || !/^https?:\/\//i.test(href)) return "";
+            const alt = text ? ` alt="${text.replace(/"/g, "&quot;")}"` : "";
+            const titleAttr = title ? ` title="${title.replace(/"/g, "&quot;")}"` : "";
+            return `<img src="${href}"${alt}${titleAttr} loading="lazy" class="mission-inline-photo">`;
+        }
+    }
 });
 
 const MISSION_SHEET_URL = "https://opensheet.elk.sh/1T5kn9D8VtBvk6cuByWadV8twAH_nAE-QR0q7qUZ7H8Q/MissionData";

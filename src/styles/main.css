@@ -2120,10 +2120,27 @@ button {
   margin-top: 1.2rem;
 }
 
+.mission-inline-photo {
+  border-radius: 0.5rem;
+  display: block;
+  height: auto;
+  margin: 1.25rem 0;
+  max-width: 100%;
+}
+
 .mission-scripture-reference {
   color: #64748b;
   font-weight: 800;
   margin: -0.4rem 0 1rem;
+}
+.mission-scripture-reference a {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mission-scripture-reference a:hover {
+  color: #0ea5e9;
 }
 
 .mission-scripture-text {
