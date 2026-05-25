@@ -385,7 +385,12 @@ function renderPhotosLink(entry) {
 
 function renderEntry(entry) {
     const weekLabel = entry.Week ? `Week ${escapeHtml(entry.Week)}` : "Weekly Update";
-    const scriptureReference = renderMarkdown(entry.ScriptureReference || "");
+    const scrRef = parseScriptureReference(entry.ScriptureReference);
+    const scriptureReferenceHtml = scrRef
+        ? scrRef.url
+            ? `<a href="${escapeHtml(scrRef.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(scrRef.text)}</a>`
+            : escapeHtml(scrRef.text)
+        : "";
 
     return `
         <article class="mission-card" tabindex="0">
@@ -394,7 +399,7 @@ function renderEntry(entry) {
                     <span>${weekLabel}</span>
                     <time datetime="${escapeHtml(entry.PublishDate || "")}">${escapeHtml(formatDate(entry.PublishDate))}</time>
                 </div>
-                ${scriptureReference ? `<div class="mission-scripture-reference mission-markdown">${scriptureReference}</div>` : ""}
+                ${scriptureReferenceHtml ? `<div class="mission-scripture-reference">${scriptureReferenceHtml}</div>` : ""}
                 ${entry.ScriptureText ? `
                     <section class="mission-scripture-text mission-markdown" aria-label="Scripture text">
                         ${renderMarkdown(entry.ScriptureText)}
@@ -486,6 +491,16 @@ function parseDMSLocation(value) {
     const lng = (Number(match[5]) + Number(match[6]) / 60 + Number(match[7]) / 3600)
         * (match[8].toUpperCase() === "W" ? -1 : 1);
     return [lat, lng];
+}
+
+function parseScriptureReference(value) {
+    if (!value) return null;
+    const commaIndex = value.indexOf(",");
+    if (commaIndex === -1) return { text: value.trim(), url: null };
+    const text = value.slice(0, commaIndex).trim();
+    const url = value.slice(commaIndex + 1).trim();
+    const safeUrl = /^https?:\/\//i.test(url) ? url : null;
+    return text ? { text, url: safeUrl } : null;
 }
 
 function getLocValue(row) {
