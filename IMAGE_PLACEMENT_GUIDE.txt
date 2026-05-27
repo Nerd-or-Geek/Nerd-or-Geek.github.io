@@ -1,0 +1,49 @@
+/**
+ * Image Manifest and Placement Guide
+ * This file documents where all images should be placed and their purposes
+ */
+
+Images to Place:
+================
+
+1. PRIMARY LOGO (assets/img/logo.png)
+   - Name: Nerd or Geek Logo (Circular version)
+   - Purpose: Main site logo displayed in header
+   - Size: Recommended 500x500px or larger
+   - Format: PNG with transparency
+   - Used in: Header navigation bar
+
+2. FAVICON (assets/img/favicons/favicon.ico)
+   - Name: Nerd or Geek Logo (can use same as above)
+   - Purpose: Browser tab icon
+   - Size: 32x32px minimum, 64x64px recommended
+   - Format: ICO or PNG
+   - Used in: Browser tab
+
+3. PROJECT IMAGES:
+   Place individual project images in: assets/img/projects/
+
+   Suggested project images:
+   - mobius-app.png (Mobius M icon) - represents design/UI project
+   - minecraft-raspberry.png (Minecraft logo) - represents game modding/minecraft project
+   
+   These are referenced in project cards and can be displayed as project thumbnails.
+
+Folder Structure After Placement:
+==================================
+
+assets/
+├── img/
+│   ├── logo.png                          (Main header logo)
+│   ├── favicons/
+│   │   └── favicon.ico                   (Browser tab icon)
+│   └── projects/
+│       ├── mobius-app.png                (Project thumbnail)
+│       └── minecraft-raspberry.png       (Project thumbnail)
+
+HTML References:
+================
+
+Header Logo: <img src="assets/img/logo.png" alt="Nerd or Geek Logo">
+Favicon: <link rel="icon" type="image/x-icon" href="assets/img/favicons/favicon.ico">
+Project Images: <img src="assets/img/projects/project-name.png" alt="Project Name">

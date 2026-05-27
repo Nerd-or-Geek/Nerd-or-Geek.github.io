@@ -1,0 +1,130 @@
+# Deploy static site to GitHub Pages
+name: Deploy static site to GitHub Pages
+
+on:
+  schedule:
+    # GitHub schedules are UTC. These pairs cover Mountain daylight and
+    # standard time, then the workflow gates itself with America/Denver time.
+    - cron: "0 18,19 * * 1" # Monday noon Mountain
+    - cron: "0 4,5 * * 2"   # Monday 10pm Mountain
+    - cron: "0 4,5 * * 3"   # Tuesday 10pm Mountain
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check Mountain time schedule
+        id: mountain_time
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Manual or push run; continuing."
+            exit 0
+          fi
+
+          mountain_day="$(TZ=America/Denver date +%u)"
+          mountain_hour="$(TZ=America/Denver date +%H)"
+          mountain_time="$(TZ=America/Denver date)"
+          echo "Mountain time is $mountain_time"
+
+          if { [ "$mountain_day" = "1" ] && { [ "$mountain_hour" = "12" ] || [ "$mountain_hour" = "22" ]; }; } || \
+             { [ "$mountain_day" = "2" ] && [ "$mountain_hour" = "22" ]; }; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Scheduled mission update window matched."
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping duplicate daylight/standard-time schedule window."
+          fi
+
+      - name: Checkout repository
+        if: steps.mountain_time.outputs.should_run == 'true'
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        if: steps.mountain_time.outputs.should_run == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.mountain_time.outputs.should_run == 'true'
+        run: npm ci
+
+      - name: Inject My Mission password hash
+        if: steps.mountain_time.outputs.should_run == 'true'
+        env:
+          MY_MISSION_PASSWORD_HASH: ${{ secrets.MY_MISSION_PASSWORD_HASH }}
+        run: |
+          if [ -z "$MY_MISSION_PASSWORD_HASH" ]; then
+            echo "::error::MY_MISSION_PASSWORD_HASH secret is not configured on GitHub. Go to Settings > Secrets and variables > Actions and create MY_MISSION_PASSWORD_HASH with your password hash."
+            exit 1
+          fi
+
+          echo "Injecting password hash into src/scripts/mission-login.js..."
+          node -e "
+            const fs = require('fs');
+            const file = 'src/scripts/mission-login.js';
+            const placeholder = '__MY_MISSION_PASSWORD_HASH__';
+            const hash = process.env.MY_MISSION_PASSWORD_HASH.trim();
+            
+            if (!hash) {
+              console.error('ERROR: MY_MISSION_PASSWORD_HASH is empty');
+              process.exit(1);
+            }
+            
+            const source = fs.readFileSync(file, 'utf8');
+            if (!source.includes(placeholder)) {
+              console.error('ERROR: Password hash placeholder was not found in ' + file);
+              process.exit(1);
+            }
+            
+            fs.writeFileSync(file, source.replaceAll(placeholder, hash));
+            console.log('Password hash injected successfully');
+          "
+
+      - name: Build TypeScript and SCSS
+        if: steps.mountain_time.outputs.should_run == 'true'
+        run: npm run build
+
+      - name: Verify password placeholder was replaced
+        if: steps.mountain_time.outputs.should_run == 'true'
+        run: |
+          if grep -R "__MY_MISSION_PASSWORD_HASH__" src/ ; then
+            echo "::error::Password placeholder was not replaced in source files."
+            exit 1
+          fi
+          echo "Password placeholder successfully replaced"
+
+      - name: Deploy to GitHub Pages
+        if: steps.mountain_time.outputs.should_run == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          DEPLOY_DIR="$(mktemp -d)"
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            ./ "$DEPLOY_DIR"/
+
+          cd "$DEPLOY_DIR"
+          touch .nojekyll
+          git init
+          git checkout -b gh-pages
+          git add -A
+          git commit -m "Deploy static site"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin gh-pages
+          

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n 'color-accent\\\\|breakpoint-md\\\\|$color' 'c:\\\\Users\\\\cadet\\\\Documents\\\\GitHub\\\\Nerd-or-Geek.github.io\\\\src\\\\styles\\\\main.scss')",
+      "Bash(grep -n '^$color\\\\|^$accent\\\\|0ea5e9\\\\|color-sky\\\\|sky-500' 'c:\\\\Users\\\\cadet\\\\Documents\\\\GitHub\\\\Nerd-or-Geek.github.io\\\\src\\\\styles\\\\main.scss')",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(node .github/scripts/copy-vendor-assets.js)",
+      "Bash(node --input-type=module --eval \"import './src/scripts/my-mission.js'\")",
+      "Bash(grep -n \"missionLocationMarker[^s]\\\\\\\\|updateMissionMapLocation[^s]\\\\\\\\|selectedWeek = \\\\\"all\\\\\"\" src/scripts/my-mission.js)"
+    ]
+  }
+}

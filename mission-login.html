@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TLCF99CZ');</script>
+    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJZ4M1FHDV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PJZ4M1FHDV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mission | Sign In</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="mission-login-body">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLCF99CZ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="mission-login-page">
+        <a href="index.html" class="mission-login-logo-link">
+            <img src="assets/img/Logo-With-Name.png" alt="Nerd or Geek" class="mission-login-logo">
+        </a>
+
+        <div class="mission-password-card mission-login-card">
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <h1>This page is password protected.</h1>
+            <p>Please enter the password to continue.</p>
+            <form id="missionLoginForm" class="mission-password-form">
+                <label for="missionPasswordInput" class="sr-only">Password</label>
+                <div class="mission-password-input-row">
+                    <input type="password" id="missionPasswordInput" placeholder="Password" autocomplete="current-password" required>
+                    <button type="submit">Unlock</button>
+                </div>
+                <p class="mission-password-message" id="missionPasswordMessage" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <a href="index.html" class="mission-login-back"><i class="fas fa-arrow-left"></i> Back to home</a>
+    </div>
+
+    <script src="src/scripts/mission-login.js" type="module"></script>
+</body>
+</html>

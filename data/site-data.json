@@ -1,0 +1,445 @@
+{
+  "affiliates": [
+    {
+      "id": "static-affiliate-1",
+      "name": "Raspberry Pi Tips School",
+      "description": "Learn everything about Raspberry Pi with comprehensive courses and tutorials. Perfect for beginners and advanced users!",
+      "link": "https://school.raspberrytips.com/a/v8jsr",
+      "icon": "fa-graduation-cap",
+      "comingSoon": false,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-affiliate-2",
+      "name": "SunFounder",
+      "description": "Explore innovative electronic kits, robotics, and educational STEM products for makers and hobbyists of all levels.",
+      "link": "https://www.sunfounder.com/?ref=ormqdqda",
+      "icon": "fa-robot",
+      "comingSoon": false,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-affiliate-3",
+      "name": "Tech Explorations",
+      "description": "Learn electronics, Arduino, Raspberry Pi, and practical engineering through hands-on courses.",
+      "link": "https://techexplorations.com/pc/?ref=hbwnc9",
+      "icon": "fa-microchip",
+      "comingSoon": false,
+      "createdAt": 1768499201280
+    }
+  ],
+  "projects": [
+    {
+      "id": "static-project-1",
+      "name": "Pinecraft",
+      "description": "An automated Minecraft Java server installer for Raspberry Pi, maintained at the cat5tv/Pinecraft GitHub repository.",
+      "badge": "Popular",
+      "tags": [
+        "Raspberry Pi",
+        "Minecraft"
+      ],
+      "icon": "fa-cube",
+      "customImage": "assets/img/projects/Pinecraft.png",
+      "theme": {
+        "preset": "forest"
+      },
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "Overview",
+          "type": "text",
+          "content": "**Pinecraft** is an automated Minecraft Java server installer for Raspberry Pi, maintained at the [cat5tv/Pinecraft GitHub repository](https://github.com/cat5tv/Pinecraft).\n\nThis guide is designed for beginner to intermediate Raspberry Pi users. No prior Pi experience is assumed, but commands are shown exactly as they should be entered.\n\nFollow each step in order. Do not skip steps or use alternative methods.",
+          "codeLanguage": "",
+          "order": 0
+        },
+        {
+          "id": "sec-1b",
+          "title": "Estimated Time",
+          "type": "callout-info",
+          "content": "**30â€“60 minutes** depending on download speeds and hardware. The process involves flashing an OS, configuration, and server setup.",
+          "codeLanguage": "",
+          "order": 1
+        },
+        {
+          "id": "sec-2",
+          "title": "Hardware Requirements",
+          "type": "text",
+          "content": "### Required Hardware\n\n- **Raspberry Pi 4** (4GB or 8GB RAM recommended)\n- MicroSD card (32GB+ Class 10/UHS-1) or USB drive\n- Official Raspberry Pi power supply (3A USB-C)\n- Computer for setup (Windows, macOS, or Linux)\n\n### Optional Hardware\n\n- Heatsink and fan for cooling\n- External SSD for improved performance\n- Case with ventilation",
+          "codeLanguage": "",
+          "order": 2
+        },
+        {
+          "id": "sec-2b",
+          "title": "Important Note",
+          "type": "callout-warning",
+          "content": "Do **not** use a Raspberry Pi Zero or older Pi models. Pinecraft requires a **Raspberry Pi 4** for adequate performance. Minecraft servers are memory and CPU intensive.",
+          "codeLanguage": "",
+          "order": 3
+        },
+        {
+          "id": "sec-3",
+          "title": "Step 1: Install Raspberry Pi Imager",
+          "type": "text",
+          "content": "**Raspberry Pi Imager** is the official tool for flashing operating system images to SD cards and USB drives. It is required to install Raspberry Pi OS on your storage device.\n\nDownload Raspberry Pi Imager from the official website:\n\n[https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)\n\nRaspberry Pi Imager is available for **Windows**, **macOS**, and **Linux**. Download and install the version for your operating system.",
+          "codeLanguage": "",
+          "order": 4
+        },
+        {
+          "id": "sec-4",
+          "title": "Step 2: Flash Raspberry Pi OS",
+          "type": "steps",
+          "content": "**Open Raspberry Pi Imager** - Launch the application you installed in the previous step.\n---\n**Click Choose Device** - Select your Raspberry Pi model from the list.\n---\n**Click Choose OS** - Navigate to **Other** and select **Raspberry Pi OS Lite (64-bit)**.\n---\n**Click Choose Storage** - Select your target SD card or USB drive.\n---\n**Click Next** - You will be prompted to configure settings.\n---\n**Open Advanced Settings** - Configure the following: **Wi-Fi** (enter your SSID and password), **Username and password** (create your login credentials), **Enable Raspberry Pi Connect** (for remote access).\n---\n**Apply Settings** - Confirm and begin flashing the image to your storage device.\n---\n**Safely Eject** - When flashing is complete, safely eject the drive from your computer.",
+          "codeLanguage": "",
+          "order": 5
+        },
+        {
+          "id": "sec-4b",
+          "title": "Why Lite 64-bit?",
+          "type": "callout-success",
+          "content": "We use **Raspberry Pi OS Lite (64-bit)** because it has no desktop environment, freeing up RAM and CPU for the Minecraft server. The 64-bit version provides better Java performance.",
+          "codeLanguage": "",
+          "order": 6
+        },
+        {
+          "id": "sec-5",
+          "title": "Step 3: First Boot & Remote Access",
+          "type": "steps",
+          "content": "**Insert the flashed drive** - Insert the SD card or USB drive into your Raspberry Pi.\n---\n**Power on the Raspberry Pi** - Connect the power supply. The Pi will boot automatically.\n---\n**Open Raspberry Pi Connect** - From another computer, open your web browser and go to: [https://connect.raspberrypi.com](https://connect.raspberrypi.com)\n---\n**Sign in and connect** - Sign in with your Raspberry Pi account and connect to your Pi remotely.",
+          "codeLanguage": "",
+          "order": 7
+        },
+        {
+          "id": "sec-6",
+          "title": "Step 4: Initial Raspberry Pi Configuration",
+          "type": "code",
+          "content": "# Open Raspberry Pi Configuration\nsudo raspi-config\n\n# Navigate to: Advanced Options â†’ Expand Filesystem\n# Then exit raspi-config\n\n# Update the System\nsudo apt update\nsudo apt upgrade -y\n\n# Install Git\nsudo apt install git -y\n\n# Reboot\nsudo reboot",
+          "codeLanguage": "bash",
+          "order": 8
+        },
+        {
+          "id": "sec-6b",
+          "title": "Configuration Steps",
+          "type": "text",
+          "content": "In raspi-config, navigate to:\n\n1. **Advanced Options**\n2. **Expand Filesystem**\n3. Exit raspi-config\n\nAfter the reboot, reconnect via Raspberry Pi Connect to continue.",
+          "codeLanguage": "",
+          "order": 9
+        },
+        {
+          "id": "sec-7",
+          "title": "Step 5: Download Pinecraft",
+          "type": "code",
+          "content": "# Clone the Pinecraft repository\ngit clone https://github.com/cat5tv/Pinecraft.git\n\n# Enter the Pinecraft directory\ncd Pinecraft",
+          "codeLanguage": "bash",
+          "order": 10
+        },
+        {
+          "id": "sec-7b",
+          "title": "GitHub Repository",
+          "type": "links",
+          "content": "Pinecraft GitHub|https://github.com/cat5tv/Pinecraft|Official repository with source code and documentation",
+          "codeLanguage": "",
+          "order": 11
+        },
+        {
+          "id": "sec-8",
+          "title": "Step 6: Run the Pinecraft Installer",
+          "type": "code",
+          "content": "# Run the installer with sudo\nsudo ./install",
+          "codeLanguage": "bash",
+          "order": 12
+        },
+        {
+          "id": "sec-8b",
+          "title": "Installation Flow",
+          "type": "steps",
+          "content": "**Click OK** - When the welcome screen appears, click OK to continue.\n---\n**Click OK again** - Acknowledge the information prompt.\n---\n**Select installation location** - Choose **Main / Home directory** for the installation.\n---\n**Choose Minecraft version** - Select your preferred Minecraft server version.\n---\n**Enter world seed** - Provide a seed or leave blank for random generation.\n---\n**Select game mode** - Choose Survival, Creative, or Adventure mode.\n---\n**Confirm RAM overclocking** - Confirm when prompted about memory settings.\n---\n**Wait for installation** - The installer handles all dependencies automatically.",
+          "codeLanguage": "",
+          "order": 13
+        },
+        {
+          "id": "sec-9",
+          "title": "Step 7: Checking Server Status",
+          "type": "callout-warning",
+          "content": "**Important:** Only these two commands are valid with the init.d script:\n\n`/etc/init.d/pinecraft status` - Check if the server is running\n\n`/etc/init.d/pinecraft stop` - Stop the server\n\n**There is no start or restart command in init.d.** Server control is handled differently (see next section).",
+          "codeLanguage": "",
+          "order": 14
+        },
+        {
+          "id": "sec-10",
+          "title": "Step 8: Server Control Commands",
+          "type": "cards-2",
+          "content": "Start Server|Navigate to your Minecraft folder and run `./server` to start the server.\n---\nRestart Server|Run `./restart` from within the Minecraft directory to restart.\n---\nStop Server|Use `/etc/init.d/pinecraft stop` to gracefully shut down the server.\n---\nCheck Status|Use `/etc/init.d/pinecraft status` to verify if the server is running.",
+          "codeLanguage": "",
+          "order": 15
+        },
+        {
+          "id": "sec-11",
+          "title": "Step 9: Updating PaperMC",
+          "type": "steps",
+          "content": "**Download the latest Paper JAR** - Go to [https://papermc.io/downloads](https://papermc.io/downloads) and download the latest Paper JAR file.\n---\n**Navigate to the Minecraft directory** - Open the Minecraft folder created by Pinecraft.\n---\n**Delete the existing JAR** - Delete the file named `Minecraft.jar`.\n---\n**Rename the downloaded file** - Rename the new Paper JAR file you downloaded to `Minecraft.jar`.\n---\n**Restart the server** - Run `./restart` to start the server with the updated Paper version.",
+          "codeLanguage": "",
+          "order": 16
+        },
+        {
+          "id": "sec-12",
+          "title": "Step 10: Installing Plugins",
+          "type": "steps",
+          "content": "**Stop the server** - Run `/etc/init.d/pinecraft stop` to shut down the server.\n---\n**Copy plugin files** - Copy the plugin `.jar` files from your computer.\n---\n**Paste into plugins folder** - Paste the files into the `plugins` folder inside the Minecraft directory.\n---\n**Restart the server** - Run `./restart` to start the server with the new plugins loaded.",
+          "codeLanguage": "",
+          "order": 17
+        },
+        {
+          "id": "sec-12b",
+          "title": "Plugin Resources",
+          "type": "links",
+          "content": "SpigotMC Resources|https://www.spigotmc.org/resources/|Thousands of free and premium plugins\nHangar (PaperMC)|https://hangar.papermc.io/|Official Paper plugin repository\nModrinth|https://modrinth.com/plugins|Modern plugin and mod platform",
+          "codeLanguage": "",
+          "order": 18
+        },
+        {
+          "id": "sec-13",
+          "title": "Networking Guide",
+          "type": "text",
+          "content": "### Local Network Connection\n\nFor players on the same network, use your Pi's local IP address. Find it with:\n\n```bash\nhostname -I\n```\n\nIn Minecraft: **Multiplayer** â†’ **Direct Connect** â†’ Enter the local IP.\n\n### Remote Connection\n\nFor players outside your network:\n\n1. Find your public IP: `curl ifconfig.me`\n2. Forward TCP port **25565** in your router settings\n3. Share your public IP with players",
+          "codeLanguage": "",
+          "order": 19
+        },
+        {
+          "id": "sec-13b",
+          "title": "Security Warning",
+          "type": "callout-warning",
+          "content": "Opening your server to the internet exposes it to potential attacks. Always:\n\n- Enable whitelist in `server.properties`: set `white-list=true`\n- Only add trusted players to your whitelist\n- Keep your server software updated\n- Consider using a firewall",
+          "codeLanguage": "",
+          "order": 20
+        },
+        {
+          "id": "sec-14",
+          "title": "Troubleshooting",
+          "type": "cards-3",
+          "content": "Server Won't Start|Check logs for startup errors and diagnostics|tail -f /var/log/pinecraft.log\n---\nConnection Issues|Verify server is running and network is properly configured. LAN: Confirm same network. Remote: Check port 25565 is forwarded to Pi's local IP.\n---\nCheck Disk Space|Low storage can cause crashes and world corruption|df -h\n---\nPerformance Issues|Reduce server load for smoother gameplay. Lower `view-distance` in `server.properties`. Limit max players. Use Paper for optimizations.\n---\nJava Errors|Ensure correct Java version is installed|java -version\n---\nGet Help|Community support for advanced issues. Visit [Pinecraft GitHub Issues](https://github.com/cat5TV/pinecraft/issues)",
+          "codeLanguage": "",
+          "order": 21
+        },
+        {
+          "id": "sec-15",
+          "title": "Congratulations!",
+          "type": "callout-success",
+          "content": "You now have a fully functional Minecraft Java server running on your Raspberry Pi! Invite your friends, explore, build, and have fun. Remember to back up your world files regularly.",
+          "codeLanguage": "",
+          "order": 22
+        }
+      ],
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-project-2",
+      "name": "P4wnP1",
+      "description": "Highly customizable USB attack platform for Raspberry Pi Zero and Zero W.",
+      "badge": "Security",
+      "tags": [
+        "Pi Zero",
+        "Security"
+      ],
+      "icon": "fa-usb",
+      "customImage": "assets/img/projects/p4wnp1.png",
+      "theme": {
+        "preset": "midnight"
+      },
+      "sections": [
+        {
+          "id": "p4-sec-1",
+          "title": "Overview",
+          "type": "text",
+          "content": "P4wnP1 is an open-source, highly customizable USB attack platform for the Raspberry Pi Zero and Zero W. It enables HID attacks, network attacks, and more, all from a tiny, affordable device.\n\n[View the official GitHub repository](https://github.com/RoganDawes/P4wnP1)",
+          "codeLanguage": "",
+          "order": 0
+        },
+        {
+          "id": "p4-sec-2",
+          "title": "Estimated Time",
+          "type": "callout-info",
+          "content": "**15â€“30 minutes** (including downloads and flashing)",
+          "codeLanguage": "",
+          "order": 1
+        },
+        {
+          "id": "p4-sec-3",
+          "title": "Prerequisites",
+          "type": "cards-2",
+          "content": "Required Hardware|Raspberry Pi Zero or Zero W, MicroSD card (8GB+ recommended), Micro USB cable (data & power capable), Computer (Windows, macOS, or Linux)\n---\nOptional Hardware|USB OTG adapter for additional devices, Compact case for portability",
+          "codeLanguage": "",
+          "order": 2
+        },
+        {
+          "id": "p4-sec-4",
+          "title": "Installation Guide",
+          "type": "steps",
+          "content": "**Download Image** - Get the latest P4wnP1 A.L.O.A. image from [GitHub Releases](https://github.com/RoganDawes/P4wnP1/releases)\n---\n**Flash to SD Card** - Use balenaEtcher to write the image to your microSD card. [Get balenaEtcher](https://www.balena.io/etcher/)\n---\n**Insert & Connect** - Insert the SD card into Pi Zero. Connect via USB data port (not power-only).\n---\n**Wait for Boot** - The Pi will boot and appear as a network/HID device on your computer.\n---\n**Login** - Default credentials: Username: `pi`, Password: `raspberry`\n---\n**Access Web UI** - Open browser and navigate to the P4wnP1 web interface for configuration.",
+          "codeLanguage": "",
+          "order": 3
+        },
+        {
+          "id": "p4-sec-5",
+          "title": "Resources",
+          "type": "links",
+          "content": "GitHub Repo|https://github.com/RoganDawes/P4wnP1|Source code, issues, and releases\nWiki & Docs|https://github.com/RoganDawes/P4wnP1/wiki|Payloads, customizations, and advanced features\nbalenaEtcher|https://www.balena.io/etcher/|Cross-platform SD card flasher tool",
+          "codeLanguage": "",
+          "order": 4
+        }
+      ],
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-project-3",
+      "name": "Monero Mining",
+      "description": "Complete setup guide for CPU mining Monero (XMR) on Raspberry Pi with XMRig.",
+      "badge": "New",
+      "tags": [
+        "Raspberry Pi",
+        "Cryptocurrency"
+      ],
+      "icon": "fa-coins",
+      "customImage": "assets/img/projects/monero-mining.png",
+      "staticUrl": "projects/monero-mining.html",
+      "sections": [
+        {
+          "id": "xmr-sec-1",
+          "title": "Overview",
+          "type": "text",
+          "content": "This guide walks you through setting up a Raspberry Pi as a Monero (XMR) CPU miner using XMRig, a high-performance, open-source RandomX miner.",
+          "codeLanguage": "",
+          "order": 0
+        },
+        {
+          "id": "xmr-sec-2",
+          "title": "Prerequisites",
+          "type": "cards-2",
+          "content": "Required Hardware|Raspberry Pi 4 (4GB or 8GB recommended), MicroSD card (16GB+ Class 10), Official Raspberry Pi power supply (3A USB-C), Ethernet or WiFi connection\n---\nRecommended Hardware|Heatsink and active cooling fan, Case with ventilation, External SSD (optional)",
+          "codeLanguage": "",
+          "order": 1
+        },
+        {
+          "id": "xmr-sec-3",
+          "title": "Resources",
+          "type": "links",
+          "content": "XMRig GitHub|https://github.com/xmrig/xmrig|Source code and releases\nMonero Wallet|https://www.getmonero.org/downloads/|Official wallet downloads\nRaspberry Pi Imager|https://www.raspberrypi.com/software/|OS installation tool",
+          "codeLanguage": "",
+          "order": 2
+        }
+      ],
+      "createdAt": 1768499201280
+    },
+    {
+      "id": "static-project-4",
+      "name": "Morse-Pi",
+      "description": "A browser-based Morse code trainer for Raspberry Pi with a recommended native Rust backend, Pi Zero-friendly setup, and optional legacy Python support.",
+      "badge": "New",
+      "tags": [
+        "Raspberry Pi",
+        "Rust",
+        "Morse Code"
+      ],
+      "icon": "fa-tower-broadcast",
+      "customImage": "assets/img/projects/Morse-Pi.png",
+      "staticUrl": "projects/morse-pi.html",
+      "sections": [
+        {
+          "id": "morse-sec-1",
+          "title": "Overview",
+          "type": "text",
+          "content": "**Morse-Pi** is a browser-based Morse code trainer for Raspberry Pi with a recommended native Rust backend and an optional legacy Python backend. It works especially well on a Pi Zero-family board with a real key or paddle, but you can also practice from any browser with keyboard shortcuts and on-screen controls.\n\n[Read the full official documentation](https://nerd-or-geek.org/Morse-Pi/)\n\n[View the official GitHub repository](https://github.com/Nerd-or-Geek/Morse-Pi)",
+          "codeLanguage": "",
+          "order": 0
+        },
+        {
+          "id": "morse-sec-2",
+          "title": "Estimated Time",
+          "type": "callout-info",
+          "content": "**20â€“45 minutes** for flashing Raspberry Pi OS and first-time setup, plus **10â€“30 minutes** for the initial Rust build on a Pi Zero.",
+          "codeLanguage": "",
+          "order": 1
+        },
+        {
+          "id": "morse-sec-3",
+          "title": "Prerequisites",
+          "type": "cards-2",
+          "content": "Required Hardware|Raspberry Pi Zero / Zero W / Zero 2 W, 16 GB or larger microSD card, stable 5 V power supply, optional Morse key or paddle, optional piezo speaker\n---\nSetup Tools|Computer with SD card reader, Raspberry Pi Imager, Wi-Fi credentials, and SSH enabled in Raspberry Pi Imager advanced settings",
+          "codeLanguage": "",
+          "order": 2
+        },
+        {
+          "id": "morse-sec-4",
+          "title": "Installation Guide",
+          "type": "steps",
+          "content": "**Flash Raspberry Pi OS Lite** - Use Raspberry Pi Imager and choose Raspberry Pi OS Lite. Use 32-bit for Pi Zero / Zero W, or 32-bit / 64-bit for Pi Zero 2 W.\n---\n**Enable SSH and Wi-Fi** - In Raspberry Pi Imager advanced settings, set your hostname, username, password, Wi-Fi, locale, and enable SSH before writing the card.\n---\n**Boot the Pi and Update Packages** - Connect to the Pi, then run `sudo apt update` and `sudo apt upgrade -y`.\n---\n**Run the Rust Installer** - Install Morse-Pi with `curl -sSL https://raw.githubusercontent.com/Nerd-or-Geek/Morse-Pi/main/install-rust.sh | sudo bash`.\n---\n**Open the Web UI** - Browse to the URL printed on screen, usually something like `http://192.168.1.42:5000`.\n---\n**Optional USB HID Reboot** - Reboot after install if you plan to use the Pi as a USB keyboard.",
+          "codeLanguage": "",
+          "order": 3
+        },
+        {
+          "id": "morse-sec-5",
+          "title": "Resources",
+          "type": "links",
+          "content": "Official Docs|https://nerd-or-geek.org/Morse-Pi/|Read the full Morse-Pi documentation site\nGitHub Repo|https://github.com/Nerd-or-Geek/Morse-Pi|Source code, issues, releases, and install scripts\nRaspberry Pi Imager|https://www.raspberrypi.com/software/|Official tool for flashing Raspberry Pi OS to an SD card\nTroubleshooting|https://nerd-or-geek.org/Morse-Pi/troubleshooting.html|Fix Rust build, GPIO, USB HID, and network issues",
+          "codeLanguage": "",
+          "order": 4
+        }
+      ],
+      "createdAt": 1768499201280
+    }
+  ],
+  "software": [
+    {
+      "id": "static-software-1",
+      "name": "Gledhill Metadata",
+      "description": "A clean, fast way to batch edit photo metadata, apply reusable templates, and rename images in seconds. Download for macOS, Windows, or Linux AppImage.",
+      "link": "https://nerd-or-geek.org/Gledhill-Metadata/",
+      "icon": "fa-image",
+      "customImage": "assets/img/projects/Gledhill-Metadata.png",
+      "underDevelopment": false,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-raspberry-pi-guide",
+      "name": "What Is a Raspberry Pi?",
+      "description": "A Raspberry Pi guide for DIY electronics, IoT monitoring, GPIO boards, ham radio projects, cellular modems, speakers, and raspberry pi zero w accessories.",
+      "link": "what-is-a-raspberry-pi.html",
+      "icon": "fa-microchip",
+      "customImage": "assets/img/projects/Photo-8.jpg",
+      "underDevelopment": false,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-2",
+      "name": "CyberPatriot Runbook",
+      "description": "A practical runbook for CyberPatriot prep with checklists and steps to streamline competition readiness.",
+      "link": "https://github.com/michael6gledhill/cyberpatriot-runbook",
+      "icon": "fa-shield-halved",
+      "customImage": "assets/img/projects/cyberpatriot.png",
+      "underDevelopment": true,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-3",
+      "name": "TransportMod",
+      "description": "A comprehensive transportation modification mod for enhanced game mechanics.",
+      "link": "https://github.com/Nerd-or-Geek/TransportMod",
+      "icon": "fa-car",
+      "customImage": "assets/img/projects/TransportMod.png",
+      "underDevelopment": true,
+      "createdAt": 1773088216499
+    },
+    {
+      "id": "static-software-4",
+      "name": "Photo Metadata Editor",
+      "description": "A clean, self-built tool to view and manage photo metadata quickly. This project is no longer supported or updated.",
+      "link": "https://github.com/michael6gledhill/Photo_Metadata_App_By_Gledhill",
+      "icon": "fa-image",
+      "customImage": "assets/img/projects/photo-metadata.png",
+      "underDevelopment": false,
+      "noLongerSupported": true,
+      "createdAt": 1773088216499
+    }
+  ],
+  "initialized": true,
+  "lastUpdated": 1773088337367
+}

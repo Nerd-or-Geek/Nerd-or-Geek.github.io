@@ -1,0 +1,1068 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TLCF99CZ');</script>
+    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJZ4M1FHDV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-PJZ4M1FHDV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Monero Mining Setup | Nerd or Geek</title>
+    <meta name="description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation from Nerd or Geek.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nerd-or-geek.org/projects/monero-mining.html">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Nerd or Geek">
+    <meta property="og:title" content="Raspberry Pi Monero Mining Setup | Nerd or Geek">
+    <meta property="og:description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.">
+    <meta property="og:url" content="https://nerd-or-geek.org/projects/monero-mining.html">
+    <meta property="og:image" content="https://nerd-or-geek.org/assets/img/Logo-With-Name.png">
+    <meta property="og:image:alt" content="Nerd or Geek logo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Raspberry Pi Monero Mining Setup | Nerd or Geek">
+    <meta name="twitter:description" content="Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.">
+    <meta name="twitter:image" content="https://nerd-or-geek.org/assets/img/Logo-With-Name.png">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico?v=1">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/docs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Raspberry Pi Monero Mining Setup",
+      "description": "Step-by-step Raspberry Pi Monero mining setup guide with Raspberry Pi hardware notes, Linux commands, and maker project documentation.",
+      "url": "https://nerd-or-geek.org/projects/monero-mining.html",
+      "author": {
+        "@type": "Organization",
+        "name": "Nerd or Geek"
+      },
+      "about": [
+        "Raspberry Pi",
+        "Monero mining",
+        "Linux project documentation"
+      ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLCF99CZ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header class="header">
+        <div class="header-container">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="../index.html" class="logo-link">
+                <div class="logo-section">
+                    <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="logo-img">
+                </div>
+            </a>
+            <nav class="header-nav">
+                <a href="../index.html" class="header-nav-link">Home</a>
+                <a href="../projects.html" class="header-nav-link active">Projects</a>
+                <a href="../mission-login.html" class="header-nav-link">My Mission</a>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search docs..."
+                    aria-label="Search"
+                >
+                <button class="search-button" id="searchButton" aria-label="Search Button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="docs-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar">
+            <nav class="docs-nav">
+                <div class="docs-nav-header">
+                    <h3>Monero Mining</h3>
+                </div>
+                <ul class="docs-toc">
+                    <li><a href="#overview" class="docs-link">Overview</a></li>
+                    <li><a href="#requirements" class="docs-link">Requirements</a></li>
+                    <li><a href="#install-imager" class="docs-link">Install Raspberry Pi Imager</a></li>
+                    <li><a href="#first-boot" class="docs-link">First Boot & System Update</a></li>
+                    <li><a href="#dependencies" class="docs-link">Install Dependencies</a></li>
+                    <li><a href="#build-xmrig" class="docs-link">Build Mining Software</a></li>
+                    <li><a href="#wallet-setup" class="docs-link">Monero Wallet Setup</a></li>
+                    <li><a href="#configure-miner" class="docs-link">Configure Mining Software</a></li>
+                    <li><a href="#start-mining" class="docs-link">Start Mining (Screen)</a></li>
+                    <li><a href="#optimization" class="docs-link">Optional Optimization</a></li>
+                    <li><a href="#autostart" class="docs-link">Autostart (systemd + screen)</a></li>
+                    <li><a href="#overclocking" class="docs-link">Advanced Overclocking</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Documentation Content -->
+        <main class="docs-main">
+            <!-- Breadcrumb -->
+            <div class="docs-breadcrumb">
+                <a href="../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../projects.html">Projects</a>
+                <span class="separator">/</span>
+                <span class="current">Monero Mining</span>
+            </div>
+
+            <!-- Hero Section -->
+            <section class="docs-hero">
+                <div class="docs-hero-content">
+                    <h1 class="docs-title">Raspberry Pi Monero Mining</h1>
+                    <p class="docs-subtitle">Complete setup guide for CPU mining Monero (XMR) on Raspberry Pi</p>
+                    <div class="docs-meta">
+                        <span class="docs-badge">Tutorial</span>
+                        <span class="docs-badge">Raspberry Pi</span>
+                        <span class="docs-badge">Cryptocurrency</span>
+                        <span class="docs-badge">XMRig</span>
+                    </div>
+                </div>
+                <div class="docs-hero-image">
+                    <img src="../assets/img/projects/monero-mining.png" alt="Monero Mining on Raspberry Pi">
+                </div>
+            </section>
+
+            <!-- Content Sections -->
+            <article class="docs-content">
+                <!-- Overview -->
+                <section id="overview" class="docs-section">
+                    <h2 class="docs-heading">Overview</h2>
+                    <p>
+                        This guide walks you through setting up a Raspberry Pi as a Monero (XMR) CPU miner using <strong>XMRig</strong>, a high-performance, open-source RandomX miner. Monero uses the RandomX proof-of-work algorithm, designed specifically for CPU mining.
+                    </p>
+                    
+                    <h3>What You'll Learn</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-sd-card"></i> Flash OS</h4>
+                            <p>Install Raspberry Pi OS Lite (64-bit) and configure initial settings.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-tools"></i> Build XMRig</h4>
+                            <p>Compile XMRig from source with all required dependencies.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-wallet"></i> Wallet Setup</h4>
+                            <p>Create a Monero wallet to receive mining rewards.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-server"></i> Pool Mining</h4>
+                            <p>Connect to a mining pool and start earning XMR.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-tachometer-alt"></i> Optimization</h4>
+                            <p>Tune CPU performance and configure automatic startup.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-thermometer-half"></i> Overclocking</h4>
+                            <p>Optional advanced tuning for improved hashrate.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Requirements -->
+                <section id="requirements" class="docs-section">
+                    <h2 class="docs-heading">Requirements</h2>
+                    <p>Gather the following hardware and software before starting.</p>
+                    
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h3><i class="fas fa-microchip"></i> Required Hardware</h3>
+                            <ul>
+                                <li>Raspberry Pi 4 (4GB or 8GB recommended) or Pi 5</li>
+                                <li>MicroSD card (16GB+ Class 10/UHS-1)</li>
+                                <li>Official Raspberry Pi power supply (3A USB-C)</li>
+                                <li>Ethernet cable or reliable WiFi</li>
+                                <li>Computer for initial setup</li>
+                            </ul>
+                        </div>
+                        <div class="docs-card">
+                            <h3><i class="fas fa-fan"></i> Recommended Hardware</h3>
+                            <ul>
+                                <li>Heatsink and active cooling fan</li>
+                                <li>Case with ventilation</li>
+                                <li>External SSD (optional, extends SD card life)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Note:</strong> Raspberry Pi 4 or newer is recommended for 64-bit OS support and improved CPU performance with RandomX.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Install Raspberry Pi Imager -->
+                <section id="install-imager" class="docs-section">
+                    <h2 class="docs-heading">Section 1 â€” Install Raspberry Pi Imager</h2>
+                    <p>Download and use the official Raspberry Pi Imager to flash the operating system.</p>
+                    
+                    <div class="docs-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Download Raspberry Pi Imager</h4>
+                                <p>Get the official imaging tool from the Raspberry Pi website.</p>
+                                <a href="https://www.raspberrypi.com/software/" target="_blank" class="docs-link">
+                                    <i class="fas fa-download"></i> Download Raspberry Pi Imager
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Insert MicroSD Card</h4>
+                                <p>Insert your microSD card into your computer's card reader.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Configure Image Settings</h4>
+                                <p>Open Raspberry Pi Imager and configure the following:</p>
+                                <ul>
+                                    <li><strong>Device:</strong> Raspberry Pi 4 (or your model)</li>
+                                    <li><strong>Operating System:</strong> Raspberry Pi OS Lite (64-bit)</li>
+                                    <li><strong>Storage:</strong> Select your microSD card</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Configure Advanced Options</h4>
+                                <p>Click the gear icon or "Edit Settings" to configure:</p>
+                                <ul>
+                                    <li><strong>Enable SSH:</strong> Use password authentication</li>
+                                    <li><strong>Set hostname:</strong> e.g., <code>miner</code></li>
+                                    <li><strong>Set username/password:</strong> Create secure credentials</li>
+                                    <li><strong>Configure WiFi:</strong> Enter SSID and password (if not using Ethernet)</li>
+                                    <li><strong>Set locale:</strong> Configure timezone and keyboard layout</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>Flash the SD Card</h4>
+                                <p>Click "Write" and wait for the process to complete. Safely eject the card when finished.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- First Boot and System Update -->
+                <section id="first-boot" class="docs-section">
+                    <h2 class="docs-heading">Section 2 â€” First Boot and System Update</h2>
+                    <p>Boot your Raspberry Pi and perform initial system updates.</p>
+                    
+                    <h3>Connect via SSH</h3>
+                    <p>Insert the SD card into your Pi, connect power, and SSH into the device:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>ssh username@raspberrypi.local</code></pre>
+                    </div>
+                    <p>Replace <code>username</code> with the username you configured. If you changed the hostname, use that instead of <code>raspberrypi</code>.</p>
+
+                    <h3>Update System Packages</h3>
+                    <p>Run the following commands to update all packages:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo reboot</code></pre>
+                    </div>
+
+                    <h3>Clean Up After Reboot</h3>
+                    <p>After the system reboots, reconnect via SSH and remove unused packages:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt autoremove -y</code></pre>
+                    </div>
+                </section>
+
+                <!-- Install Required Dependencies -->
+                <section id="dependencies" class="docs-section">
+                    <h2 class="docs-heading">Section 3 â€” Install Required Dependencies</h2>
+                    <p>Install the build tools and development libraries needed to compile XMRig.</p>
+                    
+                    <h3>Install Build Tools</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt install -y git cmake build-essential</code></pre>
+                    </div>
+
+                    <h3>Install Development Libraries</h3>
+                    <p>Install the libraries required for RandomX-based CPU mining:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt install -y \
+    libssl-dev \
+    libuv1-dev \
+    libhwloc-dev \
+    libmicrohttpd-dev \
+    libjansson-dev \
+    libgmp-dev \
+    libunbound-dev \
+    libsodium-dev \
+    pkg-config</code></pre>
+                    </div>
+
+                    <h3>Dependency Reference</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-hammer"></i> Build Tools</h4>
+                            <ul>
+                                <li><code>build-essential</code> â€” GCC, make, core build tools</li>
+                                <li><code>cmake</code> â€” Build configuration system</li>
+                                <li><code>git</code> â€” Source code version control</li>
+                            </ul>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-cubes"></i> Libraries</h4>
+                            <ul>
+                                <li><code>libssl-dev</code> â€” Cryptography (OpenSSL)</li>
+                                <li><code>libuv1-dev</code> â€” Async networking</li>
+                                <li><code>libhwloc-dev</code> â€” CPU topology detection</li>
+                                <li><code>libjansson-dev</code> â€” JSON parsing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Clone and Build Mining Software -->
+                <section id="build-xmrig" class="docs-section">
+                    <h2 class="docs-heading">Section 4 â€” Clone and Build Mining Software</h2>
+                    <p>Download and compile XMRig, a high-performance open-source Monero CPU miner.</p>
+                    
+                    <h3>Clone XMRig Repository</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>git clone https://github.com/xmrig/xmrig.git
+cd xmrig</code></pre>
+                    </div>
+
+                    <h3>Create Build Directory and Compile</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>mkdir build
+cd build
+cmake ..
+make -j$(nproc)</code></pre>
+                    </div>
+
+                    <h3>Build Process Explanation</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><code>mkdir build</code></h4>
+                            <p>Creates a separate directory for build artifacts, keeping the source tree clean.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>cmake ..</code></h4>
+                            <p>Generates makefiles based on the project configuration. The <code>..</code> points to the parent directory containing CMakeLists.txt.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>make -j$(nproc)</code></h4>
+                            <p>Compiles the source code using all available CPU cores. <code>$(nproc)</code> returns the number of processing units.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4>Build Time</h4>
+                            <p>Compilation takes approximately 10-20 minutes on a Raspberry Pi 4, depending on cooling and clock speed.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Success:</strong> When the build completes, you'll have an <code>xmrig</code> executable in the <code>build</code> directory.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Monero Wallet Setup -->
+                <section id="wallet-setup" class="docs-section">
+                    <h2 class="docs-heading">Section 5 â€” Monero Wallet Setup</h2>
+                    <p>Create a Monero wallet to receive your mining rewards.</p>
+                    
+                    <div class="docs-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Download Official Wallet</h4>
+                                <p>Download the official Monero GUI or CLI wallet from the Monero website.</p>
+                                <a href="https://www.getmonero.org/downloads/" target="_blank" class="docs-link">
+                                    <i class="fas fa-download"></i> Download Monero Wallet
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Create New Wallet</h4>
+                                <p>Open the wallet application and select "Create new wallet". Follow the on-screen instructions to generate your wallet.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Backup Seed Phrase</h4>
+                                <p>Write down the <strong>25-word mnemonic seed phrase</strong> and store it securely offline. This is your wallet backup â€” never share it or store it digitally.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Copy Wallet Address</h4>
+                                <p>Copy your public wallet address (starts with <code>4</code> or <code>8</code>). You'll need this to configure the mining software.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Security:</strong> Your seed phrase grants full access to your funds. Store it offline in a secure location. Never paste it into websites or share it with anyone.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Configure Mining Software -->
+                <section id="configure-miner" class="docs-section">
+                    <h2 class="docs-heading">Section 6 â€” Configure Mining Software</h2>
+                    <p>Configure XMRig with your wallet address and mining pool settings.</p>
+                    
+                    <h3>Configuration Requirements</h3>
+                    <ul>
+                        <li><strong>Wallet address</strong> â€” Your Monero public address</li>
+                        <li><strong>Mining pool URL</strong> â€” Pool server address and port</li>
+                        <li><strong>Worker name</strong> â€” Identifier for this miner</li>
+                        <li><strong>CPU thread configuration</strong> â€” Number of threads to use</li>
+                    </ul>
+
+                    <h3>Create Configuration File</h3>
+                    <p>Create a <code>config.json</code> file in the build directory:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>nano ~/xmrig/build/config.json</code></pre>
+                    </div>
+
+                    <h3>Example Configuration</h3>
+                    <p>Add the following configuration (replace placeholders with your values):</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JSON</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>{
+    "autosave": true,
+    "cpu": true,
+    "opencl": false,
+    "cuda": false,
+    "pools": [
+        {
+            "url": "pool.example.com:3333",
+            "user": "YOUR_WALLET_ADDRESS_HERE",
+            "pass": "worker1",
+            "coin": "monero",
+            "algo": "rx/0",
+            "keepalive": true,
+            "tls": false
+        }
+    ],
+    "print-time": 60,
+    "health-print-time": 60,
+    "retries": 5,
+    "retry-pause": 5
+}</code></pre>
+                    </div>
+
+                    <h3>Configuration Fields</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><code>url</code></h4>
+                            <p>Mining pool address and port. Choose a pool close to your location for lower latency.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>user</code></h4>
+                            <p>Your Monero wallet address. Some pools also accept <code>wallet.workername</code> format.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>pass</code></h4>
+                            <p>Worker password/identifier. Often used as worker name or can be left as <code>x</code>.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>algo</code></h4>
+                            <p><code>rx/0</code> is RandomX, the current Monero mining algorithm.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-globe"></i>
+                        <div>
+                            <strong>Popular Mining Pools:</strong> Search for "Monero mining pools" to find a pool. Look for pools with low fees, servers near you, and good uptime.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Start Mining -->
+                <section id="start-mining" class="docs-section">
+                    <h2 class="docs-heading">Section 7 â€” Start Mining</h2>
+                    <p>Launch XMRig in a screen session for interactive monitoring. Using <code>screen</code> allows you to detach from the mining session while it continues running in the background.</p>
+                    
+                    <h3>Install Screen</h3>
+                    <p>If screen is not already installed:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt install -y screen</code></pre>
+                    </div>
+
+                    <h3>Start XMRig in a Screen Session</h3>
+                    <p>Navigate to the build directory and start XMRig in a detached screen session:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>cd ~/xmrig/build
+screen -dmS xmrig ./xmrig</code></pre>
+                    </div>
+                    <p>This starts XMRig in a detached screen session named <code>xmrig</code>. The miner runs in the background and you can safely disconnect from SSH.</p>
+
+                    <h3>Attach to the Screen Session</h3>
+                    <p>To view the live mining output, attach to the screen session:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>screen -r xmrig</code></pre>
+                    </div>
+
+                    <h3>Detach from the Screen Session</h3>
+                    <p>To detach and leave XMRig running in the background, press:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Keyboard</span>
+                        </div>
+                        <pre><code>Ctrl+A, then D</code></pre>
+                    </div>
+                    <p>This returns you to the normal shell while XMRig continues mining.</p>
+
+                    <h3>Screen Commands Reference</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><code>screen -dmS xmrig ./xmrig</code></h4>
+                            <p>Start XMRig in a new detached screen session named "xmrig".</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>screen -r xmrig</code></h4>
+                            <p>Reattach to the running screen session to view live output.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>Ctrl+A, D</code></h4>
+                            <p>Detach from the screen session (leaves miner running).</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>screen -ls</code></h4>
+                            <p>List all active screen sessions.</p>
+                        </div>
+                    </div>
+
+                    <h3>Expected Console Output</h3>
+                    <p>When XMRig starts successfully, you'll see output similar to:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Console Output</span>
+                        </div>
+                        <pre><code> * ABOUT        XMRig/6.x.x
+ * LIBS         libuv/1.x.x OpenSSL/x.x.x hwloc/2.x.x
+ * HUGE PAGES   supported
+ * CPU          ARM Cortex-A72 (4) 64-bit
+ * MEMORY       3.7/7.8 GB
+ * DONATE       1%
+ * POOL #1      pool.example.com:3333
+ * COMMANDS     hashrate, pause, resume, results, connection
+[2026-02-06 12:00:00.000]  net      new job from pool.example.com
+[2026-02-06 12:00:01.000]  cpu      accepted (1/0) diff 10000 (62 ms)
+[2026-02-06 12:01:00.000]  miner    speed 10s/60s/15m 85.2 85.0 n/a H/s</code></pre>
+                    </div>
+
+                    <h3>Understanding the Output</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-tachometer-alt"></i> Hashrate</h4>
+                            <p>Shows mining speed in hashes per second (H/s). The three values are 10-second, 60-second, and 15-minute averages.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-check"></i> Accepted Shares</h4>
+                            <p><code>accepted (1/0)</code> shows accepted vs rejected shares. High rejection rates indicate connection or configuration issues.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-signal"></i> Difficulty</h4>
+                            <p>Pool-assigned difficulty. Higher difficulty means fewer but larger shares.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-clock"></i> Response Time</h4>
+                            <p>Latency to the pool server in milliseconds. Lower is better.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-thermometer-full"></i>
+                        <div>
+                            <strong>Temperature Monitoring:</strong> Mining generates significant heat. Monitor CPU temperature to prevent thermal throttling. Use a heatsink and active cooling.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Optional Optimization -->
+                <section id="optimization" class="docs-section">
+                    <h2 class="docs-heading">Section 8 â€” Optional Optimization</h2>
+                    <p>Tune your miner for improved performance and stability.</p>
+                    
+                    <h3>Adjust Thread Count</h3>
+                    <p>Edit <code>config.json</code> to specify the number of mining threads. For a Raspberry Pi 4 with 4 cores, start with 3-4 threads:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JSON</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>"cpu": {
+    "enabled": true,
+    "huge-pages": true,
+    "max-threads-hint": 100
+}</code></pre>
+                    </div>
+
+                    <h3>Monitor CPU Temperature</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>vcgencmd measure_temp</code></pre>
+                    </div>
+
+                    <h3>Set CPU Governor to Performance</h3>
+                    <p>For maximum hashrate, set the CPU frequency scaling governor to performance mode:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor</code></pre>
+                    </div>
+
+                    <h3>Cooling Recommendations</h3>
+                    <div class="docs-grid-3">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-microchip"></i> Heatsink</h4>
+                            <p>Attach a heatsink to the CPU for passive cooling.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-fan"></i> Active Fan</h4>
+                            <p>Use an active cooling fan to maintain lower temperatures under load.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-box-open"></i> Ventilated Case</h4>
+                            <p>Use a case with ventilation or an open-air design.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Autostart on Boot -->
+                <section id="autostart" class="docs-section">
+                    <h2 class="docs-heading">Section 9 â€” Autostart on Boot (systemd + screen)</h2>
+                    <p>Configure XMRig to start automatically in a screen session when the Raspberry Pi boots. This method combines the power of systemd for auto-start with screen for interactive monitoring.</p>
+
+                    <div class="docs-callout docs-callout-info">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Benefits of this approach:</strong>
+                            <ul>
+                                <li>Full interactive console output via <code>screen -r xmrig</code></li>
+                                <li>Automatic start on boot via systemd</li>
+                                <li>Persistent service that survives reboots</li>
+                                <li>Auto-restart if XMRig crashes</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3>Step 1: Create the Start Script</h3>
+                    <p>Create a script in your home directory that manages the screen session:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>nano ~/start-xmrig.sh</code></pre>
+                    </div>
+
+                    <p>Add the following content:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>#!/bin/bash
+cd /home/pi/xmrig/build
+# Kill any old xmrig screen
+screen -S xmrig -X quit 2>/dev/null
+# Start in detached screen
+screen -dmS xmrig bash -c './xmrig; exec bash'
+# Keep script alive so systemd service stays active
+while true; do sleep 3600; done</code></pre>
+                    </div>
+
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Note:</strong> If your username is not <code>pi</code>, replace <code>/home/pi</code> with <code>/home/&lt;your-username&gt;</code> in both the script and the service file.
+                        </div>
+                    </div>
+
+                    <p>Make the script executable:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>chmod +x ~/start-xmrig.sh</code></pre>
+                    </div>
+
+                    <h3>Step 2: Create the systemd Service</h3>
+                    <p>Create a new systemd service file:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo nano /etc/systemd/system/xmrig-screen.service</code></pre>
+                    </div>
+
+                    <p>Add the following configuration:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">INI</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>[Unit]
+Description=XMRig Monero Miner (Screen Session)
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/home/pi/start-xmrig.sh
+Restart=always
+RestartSec=10
+StandardOutput=inherit
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+                    </div>
+
+                    <h3>Step 3: Enable and Start the Service</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># Reload systemd to recognize the new service
+sudo systemctl daemon-reload
+
+# Enable to start at boot
+sudo systemctl enable xmrig-screen.service
+
+# Start the service immediately
+sudo systemctl start xmrig-screen.service
+
+# Check that it's running
+sudo systemctl status xmrig-screen.service</code></pre>
+                    </div>
+
+                    <h3>Interacting with the Miner</h3>
+                    <p>Once the service is running, you can attach to the screen session to view live mining output:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># Attach to the mining session
+screen -r xmrig
+
+# Detach (leave running): Press Ctrl+A, then D</code></pre>
+                    </div>
+
+                    <h3>Cleaning Up Dead Screens</h3>
+                    <p>If you have stale or dead screen sessions, clean them up with:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>screen -wipe</code></pre>
+                    </div>
+
+                    <h3>Service Management Commands</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><code>systemctl status xmrig-screen</code></h4>
+                            <p>Check if the service is running and view recent log output.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>systemctl restart xmrig-screen</code></h4>
+                            <p>Restart the mining service (kills and restarts XMRig).</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>systemctl stop xmrig-screen</code></h4>
+                            <p>Stop the mining service.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><code>journalctl -u xmrig-screen -f</code></h4>
+                            <p>View live service logs from systemd.</p>
+                        </div>
+                    </div>
+
+                    <h3>How It Works</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-terminal"></i> Screen Session</h4>
+                            <p>XMRig runs inside a screen session, providing full interactive console access. You can attach/detach at any time without interrupting mining.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-cogs"></i> systemd Management</h4>
+                            <p>systemd keeps the start script running. The infinite loop ensures the service stays "active" so systemd doesn't think it has stopped.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-sync-alt"></i> Auto-Restart</h4>
+                            <p><code>Restart=always</code> ensures the entire setup restarts if XMRig crashes or the script exits unexpectedly.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-power-off"></i> Boot Persistence</h4>
+                            <p>The service is enabled at boot, so mining automatically resumes after power outages or reboots.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Advanced Overclocking -->
+                <section id="overclocking" class="docs-section">
+                    <h2 class="docs-heading">Optional: Advanced Performance Tuning (Overclocking)</h2>
+                    <p>Overclocking can improve CPU and memory performance but increases heat and power consumption.</p>
+                    
+                    <div class="docs-callout docs-callout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Proceed with Caution:</strong> Overclocking may void your warranty and can cause instability. Ensure adequate cooling before attempting these modifications.
+                        </div>
+                    </div>
+
+                    <h3>Edit Boot Configuration</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo nano /boot/config.txt</code></pre>
+                    </div>
+
+                    <h3>CPU Overclocking Settings</h3>
+                    <p>Add or modify the following lines (example for Raspberry Pi 4):</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">INI</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># CPU frequency (example for Pi 4)
+arm_freq=2000
+
+# Increase core frequency
+core_freq=600
+
+# Enable overvoltage (use conservative values)
+over_voltage=6</code></pre>
+                    </div>
+
+                    <h3>Memory Tuning (Optional)</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">INI</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code># Increase SDRAM frequency
+sdram_freq=550</code></pre>
+                    </div>
+
+                    <h3>Apply Changes</h3>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo reboot</code></pre>
+                    </div>
+
+                    <h3>Monitor Temperature</h3>
+                    <p>Install monitoring tools:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo apt install -y lm-sensors</code></pre>
+                    </div>
+
+                    <p>Check temperature:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>vcgencmd measure_temp</code></pre>
+                    </div>
+
+                    <h3>Overclocking Guidelines</h3>
+                    <div class="docs-grid-2">
+                        <div class="docs-card">
+                            <h4><i class="fas fa-thermometer-half"></i> Temperature</h4>
+                            <p>Keep temperatures under ~80Â°C for stability. Throttling begins at 85Â°C.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-fan"></i> Cooling</h4>
+                            <p>Active cooling (fan + heatsink) is essential for overclocked operation.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-bolt"></i> Power Supply</h4>
+                            <p>Use the official 3A power supply to ensure stable power delivery.</p>
+                        </div>
+                        <div class="docs-card">
+                            <h4><i class="fas fa-dice"></i> Silicon Lottery</h4>
+                            <p>Stability varies by individual chip. Test thoroughly before relying on overclocked settings.</p>
+                        </div>
+                    </div>
+
+                    <h3>Reverting Changes</h3>
+                    <p>To revert to default settings, remove or comment out the added lines from <code>/boot/config.txt</code> and reboot:</p>
+                    <div class="docs-code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>sudo nano /boot/config.txt
+# Comment out or remove overclocking lines
+sudo reboot</code></pre>
+                    </div>
+                </section>
+            </article>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="../assets/img/Logo-With-Name.png" alt="Nerd or Geek Logo" class="footer-logo">
+                <p>Tech tutorials, Raspberry Pi projects, and open-source tools.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <a href="../index.html">Home</a>
+                    <a href="../mission-login.html">My Mission</a>
+                    <a href="../projects.html">Projects</a>
+                    <a href="../sitemap.html">Sitemap</a>
+                    <a href="../index.html#affiliates">Affiliates</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@Nerd-or-Geek" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://github.com/Nerd-or-Geek" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://github.com/sponsors/Nerd-or-Geek" target="_blank" rel="noopener noreferrer"><i class="fas fa-heart"></i> Sponsor</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nerd or Geek? All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../dist/scripts/main.js" type="module"></script>
+    <script>
+        // Copy code function for code blocks
+        function copyCode(button) {
+            const codeBlock = button.closest('.docs-code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
